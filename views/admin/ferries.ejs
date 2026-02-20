@@ -1,120 +1,267 @@
-<%- include('../partials/sidebar', { currentPage: 'ferries' }) %>
-
-<main class="flex-1 flex flex-col min-w-0 relative">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - AquaRoute</title>
     
-    <header class="h-16 lg:h-20 bg-white/80 backdrop-blur border-b border-slate-200 flex items-center justify-between px-6 z-10 sticky top-0">
-        <div class="flex items-center gap-4 lg:hidden">
-            <button class="text-slate-500"><iconify-icon icon="solar:hamburger-menu-bold" width="24"></iconify-icon></button>
-            <span class="font-bold text-slate-800">AquaRoute</span>
-        </div>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Iconify -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #F8FAFC;
+            -webkit-font-smoothing: antialiased;
+        }
         
-        <div>
-            <h2 class="text-lg font-bold text-slate-800">Ferry Management</h2>
-            <p class="text-xs font-medium text-slate-400">Monitor and update vessel statuses</p>
-        </div>
+        h1, h2, h3, h4, h5, h6 { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            letter-spacing: -0.025em; 
+        }
 
-        <div class="flex items-center gap-4">
-            <button class="relative w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors">
-                <iconify-icon icon="solar:bell-bold" width="20"></iconify-icon>
-                <span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-            </button>
-        </div>
-    </header>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
 
-    <div class="flex-1 overflow-auto p-6 md:p-8">
-        <div class="space-y-6 fade-in">
-            <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
-                <div class="flex gap-2">
-                     <input type="text" id="ferry-search" onkeyup="filterFerries()" placeholder="Search vessels..." class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-primary shadow-sm w-64">
-                     <button class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-500 hover:text-primary shadow-sm"><iconify-icon icon="solar:filter-bold"></iconify-icon></button>
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .status-dot { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(10, 77, 140, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(10, 77, 140, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(10, 77, 140, 0); }
+        }
+    </style>
+</head>
+<body class="h-screen bg-[#F8FAFC] flex overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col z-20 shadow-sm">
+        <!-- Brand -->
+        <div class="h-20 flex items-center px-8 border-b border-slate-50">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center">
+                    <iconify-icon icon="solar:wheel-angle-bold" width="18"></iconify-icon>
                 </div>
-                <button onclick="showToast('Add ferry functionality coming soon!', 'info')" class="bg-primary text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md hover:bg-blue-800 transition-colors flex items-center gap-2">
-                    <iconify-icon icon="solar:add-circle-bold" width="18"></iconify-icon>
-                    Add New Ferry
-                </button>
+                <span class="font-display font-bold text-lg text-slate-800 tracking-tight">AquaRoute</span>
+            </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex-1 px-4 py-6 space-y-1">
+            <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all nav-item">
+                <iconify-icon icon="solar:widget-5-bold-duotone" width="20"></iconify-icon>
+                Dashboard
+            </a>
+            <a href="/admin/ferries" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-primary bg-blue-50 transition-all nav-item">
+                <iconify-icon icon="solar:ship-bold-duotone" width="20"></iconify-icon>
+                Ferry Management
+            </a>
+            <a href="/admin/ports" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all nav-item">
+                <iconify-icon icon="solar:anchor-circle-bold-duotone" width="20"></iconify-icon>
+                Port Management
+            </a>
+            <a href="/admin/logs" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all nav-item">
+                <iconify-icon icon="solar:clipboard-list-bold-duotone" width="20"></iconify-icon>
+                Audit Logs
+            </a>
+        </nav>
+
+        <!-- User -->
+        <div class="p-4 border-t border-slate-100">
+            <div class="flex items-center gap-3 px-4 py-2">
+                <img src="https://ui-avatars.com/api/?name=<%= user.name.replace(' ', '+') %>&background=0A4D8C&color=fff" class="w-9 h-9 rounded-full border-2 border-slate-100">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold text-slate-800 truncate"><%= user.name %></p>
+                    <p class="text-xs text-slate-500 truncate"><%= user.role || 'Super Admin' %></p>
+                </div>
+                <a href="/logout" class="text-slate-400 hover:text-red-500 transition-colors">
+                    <iconify-icon icon="solar:logout-2-bold" width="20"></iconify-icon>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col min-w-0 relative">
+        
+        <header class="h-16 lg:h-20 bg-white/80 backdrop-blur border-b border-slate-200 flex items-center justify-between px-6 z-10 sticky top-0">
+            <div class="flex items-center gap-4 lg:hidden">
+                <button class="text-slate-500"><iconify-icon icon="solar:hamburger-menu-bold" width="24"></iconify-icon></button>
+                <span class="font-bold text-slate-800">AquaRoute</span>
+            </div>
+            
+            <div>
+                <h2 class="text-lg font-bold text-slate-800">Ferry Management</h2>
+                <p class="text-xs font-medium text-slate-400">Monitor and update vessel statuses</p>
             </div>
 
-            <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-                <table class="w-full text-left text-sm">
-                    <thead class="bg-slate-50 text-slate-500 uppercase text-xs font-bold tracking-wider">
-                        <tr>
-                            <th class="px-6 py-4">Vessel Name</th>
-                            <th class="px-6 py-4">Route</th>
-                            <th class="px-6 py-4">Current Status</th>
-                            <th class="px-6 py-4">ETA (Mins)</th>
-                            <th class="px-6 py-4 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-50" id="ferries-table-body">
-                        <% ferries.forEach(f => { %>
-                        <tr class="hover:bg-slate-50/50 transition-colors group" data-id="<%= f.id %>">
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-primary flex items-center justify-center font-bold">
-                                        <iconify-icon icon="solar:ship-bold-duotone"></iconify-icon>
-                                    </div>
-                                    <span class="font-bold text-slate-700"><%= f.name %></span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-slate-500 font-medium"><%= f.route %></td>
-                            <td class="px-6 py-4 cursor-pointer" onclick="toggleStatus('<%= f.id %>')">
-                                <% if (f.status === 'on_time') { %>
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-600 border border-green-100">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 status-dot"></span> On Time
-                                </span>
-                                <% } else if (f.status === 'delayed') { %>
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span> Delayed
-                                </span>
-                                <% } else { %>
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-100">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Suspended
-                                </span>
-                                <% } %>
-                            </td>
-                            <td class="px-6 py-4 font-mono font-medium text-slate-600"><%= f.eta %> min</td>
-                            <td class="px-6 py-4 text-right">
-                                <button class="text-slate-400 hover:text-primary transition-colors p-2"><iconify-icon icon="solar:pen-bold" width="18"></iconify-icon></button>
-                            </td>
-                        </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
-                <div class="px-6 py-4 border-t border-slate-50 flex items-center justify-between text-xs font-medium text-slate-400">
-                    <span>Showing all records</span>
+            <div class="flex items-center gap-4">
+                <button class="relative w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors">
+                    <iconify-icon icon="solar:bell-bold" width="20"></iconify-icon>
+                    <span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                </button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-auto p-6 md:p-8">
+            <div class="space-y-6 fade-in">
+                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
                     <div class="flex gap-2">
-                        <button class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center hover:bg-slate-100">1</button>
-                        <button class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-slate-100">2</button>
+                         <input type="text" id="ferry-search" onkeyup="filterFerries()" placeholder="Search vessels..." class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-primary shadow-sm w-64">
+                         <button class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-500 hover:text-primary shadow-sm"><iconify-icon icon="solar:filter-bold"></iconify-icon></button>
+                    </div>
+                    <button onclick="showToast('Add ferry functionality coming soon!', 'info')" class="bg-primary text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md hover:bg-blue-800 transition-colors flex items-center gap-2">
+                        <iconify-icon icon="solar:add-circle-bold" width="18"></iconify-icon>
+                        Add New Ferry
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 text-slate-500 uppercase text-xs font-bold tracking-wider">
+                            <tr>
+                                <th class="px-6 py-4">Vessel Name</th>
+                                <th class="px-6 py-4">Route</th>
+                                <th class="px-6 py-4">Current Status</th>
+                                <th class="px-6 py-4">ETA (Mins)</th>
+                                <th class="px-6 py-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50" id="ferries-table-body">
+                            <% ferries.forEach(f => { %>
+                            <tr class="hover:bg-slate-50/50 transition-colors group" data-id="<%= f.id %>">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl bg-blue-50 text-primary flex items-center justify-center font-bold">
+                                            <iconify-icon icon="solar:ship-bold-duotone"></iconify-icon>
+                                        </div>
+                                        <span class="font-bold text-slate-700"><%= f.name %></span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-slate-500 font-medium"><%= f.route %></td>
+                                <td class="px-6 py-4 cursor-pointer" onclick="toggleStatus('<%= f.id %>')">
+                                    <% if (f.status === 'on_time') { %>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-600 border border-green-100">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 status-dot"></span> On Time
+                                    </span>
+                                    <% } else if (f.status === 'delayed') { %>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span> Delayed
+                                    </span>
+                                    <% } else { %>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-100">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Suspended
+                                    </span>
+                                    <% } %>
+                                </td>
+                                <td class="px-6 py-4 font-mono font-medium text-slate-600"><%= f.eta %> min</td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-slate-400 hover:text-primary transition-colors p-2"><iconify-icon icon="solar:pen-bold" width="18"></iconify-icon></button>
+                                </td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                    <div class="px-6 py-4 border-t border-slate-50 flex items-center justify-between text-xs font-medium text-slate-400">
+                        <span>Showing all records</span>
+                        <div class="flex gap-2">
+                            <button class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center hover:bg-slate-100">1</button>
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-slate-100">2</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <div class="bg-white border-l-4 border-primary rounded-lg shadow-2xl p-4 flex items-center gap-3 w-80">
+            <div id="toast-icon" class="text-primary text-xl">
+                <iconify-icon icon="solar:check-circle-bold"></iconify-icon>
+            </div>
+            <div>
+                <h4 id="toast-title" class="font-bold text-sm text-slate-800">Success</h4>
+                <p id="toast-message" class="text-xs text-slate-500">Operation completed successfully.</p>
+            </div>
+        </div>
     </div>
-</main>
 
-<script>
-    async function toggleStatus(id) {
-        try {
-            const response = await fetch(`/api/ferries/${id}/toggle-status`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            });
+    <script>
+        function showToast(msg, type) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
             
-            if (response.ok) {
-                location.reload();
-                showToast('Ferry status updated successfully', 'success');
+            const title = document.getElementById('toast-title');
+            const icon = document.getElementById('toast-icon');
+            const container = toast.children[0];
+            
+            if(type === 'success') {
+                title.innerText = 'Success';
+                container.classList.remove('border-red-500', 'border-orange-500');
+                container.classList.add('border-primary');
+                icon.innerHTML = '<iconify-icon icon="solar:check-circle-bold"></iconify-icon>';
+                icon.className = 'text-primary text-xl';
+            } else if(type === 'error') {
+                title.innerText = 'Error';
+                container.classList.remove('border-primary', 'border-orange-500');
+                container.classList.add('border-red-500');
+                icon.innerHTML = '<iconify-icon icon="solar:danger-circle-bold"></iconify-icon>';
+                icon.className = 'text-red-500 text-xl';
+            } else {
+                title.innerText = 'Info';
+                container.classList.remove('border-primary', 'border-red-500');
+                container.classList.add('border-orange-500');
+                icon.innerHTML = '<iconify-icon icon="solar:info-circle-bold"></iconify-icon>';
+                icon.className = 'text-orange-500 text-xl';
             }
-        } catch (error) {
-            showToast('Error updating status', 'error');
-        }
-    }
 
-    function filterFerries() {
-        const input = document.getElementById('ferry-search').value.toLowerCase();
-        const rows = document.getElementById('ferries-table-body').getElementsByTagName('tr');
-        for(let row of rows) {
-            const txt = row.textContent.toLowerCase();
-            row.style.display = txt.includes(input) ? '' : 'none';
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
         }
-    }
-</script>
+
+        async function toggleStatus(id) {
+            try {
+                const response = await fetch(`/api/ferries/${id}/toggle-status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (response.ok) {
+                    location.reload();
+                    showToast('Ferry status updated successfully', 'success');
+                }
+            } catch (error) {
+                showToast('Error updating status', 'error');
+            }
+        }
+
+        function filterFerries() {
+            const input = document.getElementById('ferry-search').value.toLowerCase();
+            const rows = document.getElementById('ferries-table-body').getElementsByTagName('tr');
+            for(let row of rows) {
+                const txt = row.textContent.toLowerCase();
+                row.style.display = txt.includes(input) ? '' : 'none';
+            }
+        }
+    </script>
+</body>
+</html>

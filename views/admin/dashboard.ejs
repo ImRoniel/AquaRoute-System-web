@@ -1,176 +1,327 @@
-<%- include('../partials/sidebar', { currentPage: 'dashboard' }) %>
-
-<!-- Main Content -->
-<main class="flex-1 flex flex-col min-w-0 relative">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - AquaRoute</title>
     
-    <!-- Mobile Header -->
-    <header class="h-16 lg:h-20 bg-white/80 backdrop-blur border-b border-slate-200 flex items-center justify-between px-6 z-10 sticky top-0">
-        <div class="flex items-center gap-4 lg:hidden">
-            <button class="text-slate-500"><iconify-icon icon="solar:hamburger-menu-bold" width="24"></iconify-icon></button>
-            <span class="font-bold text-slate-800">AquaRoute</span>
-        </div>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Iconify -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #F8FAFC;
+            -webkit-font-smoothing: antialiased;
+        }
         
-        <div>
-            <h2 class="text-lg font-bold text-slate-800">Dashboard Overview</h2>
-            <p class="text-xs font-medium text-slate-400">Welcome back, <%= user.name %>!</p>
+        h1, h2, h3, h4, h5, h6 { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            letter-spacing: -0.025em; 
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .slide-up { animation: slideUp 0.5s ease-out forwards; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .status-dot { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(10, 77, 140, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(10, 77, 140, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(10, 77, 140, 0); }
+        }
+    </style>
+</head>
+<body class="h-screen bg-[#F8FAFC] flex overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col z-20 shadow-sm">
+        <!-- Brand -->
+        <div class="h-20 flex items-center px-8 border-b border-slate-50">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center">
+                    <iconify-icon icon="solar:wheel-angle-bold" width="18"></iconify-icon>
+                </div>
+                <span class="font-display font-bold text-lg text-slate-800 tracking-tight">AquaRoute</span>
+            </div>
         </div>
 
-        <div class="flex items-center gap-4">
-            <div class="relative hidden md:block">
-                <iconify-icon icon="solar:magnifer-linear" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></iconify-icon>
-                <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors w-64">
+        <!-- Nav -->
+        <nav class="flex-1 px-4 py-6 space-y-1">
+            <a href="/admin/dashboard" id="nav-dashboard" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-primary bg-blue-50 transition-all nav-item">
+                <iconify-icon icon="solar:widget-5-bold-duotone" width="20"></iconify-icon>
+                Dashboard
+            </a>
+            <a href="/admin/ferries" id="nav-ferries" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all nav-item">
+                <iconify-icon icon="solar:ship-bold-duotone" width="20"></iconify-icon>
+                Ferry Management
+            </a>
+            <a href="/admin/ports" id="nav-ports" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all nav-item">
+                <iconify-icon icon="solar:anchor-circle-bold-duotone" width="20"></iconify-icon>
+                Port Management
+            </a>
+            <a href="/admin/logs" id="nav-logs" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all nav-item">
+                <iconify-icon icon="solar:clipboard-list-bold-duotone" width="20"></iconify-icon>
+                Audit Logs
+            </a>
+        </nav>
+
+        <!-- User -->
+        <div class="p-4 border-t border-slate-100">
+            <div class="flex items-center gap-3 px-4 py-2">
+                <img src="https://ui-avatars.com/api/?name=<%= user.name.replace(' ', '+') %>&background=0A4D8C&color=fff" class="w-9 h-9 rounded-full border-2 border-slate-100">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold text-slate-800 truncate"><%= user.name %></p>
+                    <p class="text-xs text-slate-500 truncate"><%= user.role || 'Super Admin' %></p>
+                </div>
+                <a href="/logout" class="text-slate-400 hover:text-red-500 transition-colors">
+                    <iconify-icon icon="solar:logout-2-bold" width="20"></iconify-icon>
+                </a>
             </div>
-            <button class="relative w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors">
-                <iconify-icon icon="solar:bell-bold" width="20"></iconify-icon>
-                <span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-            </button>
         </div>
-    </header>
+    </aside>
 
-    <!-- Scrollable Area -->
-    <div class="flex-1 overflow-auto p-6 md:p-8">
-        <div class="space-y-6 fade-in">
-            <!-- Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-blue-100 transition-colors">
-                    <div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Total Fleet</p>
-                        <h3 class="text-3xl font-bold text-slate-800 mt-1"><%= stats.total %></h3>
-                    </div>
-                    <div class="w-12 h-12 rounded-xl bg-blue-50 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <iconify-icon icon="solar:ship-bold" width="24"></iconify-icon>
-                    </div>
-                </div>
-                
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-green-100 transition-colors">
-                    <div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">On Time</p>
-                        <h3 class="text-3xl font-bold text-slate-800 mt-1"><%= stats.onTime %></h3>
-                    </div>
-                    <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <iconify-icon icon="solar:check-circle-bold" width="24"></iconify-icon>
-                    </div>
-                </div>
-
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-orange-100 transition-colors">
-                    <div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Delayed</p>
-                        <h3 class="text-3xl font-bold text-slate-800 mt-1"><%= stats.delayed %></h3>
-                    </div>
-                    <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <iconify-icon icon="solar:clock-circle-bold" width="24"></iconify-icon>
-                    </div>
-                </div>
-
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-red-100 transition-colors">
-                    <div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Suspended</p>
-                        <h3 class="text-3xl font-bold text-slate-800 mt-1"><%= stats.suspended %></h3>
-                    </div>
-                    <div class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <iconify-icon icon="solar:danger-triangle-bold" width="24"></iconify-icon>
-                    </div>
-                </div>
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col min-w-0 relative">
+        
+        <!-- Mobile Header -->
+        <header class="h-16 lg:h-20 bg-white/80 backdrop-blur border-b border-slate-200 flex items-center justify-between px-6 z-10 sticky top-0">
+            <div class="flex items-center gap-4 lg:hidden">
+                <button class="text-slate-500"><iconify-icon icon="solar:hamburger-menu-bold" width="24"></iconify-icon></button>
+                <span class="font-bold text-slate-800">AquaRoute</span>
+            </div>
+            
+            <div>
+                <h2 class="text-lg font-bold text-slate-800">Dashboard Overview</h2>
+                <p class="text-xs font-medium text-slate-400">Welcome back, <%= user.name %>!</p>
             </div>
 
-            <!-- Split Layout: Table & Feed -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                <!-- Main Table -->
-                <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-                    <div class="px-6 py-5 border-b border-slate-50 flex justify-between items-center">
-                        <h3 class="font-bold text-slate-800">Live Fleet Status</h3>
-                        <a href="/admin/ferries" class="text-xs font-bold text-primary hover:underline">View All</a>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-slate-50 text-slate-500">
-                                <tr>
-                                    <th class="px-6 py-3 font-semibold">Vessel</th>
-                                    <th class="px-6 py-3 font-semibold">Route</th>
-                                    <th class="px-6 py-3 font-semibold">Status</th>
-                                    <th class="px-6 py-3 font-semibold">ETA</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-50">
-                                <% ferries.forEach(f => { %>
-                                <tr class="border-b border-slate-50 last:border-0">
-                                    <td class="px-6 py-4 font-bold text-slate-700"><%= f.name %></td>
-                                    <td class="px-6 py-4 text-slate-500 text-xs"><%= f.route %></td>
-                                    <td class="px-6 py-4">
-                                        <% if (f.status === 'on_time') { %>
-                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-600 border border-green-100">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500 status-dot"></span> On Time
-                                        </span>
-                                        <% } else if (f.status === 'delayed') { %>
-                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span> Delayed
-                                        </span>
-                                        <% } else { %>
-                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-100">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Suspended
-                                        </span>
-                                        <% } %>
-                                    </td>
-                                    <td class="px-6 py-4 font-mono text-xs"><%= f.eta %>m</td>
-                                </tr>
-                                <% }) %>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="flex items-center gap-4">
+                <div class="relative hidden md:block">
+                    <iconify-icon icon="solar:magnifer-linear" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></iconify-icon>
+                    <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors w-64">
                 </div>
+                <button class="relative w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors">
+                    <iconify-icon icon="solar:bell-bold" width="20"></iconify-icon>
+                    <span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                </button>
+            </div>
+        </header>
 
-                <!-- Recent Activity -->
-                <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 h-fit">
-                    <h3 class="font-bold text-slate-800 mb-6">Recent Activity</h3>
-                    <div class="space-y-6 relative before:absolute before:left-[19px] before:top-2 before:h-full before:w-[2px] before:bg-slate-100">
-                        
-                        <% logs.forEach((log, index) => { %>
-                        <div class="relative flex gap-4">
-                            <div class="w-10 h-10 rounded-full <%= 
-                                log.action.includes('Delayed') ? 'bg-orange-100 text-orange-600' : 
-                                log.action.includes('Update') ? 'bg-green-100 text-green-600' : 
-                                'bg-blue-100 text-primary'
-                            %> flex items-center justify-center shrink-0 z-10 border-4 border-white">
-                                <iconify-icon icon="solar:<%= 
-                                    log.action.includes('Delayed') ? 'clock-circle-bold' : 
-                                    log.action.includes('Update') ? 'check-circle-bold' : 
-                                    'add-circle-bold'
-                                %>" width="16"></iconify-icon>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-700"><%= log.action %></p>
-                                <p class="text-xs text-slate-500 mt-1"><%= log.details %></p>
-                                <span class="text-[10px] text-slate-400 font-medium"><%= log.time %></span>
-                            </div>
+        <!-- Scrollable Area -->
+        <div class="flex-1 overflow-auto p-6 md:p-8">
+            <div class="space-y-6 fade-in">
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-blue-100 transition-colors">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Total Fleet</p>
+                            <h3 class="text-3xl font-bold text-slate-800 mt-1"><%= stats.total %></h3>
                         </div>
-                        <% }) %>
+                        <div class="w-12 h-12 rounded-xl bg-blue-50 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <iconify-icon icon="solar:ship-bold" width="24"></iconify-icon>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-green-100 transition-colors">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">On Time</p>
+                            <h3 class="text-3xl font-bold text-slate-800 mt-1"><%= stats.onTime %></h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <iconify-icon icon="solar:check-circle-bold" width="24"></iconify-icon>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-orange-100 transition-colors">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Delayed</p>
+                            <h3 class="text-3xl font-bold text-slate-800 mt-1"><%= stats.delayed %></h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <iconify-icon icon="solar:clock-circle-bold" width="24"></iconify-icon>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-red-100 transition-colors">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Suspended</p>
+                            <h3 class="text-3xl font-bold text-slate-800 mt-1"><%= stats.suspended %></h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <iconify-icon icon="solar:danger-triangle-bold" width="24"></iconify-icon>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Split Layout: Table & Feed -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Main Table -->
+                    <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                        <div class="px-6 py-5 border-b border-slate-50 flex justify-between items-center">
+                            <h3 class="font-bold text-slate-800">Live Fleet Status</h3>
+                            <a href="/admin/ferries" class="text-xs font-bold text-primary hover:underline">View All</a>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50 text-slate-500">
+                                    <tr>
+                                        <th class="px-6 py-3 font-semibold">Vessel</th>
+                                        <th class="px-6 py-3 font-semibold">Route</th>
+                                        <th class="px-6 py-3 font-semibold">Status</th>
+                                        <th class="px-6 py-3 font-semibold">ETA</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-50">
+                                    <% ferries.forEach(f => { %>
+                                    <tr class="border-b border-slate-50 last:border-0">
+                                        <td class="px-6 py-4 font-bold text-slate-700"><%= f.name %></td>
+                                        <td class="px-6 py-4 text-slate-500 text-xs"><%= f.route %></td>
+                                        <td class="px-6 py-4">
+                                            <% if (f.status === 'on_time') { %>
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-600 border border-green-100">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-green-500 status-dot"></span> On Time
+                                            </span>
+                                            <% } else if (f.status === 'delayed') { %>
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span> Delayed
+                                            </span>
+                                            <% } else { %>
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-100">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Suspended
+                                            </span>
+                                            <% } %>
+                                        </td>
+                                        <td class="px-6 py-4 font-mono text-xs"><%= f.eta %>m</td>
+                                    </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 h-fit">
+                        <h3 class="font-bold text-slate-800 mb-6">Recent Activity</h3>
+                        <div class="space-y-6 relative before:absolute before:left-[19px] before:top-2 before:h-full before:w-[2px] before:bg-slate-100">
+                            
+                            <% logs.forEach((log, index) => { %>
+                            <div class="relative flex gap-4">
+                                <div class="w-10 h-10 rounded-full <%= 
+                                    log.action.includes('Delayed') ? 'bg-orange-100 text-orange-600' : 
+                                    log.action.includes('Update') ? 'bg-green-100 text-green-600' : 
+                                    'bg-blue-100 text-primary'
+                                %> flex items-center justify-center shrink-0 z-10 border-4 border-white">
+                                    <iconify-icon icon="solar:<%= 
+                                        log.action.includes('Delayed') ? 'clock-circle-bold' : 
+                                        log.action.includes('Update') ? 'check-circle-bold' : 
+                                        'add-circle-bold'
+                                    %>" width="16"></iconify-icon>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-700"><%= log.action %></p>
+                                    <p class="text-xs text-slate-500 mt-1"><%= log.details %></p>
+                                    <span class="text-[10px] text-slate-400 font-medium"><%= log.time %></span>
+                                </div>
+                            </div>
+                            <% }) %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <div class="bg-white border-l-4 border-primary rounded-lg shadow-2xl p-4 flex items-center gap-3 w-80">
+            <div id="toast-icon" class="text-primary text-xl">
+                <iconify-icon icon="solar:check-circle-bold"></iconify-icon>
+            </div>
+            <div>
+                <h4 id="toast-title" class="font-bold text-sm text-slate-800">Success</h4>
+                <p id="toast-message" class="text-xs text-slate-500">Operation completed successfully.</p>
             </div>
         </div>
     </div>
-</main>
 
-<script>
-    // Re-render dashboard data via API every 30 seconds
-    setInterval(async () => {
-        const response = await fetch('/api/ferries');
-        const ferries = await response.json();
-        
-        // Update stats
-        const stats = {
-            total: ferries.length,
-            onTime: ferries.filter(f => f.status === 'on_time').length,
-            delayed: ferries.filter(f => f.status === 'delayed').length,
-            suspended: ferries.filter(f => f.status === 'suspended').length
-        };
-        
-        document.querySelectorAll('.stats-number').forEach((el, i) => {
-            // Update stats numbers
-        });
-        
-        // Update table
-        // ... refresh table data
-    }, 30000);
-</script>
+    <script>
+        function showToast(msg, type) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            
+            const title = document.getElementById('toast-title');
+            const icon = document.getElementById('toast-icon');
+            const container = toast.children[0];
+            
+            if(type === 'success') {
+                title.innerText = 'Success';
+                container.classList.remove('border-red-500', 'border-orange-500');
+                container.classList.add('border-primary');
+                icon.innerHTML = '<iconify-icon icon="solar:check-circle-bold"></iconify-icon>';
+                icon.className = 'text-primary text-xl';
+            } else if(type === 'error') {
+                title.innerText = 'Error';
+                container.classList.remove('border-primary', 'border-orange-500');
+                container.classList.add('border-red-500');
+                icon.innerHTML = '<iconify-icon icon="solar:danger-circle-bold"></iconify-icon>';
+                icon.className = 'text-red-500 text-xl';
+            } else {
+                title.innerText = 'Info';
+                container.classList.remove('border-primary', 'border-red-500');
+                container.classList.add('border-orange-500');
+                icon.innerHTML = '<iconify-icon icon="solar:info-circle-bold"></iconify-icon>';
+                icon.className = 'text-orange-500 text-xl';
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Re-render dashboard data via API every 30 seconds
+        setInterval(async () => {
+            try {
+                const response = await fetch('/api/ferries');
+                const ferries = await response.json();
+                
+                // Update stats would require page reload or DOM manipulation
+                // For now, just log
+                console.log('Fetched updated ferry data:', ferries);
+            } catch (error) {
+                console.error('Error fetching ferry data:', error);
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

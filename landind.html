@@ -1,0 +1,879 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaRoute - Admin Platform</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Iconify -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+
+    <!-- Custom Config & Styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0A4D8C',     // Deep Ocean Blue
+                        secondary: '#1E88E5',   // Bright Blue
+                        accent: '#00ACC1',      // Teal
+                        surface: '#F8FAFC',     // Light Blue Gray
+                        card: '#FFFFFF',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base & Reset */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #F8FAFC;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        h1, h2, h3, h4, h5, h6 { font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: -0.025em; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .slide-up { animation: slideUp 0.5s ease-out forwards; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glassmorphism utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Wave Decoration */
+        .wave-bg {
+            background: linear-gradient(180deg, rgba(237,247,255,1) 0%, rgba(248,250,252,0) 100%);
+        }
+
+        /* Status Badge Animations */
+        .status-dot { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(var(--tw-shadow-color), 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(var(--tw-shadow-color), 0); }
+            100% { box-shadow: 0 0 0 0 rgba(var(--tw-shadow-color), 0); }
+        }
+    </style>
+</head>
+<body class="text-slate-600 overflow-x-hidden">
+
+    <!-- ========================================== -->
+    <!-- VIEW 1: LANDING PAGE -->
+    <!-- ========================================== -->
+    <div id="view-landing" class="flex flex-col min-h-screen">
+        
+        <!-- Header -->
+        <header class="fixed top-0 w-full z-50 glass transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/20">
+                        <iconify-icon icon="solar:wheel-angle-bold-duotone" width="24"></iconify-icon>
+                    </div>
+                    <span class="font-display font-bold text-xl text-primary tracking-tight">AquaRoute</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="navigateTo('login')" class="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-200 text-slate-600 font-medium hover:border-primary hover:text-primary transition-all text-sm group">
+                        <iconify-icon icon="solar:user-circle-bold" class="text-slate-400 group-hover:text-primary transition-colors"></iconify-icon>
+                        Admin Login
+                    </button>
+                    <button class="px-5 py-2.5 rounded-full bg-primary text-white font-medium hover:bg-blue-800 transition-all text-sm shadow-lg shadow-blue-900/20">
+                        Get App
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="pt-32 pb-20 px-6 wave-bg relative overflow-hidden">
+            <!-- Decorative Elements -->
+            <div class="absolute top-20 right-[-100px] w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+            <div class="absolute bottom-20 left-[-100px] w-96 h-96 bg-cyan-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" style="animation-delay: 2s"></div>
+
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+                <div class="space-y-8 slide-up">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-semibold uppercase tracking-wider">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                        </span>
+                        Live System v2.0
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-display font-bold text-slate-900 leading-[1.1] tracking-tight">
+                        Streamline Ferry <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Operations</span>
+                    </h1>
+                    <p class="text-lg text-slate-500 max-w-lg leading-relaxed">
+                        Monitor vessel locations, update statuses, and manage port information from one centralized dashboard. Real-time visibility for safer seas.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                        <button onclick="navigateTo('login')" class="px-8 py-4 rounded-2xl bg-primary text-white font-semibold hover:bg-blue-800 transition-all shadow-xl shadow-blue-900/20 flex items-center justify-center gap-2">
+                            <iconify-icon icon="solar:login-2-bold"></iconify-icon>
+                            Admin Access
+                        </button>
+                        <button class="px-8 py-4 rounded-2xl bg-white border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+                            <iconify-icon icon="solar:play-circle-bold-duotone" class="text-secondary"></iconify-icon>
+                            View Demo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Abstract Map Graphic -->
+                <div class="relative h-[500px] bg-white rounded-[40px] shadow-2xl border border-slate-100 p-4 slide-up" style="animation-delay: 0.2s">
+                    <div class="absolute inset-4 rounded-[32px] overflow-hidden bg-blue-50">
+                        <!-- Mock Map Design -->
+                        <div class="absolute inset-0 opacity-50" style="background-image: radial-gradient(#CBD5E1 1px, transparent 1px); background-size: 20px 20px;"></div>
+                        <!-- Land Mass -->
+                        <div class="absolute top-0 right-0 w-2/3 h-full bg-white/80 rounded-l-[100px] border-l border-slate-200"></div>
+                        
+                        <!-- Route Lines -->
+                        <svg class="absolute inset-0 w-full h-full pointer-events-none">
+                            <path d="M 100 300 Q 250 250 400 150" fill="none" stroke="#3B82F6" stroke-width="3" stroke-dasharray="8 8" class="animate-pulse"></path>
+                        </svg>
+
+                        <!-- Floating Cards -->
+                        <div class="absolute top-1/4 left-1/4 bg-white p-3 rounded-xl shadow-lg border border-slate-100 flex items-center gap-3 animate-bounce" style="animation-duration: 3s;">
+                            <div class="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center">
+                                <iconify-icon icon="solar:ship-bold" width="20"></iconify-icon>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-slate-800">FastCat 01</div>
+                                <div class="text-[10px] font-medium text-green-600">On Time • 15kts</div>
+                            </div>
+                        </div>
+
+                        <div class="absolute bottom-1/3 right-1/4 bg-white p-3 rounded-xl shadow-lg border border-slate-100 flex items-center gap-3 animate-bounce" style="animation-duration: 4s;">
+                            <div class="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center">
+                                <iconify-icon icon="solar:ship-bold" width="20"></iconify-icon>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-slate-800">OceanJet 8</div>
+                                <div class="text-[10px] font-medium text-orange-600">Delayed (+15m)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <section class="py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-display font-bold text-slate-900 mb-4">Powerful Management Tools</h2>
+                    <p class="text-slate-500 max-w-2xl mx-auto">Everything you need to manage your maritime logistics efficiently.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature 1 -->
+                    <div class="p-8 rounded-3xl bg-slate-50 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all border border-slate-100 group">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <iconify-icon icon="solar:map-point-wave-bold-duotone" width="28"></iconify-icon>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Real-Time Tracking</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">Track all vessels live on the map with update intervals of less than 30 seconds.</p>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="p-8 rounded-3xl bg-slate-50 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all border border-slate-100 group">
+                        <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <iconify-icon icon="solar:clock-circle-bold-duotone" width="28"></iconify-icon>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Dynamic ETA</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">System automatically calculates arrival times based on current speed and weather.</p>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="p-8 rounded-3xl bg-slate-50 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all border border-slate-100 group">
+                        <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <iconify-icon icon="solar:bell-bing-bold-duotone" width="28"></iconify-icon>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Instant Advisories</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">Push notifications to passengers regarding cancellations or port changes.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="py-20 px-6">
+            <div class="max-w-5xl mx-auto rounded-[40px] bg-primary relative overflow-hidden text-center py-20 px-8">
+                <!-- Background Pattern -->
+                <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 50%, #ffffff 50%, #ffffff 75%, transparent 75%, transparent); background-size: 40px 40px;"></div>
+                
+                <div class="relative z-10">
+                    <h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-6">Ready to transform your operations?</h2>
+                    <p class="text-blue-100 mb-10 max-w-xl mx-auto">Join the leading ferry operators using AquaRoute to improve efficiency and passenger satisfaction.</p>
+                    <button onclick="navigateTo('login')" class="px-8 py-4 rounded-2xl bg-white text-primary font-bold hover:bg-blue-50 transition-all shadow-lg">
+                        Access Admin Panel
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-slate-900 text-slate-400 py-12 px-6 mt-auto">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-2">
+                    <iconify-icon icon="solar:wheel-angle-bold" class="text-blue-500"></iconify-icon>
+                    <span class="font-bold text-white tracking-tight">AquaRoute</span>
+                </div>
+                <div class="text-sm font-medium">
+                    © 2026 AquaRoute Inc. All rights reserved.
+                </div>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-white transition-colors"><iconify-icon icon="brands:facebook" width="20"></iconify-icon></a>
+                    <a href="#" class="hover:text-white transition-colors"><iconify-icon icon="brands:twitter" width="20"></iconify-icon></a>
+                    <a href="#" class="hover:text-white transition-colors"><iconify-icon icon="brands:linkedin" width="20"></iconify-icon></a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VIEW 2: LOGIN PAGE -->
+    <!-- ========================================== -->
+    <div id="view-login" class="hidden min-h-screen bg-slate-50 flex items-center justify-center p-6 relative overflow-hidden">
+        
+        <!-- Back Button -->
+        <button onclick="navigateTo('landing')" class="absolute top-8 left-8 flex items-center gap-2 text-slate-500 hover:text-primary transition-colors font-medium text-sm">
+            <iconify-icon icon="solar:arrow-left-linear" width="20"></iconify-icon>
+            Back to Home
+        </button>
+
+        <!-- Decorative Background -->
+        <div class="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-blue-100/50 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-teal-100/50 rounded-full blur-3xl"></div>
+
+        <div class="w-full max-w-md bg-white rounded-[32px] shadow-2xl p-8 md:p-10 relative z-10 border border-slate-100 fade-in">
+            <div class="text-center mb-10">
+                <div class="w-14 h-14 bg-blue-50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <iconify-icon icon="solar:lock-keyhole-minimalistic-bold-duotone" width="32"></iconify-icon>
+                </div>
+                <h2 class="text-2xl font-display font-bold text-slate-900">Admin Login</h2>
+                <p class="text-slate-500 text-sm mt-2">Welcome back! Please enter your credentials.</p>
+            </div>
+
+            <form onsubmit="handleLogin(event)" class="space-y-5">
+                <!-- Username -->
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide ml-1">Username</label>
+                    <div class="relative group">
+                        <iconify-icon icon="solar:user-bold" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors"></iconify-icon>
+                        <input type="text" id="username" value="admin" class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-12 pr-4 text-sm font-medium focus:outline-none focus:border-primary focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-400" placeholder="Enter username">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide ml-1">Password</label>
+                    <div class="relative group">
+                        <iconify-icon icon="solar:lock-password-bold" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors"></iconify-icon>
+                        <input type="password" id="password" value="admin123" class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-12 pr-4 text-sm font-medium focus:outline-none focus:border-primary focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-400" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center gap-2 cursor-pointer text-slate-600 font-medium">
+                        <input type="checkbox" class="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary">
+                        Remember me
+                    </label>
+                    <a href="#" class="text-primary hover:text-blue-700 font-semibold">Forgot password?</a>
+                </div>
+
+                <!-- Error Message -->
+                <div id="login-error" class="hidden p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-xs font-semibold flex items-center gap-2">
+                    <iconify-icon icon="solar:danger-circle-bold"></iconify-icon>
+                    Invalid credentials. Try admin / admin123
+                </div>
+
+                <button type="submit" class="w-full bg-primary text-white font-bold py-4 rounded-2xl hover:bg-blue-800 transition-all shadow-lg shadow-blue-900/20 active:scale-95 flex items-center justify-center gap-2">
+                    <span>Login to Dashboard</span>
+                    <iconify-icon icon="solar:arrow-right-linear" stroke-width="2.5"></iconify-icon>
+                </button>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-slate-100 text-center">
+                <p class="text-xs text-slate-400 bg-slate-50 inline-block px-3 py-1 rounded-lg border border-slate-200">
+                    Demo credentials: <span class="font-mono text-slate-600 font-bold">admin</span> / <span class="font-mono text-slate-600 font-bold">admin123</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VIEW 3: ADMIN DASHBOARD -->
+    <!-- ========================================== -->
+    <div id="view-dashboard" class="hidden h-screen bg-[#F8FAFC] flex overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside class="w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col z-20 shadow-sm">
+            <!-- Brand -->
+            <div class="h-20 flex items-center px-8 border-b border-slate-50">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center">
+                        <iconify-icon icon="solar:wheel-angle-bold" width="18"></iconify-icon>
+                    </div>
+                    <span class="font-display font-bold text-lg text-slate-800 tracking-tight">AquaRoute</span>
+                </div>
+            </div>
+
+            <!-- Nav -->
+            <nav class="flex-1 px-4 py-6 space-y-1">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-primary bg-blue-50 transition-all nav-item">
+                    <iconify-icon icon="solar:widget-5-bold-duotone" width="20"></iconify-icon>
+                    Dashboard
+                </button>
+                <button onclick="switchTab('ferries')" id="nav-ferries" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all nav-item">
+                    <iconify-icon icon="solar:ship-bold-duotone" width="20"></iconify-icon>
+                    Ferry Management
+                </button>
+                <button onclick="switchTab('ports')" id="nav-ports" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all nav-item">
+                    <iconify-icon icon="solar:anchor-circle-bold-duotone" width="20"></iconify-icon>
+                    Port Management
+                </button>
+                <button onclick="switchTab('logs')" id="nav-logs" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all nav-item">
+                    <iconify-icon icon="solar:clipboard-list-bold-duotone" width="20"></iconify-icon>
+                    Audit Logs
+                </button>
+            </nav>
+
+            <!-- User -->
+            <div class="p-4 border-t border-slate-100">
+                <div class="flex items-center gap-3 px-4 py-2">
+                    <img src="https://ui-avatars.com/api/?name=Admin+User&amp;background=0A4D8C&amp;color=fff" class="w-9 h-9 rounded-full border-2 border-slate-100">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-slate-800 truncate">Admin User</p>
+                        <p class="text-xs text-slate-500 truncate">Super Admin</p>
+                    </div>
+                    <button onclick="logout()" class="text-slate-400 hover:text-red-500 transition-colors">
+                        <iconify-icon icon="solar:logout-2-bold" width="20"></iconify-icon>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col min-w-0 relative">
+            
+            <!-- Mobile Header -->
+            <header class="h-16 lg:h-20 bg-white/80 backdrop-blur border-b border-slate-200 flex items-center justify-between px-6 z-10 sticky top-0">
+                <div class="flex items-center gap-4 lg:hidden">
+                    <button class="text-slate-500"><iconify-icon icon="solar:hamburger-menu-bold" width="24"></iconify-icon></button>
+                    <span class="font-bold text-slate-800">AquaRoute</span>
+                </div>
+                
+                <div class="hidden lg:block">
+                    <h2 id="page-title" class="text-lg font-bold text-slate-800">Dashboard Overview</h2>
+                    <p id="page-subtitle" class="text-xs font-medium text-slate-400">Welcome back, Admin!</p>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative hidden md:block">
+                        <iconify-icon icon="solar:magnifer-linear" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></iconify-icon>
+                        <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors w-64">
+                    </div>
+                    <button class="relative w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors">
+                        <iconify-icon icon="solar:bell-bold" width="20"></iconify-icon>
+                        <span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Scrollable Area -->
+            <div class="flex-1 overflow-auto p-6 md:p-8">
+                
+                <!-- TAB: DASHBOARD -->
+                <div id="tab-dashboard" class="space-y-6 fade-in">
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-blue-100 transition-colors">
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Total Fleet</p>
+                                <h3 class="text-3xl font-bold text-slate-800 mt-1">12</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-blue-50 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <iconify-icon icon="solar:ship-bold" width="24"></iconify-icon>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-green-100 transition-colors">
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">On Time</p>
+                                <h3 class="text-3xl font-bold text-slate-800 mt-1">8</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <iconify-icon icon="solar:check-circle-bold" width="24"></iconify-icon>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-orange-100 transition-colors">
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Delayed</p>
+                                <h3 class="text-3xl font-bold text-slate-800 mt-1">3</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <iconify-icon icon="solar:clock-circle-bold" width="24"></iconify-icon>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between group hover:border-red-100 transition-colors">
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Suspended</p>
+                                <h3 class="text-3xl font-bold text-slate-800 mt-1">1</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <iconify-icon icon="solar:danger-triangle-bold" width="24"></iconify-icon>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Split Layout: Table & Feed -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        <!-- Main Table -->
+                        <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                            <div class="px-6 py-5 border-b border-slate-50 flex justify-between items-center">
+                                <h3 class="font-bold text-slate-800">Live Fleet Status</h3>
+                                <button onclick="switchTab('ferries')" class="text-xs font-bold text-primary hover:underline">View All</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-slate-50 text-slate-500">
+                                        <tr>
+                                            <th class="px-6 py-3 font-semibold">Vessel</th>
+                                            <th class="px-6 py-3 font-semibold">Route</th>
+                                            <th class="px-6 py-3 font-semibold">Status</th>
+                                            <th class="px-6 py-3 font-semibold">ETA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-50" id="dashboard-fleet-table">
+                                        <!-- JS Rendered -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 h-fit">
+                            <h3 class="font-bold text-slate-800 mb-6">Recent Activity</h3>
+                            <div class="space-y-6 relative before:absolute before:left-[19px] before:top-2 before:h-full before:w-[2px] before:bg-slate-100">
+                                
+                                <div class="relative flex gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center shrink-0 z-10 border-4 border-white">
+                                        <iconify-icon icon="solar:clock-circle-bold" width="16"></iconify-icon>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-700">FastCat Status Update</p>
+                                        <p class="text-xs text-slate-500 mt-1">Changed to <span class="text-orange-600 font-bold">Delayed</span> by Admin</p>
+                                        <span class="text-[10px] text-slate-400 font-medium">2 mins ago</span>
+                                    </div>
+                                </div>
+
+                                <div class="relative flex gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0 z-10 border-4 border-white">
+                                        <iconify-icon icon="solar:check-circle-bold" width="16"></iconify-icon>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-700">Port Update</p>
+                                        <p class="text-xs text-slate-500 mt-1">Manila Port set to <span class="text-green-600 font-bold">Open</span></p>
+                                        <span class="text-[10px] text-slate-400 font-medium">15 mins ago</span>
+                                    </div>
+                                </div>
+
+                                <div class="relative flex gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-blue-100 text-primary flex items-center justify-center shrink-0 z-10 border-4 border-white">
+                                        <iconify-icon icon="solar:add-circle-bold" width="16"></iconify-icon>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-700">New Vessel Added</p>
+                                        <p class="text-xs text-slate-500 mt-1">OceanJet 8 added to fleet</p>
+                                        <span class="text-[10px] text-slate-400 font-medium">1 hour ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: FERRIES -->
+                <div id="tab-ferries" class="hidden space-y-6 fade-in">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                        <div class="flex gap-2">
+                             <input type="text" id="ferry-search" onkeyup="filterFerries()" placeholder="Search vessels..." class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-primary shadow-sm w-64">
+                             <button class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-500 hover:text-primary shadow-sm"><iconify-icon icon="solar:filter-bold"></iconify-icon></button>
+                        </div>
+                        <button onclick="showToast('Add functionality not implemented in demo', 'info')" class="bg-primary text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md hover:bg-blue-800 transition-colors flex items-center gap-2">
+                            <iconify-icon icon="solar:add-circle-bold" width="18"></iconify-icon>
+                            Add New Ferry
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-slate-500 uppercase text-xs font-bold tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-4">Vessel Name</th>
+                                    <th class="px-6 py-4">Route</th>
+                                    <th class="px-6 py-4">Current Status</th>
+                                    <th class="px-6 py-4">ETA (Mins)</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50" id="ferries-table-body">
+                                <!-- JS Rendered -->
+                            </tbody>
+                        </table>
+                        <div class="px-6 py-4 border-t border-slate-50 flex items-center justify-between text-xs font-medium text-slate-400">
+                            <span>Showing all records</span>
+                            <div class="flex gap-2">
+                                <button class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center hover:bg-slate-100">1</button>
+                                <button class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-slate-100">2</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: PORTS -->
+                <div id="tab-ports" class="hidden space-y-6 fade-in">
+                    <div class="flex justify-between items-center">
+                        <input type="text" placeholder="Search ports..." class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-primary shadow-sm w-64">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="ports-grid">
+                        <!-- JS Rendered -->
+                    </div>
+                </div>
+
+                <!-- TAB: AUDIT LOGS -->
+                <div id="tab-logs" class="hidden space-y-6 fade-in">
+                    <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                        <div class="px-6 py-4 border-b border-slate-50 flex justify-between items-center">
+                            <h3 class="font-bold text-slate-800">System Activity Logs</h3>
+                            <button class="text-xs text-slate-400 hover:text-red-500 font-bold flex items-center gap-1">
+                                <iconify-icon icon="solar:trash-bin-bold"></iconify-icon> Clear History
+                            </button>
+                        </div>
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-slate-500 uppercase text-xs font-bold">
+                                <tr>
+                                    <th class="px-6 py-4">Admin</th>
+                                    <th class="px-6 py-4">Action</th>
+                                    <th class="px-6 py-4">Details</th>
+                                    <th class="px-6 py-4 text-right">Time</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50" id="logs-table-body">
+                                <!-- JS Rendered -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <div class="bg-white border-l-4 border-primary rounded-lg shadow-2xl p-4 flex items-center gap-3 w-80">
+            <div id="toast-icon" class="text-primary text-xl">
+                <iconify-icon icon="solar:check-circle-bold"></iconify-icon>
+            </div>
+            <div>
+                <h4 id="toast-title" class="font-bold text-sm text-slate-800">Success</h4>
+                <p id="toast-message" class="text-xs text-slate-500">Operation completed successfully.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // --- DATA ---
+        let ferries = [
+            { id: 1, name: "FastCat Mla-Bat", route: "Manila - Batangas", status: "on_time", eta: 45 },
+            { id: 2, name: "OceanJet Mla-Cav", route: "Manila - Cavite", status: "delayed", eta: 60 },
+            { id: 3, name: "2GO Mla-Dag", route: "Manila - Dagupan", status: "suspended", eta: 120 },
+            { id: 4, name: "Starlite Bat-Ceb", route: "Batangas - Cebu", status: "on_time", eta: 90 },
+            { id: 5, name: "Weesam Ceb-Bac", route: "Cebu - Bacolod", status: "delayed", eta: 75 }
+        ];
+
+        const ports = [
+            { id: 1, name: "Manila North Harbor", status: "open", weather: "Sunny" },
+            { id: 2, name: "Batangas Pier", status: "open", weather: "Cloudy" },
+            { id: 3, name: "Cebu International", status: "limited", weather: "Rainy" },
+            { id: 4, name: "Davao Port", status: "closed", weather: "Storm" }
+        ];
+
+        const logs = [
+            { admin: "admin", action: "Status Update", details: "FastCat -> Delayed", time: "2m ago" },
+            { admin: "admin", action: "Port Update", details: "Manila Port -> Open", time: "15m ago" },
+            { admin: "admin", action: "Add Ferry", details: "Created OceanJet", time: "1h ago" },
+            { admin: "admin", action: "System", details: "Login Successful", time: "3h ago" }
+        ];
+
+        // --- NAVIGATION ---
+        function navigateTo(viewId) {
+            // Hide all views
+            document.getElementById('view-landing').classList.add('hidden');
+            document.getElementById('view-login').classList.add('hidden');
+            document.getElementById('view-dashboard').classList.add('hidden');
+
+            // Show target view
+            const target = document.getElementById(`view-${viewId}`);
+            target.classList.remove('hidden');
+            
+            // Animation reset
+            if(viewId === 'login') {
+                target.classList.add('fade-in');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            
+            // Simulate API call delay
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<iconify-icon icon="line-md:loading-loop" width="24"></iconify-icon>';
+            
+            setTimeout(() => {
+                if (u === 'admin' && p === 'admin123') {
+                    navigateTo('dashboard');
+                    switchTab('dashboard');
+                    renderAll();
+                    showToast('Welcome back, Admin!', 'success');
+                } else {
+                    document.getElementById('login-error').classList.remove('hidden');
+                    btn.innerHTML = originalText;
+                }
+            }, 800);
+        }
+
+        function logout() {
+            navigateTo('landing');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            showToast('Logged out successfully', 'info');
+        }
+
+        // --- DASHBOARD TABS ---
+        function switchTab(tabId) {
+            // Update Sidebar UI
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('text-primary', 'bg-blue-50');
+                el.classList.add('text-slate-500', 'hover:bg-slate-50');
+                // Reset icon color logic roughly
+                const icon = el.querySelector('iconify-icon');
+                // Simple class swap for active state
+            });
+
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            activeBtn.classList.remove('text-slate-500', 'hover:bg-slate-50');
+            activeBtn.classList.add('text-primary', 'bg-blue-50');
+
+            // Update Header Title
+            const titles = {
+                'dashboard': ['Dashboard Overview', "Here's what's happening with your fleet"],
+                'ferries': ['Ferry Management', 'Monitor and update vessel statuses'],
+                'ports': ['Port Management', 'Control port operations and advisories'],
+                'logs': ['Audit Logs', 'Track all administrative actions']
+            };
+            document.getElementById('page-title').innerText = titles[tabId][0];
+            document.getElementById('page-subtitle').innerText = titles[tabId][1];
+
+            // Show Content
+            ['dashboard', 'ferries', 'ports', 'logs'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+            });
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function renderAll() {
+            renderFerries();
+            renderPorts();
+            renderLogs();
+        }
+
+        function getStatusBadge(status) {
+            if (status === 'on_time' || status === 'open') return `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-600 border border-green-100"><span class="w-1.5 h-1.5 rounded-full bg-green-500 status-dot"></span> On Time</span>`;
+            if (status === 'delayed' || status === 'limited') return `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100"><span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span> Delayed</span>`;
+            return `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-100"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Suspended</span>`;
+        }
+        
+        // Port badges slightly different
+        function getPortBadge(status) {
+            if (status === 'open') return `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-600 border border-green-100"><iconify-icon icon="solar:check-circle-bold"></iconify-icon> Open</span>`;
+            if (status === 'limited') return `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100"><iconify-icon icon="solar:danger-triangle-bold"></iconify-icon> Limited</span>`;
+            return `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-100"><iconify-icon icon="solar:forbidden-circle-bold"></iconify-icon> Closed</span>`;
+        }
+
+        function renderFerries() {
+            const tbody = document.getElementById('ferries-table-body');
+            const dashboardBody = document.getElementById('dashboard-fleet-table');
+            let html = '';
+            let dashHtml = '';
+
+            ferries.forEach(f => {
+                const row = `
+                    <tr class="hover:bg-slate-50/50 transition-colors group">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-blue-50 text-primary flex items-center justify-center font-bold">
+                                    <iconify-icon icon="solar:ship-bold-duotone"></iconify-icon>
+                                </div>
+                                <span class="font-bold text-slate-700">${f.name}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-slate-500 font-medium">${f.route}</td>
+                        <td class="px-6 py-4 cursor-pointer" onclick="toggleStatus(${f.id})">${getStatusBadge(f.status)}</td>
+                        <td class="px-6 py-4 font-mono font-medium text-slate-600">${f.eta} min</td>
+                        <td class="px-6 py-4 text-right">
+                            <button class="text-slate-400 hover:text-primary transition-colors p-2"><iconify-icon icon="solar:pen-bold" width="18"></iconify-icon></button>
+                        </td>
+                    </tr>
+                `;
+                html += row;
+                
+                // Simplified Dashboard row
+                dashHtml += `
+                    <tr class="border-b border-slate-50 last:border-0">
+                        <td class="px-6 py-4 font-bold text-slate-700">${f.name}</td>
+                        <td class="px-6 py-4 text-slate-500 text-xs">${f.route}</td>
+                        <td class="px-6 py-4">${getStatusBadge(f.status)}</td>
+                        <td class="px-6 py-4 font-mono text-xs">${f.eta}m</td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+            dashboardBody.innerHTML = dashHtml;
+        }
+
+        function renderPorts() {
+            const grid = document.getElementById('ports-grid');
+            let html = '';
+            ports.forEach(p => {
+                html += `
+                    <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-12 h-12 rounded-2xl bg-teal-50 text-accent flex items-center justify-center">
+                                <iconify-icon icon="solar:anchor-bold-duotone" width="24"></iconify-icon>
+                            </div>
+                            <button class="text-slate-300 hover:text-primary"><iconify-icon icon="solar:menu-dots-bold" width="24"></iconify-icon></button>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-lg mb-1">${p.name}</h4>
+                        <div class="flex items-center gap-2 text-xs text-slate-500 font-medium mb-4">
+                            <iconify-icon icon="solar:cloud-sun-2-bold"></iconify-icon> Weather: ${p.weather}
+                        </div>
+                        <div class="flex justify-between items-center border-t border-slate-50 pt-4">
+                            ${getPortBadge(p.status)}
+                            <button onclick="showToast('Port status updated', 'success')" class="text-xs font-bold text-primary bg-blue-50 px-3 py-1.5 rounded-lg hover:bg-blue-100">Update</button>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        function renderLogs() {
+            const tbody = document.getElementById('logs-table-body');
+            let html = '';
+            logs.forEach(l => {
+                html += `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4 font-bold text-slate-700 flex items-center gap-2">
+                             <div class="w-6 h-6 rounded-full bg-slate-200 text-xs flex items-center justify-center">A</div>
+                             ${l.admin}
+                        </td>
+                        <td class="px-6 py-4"><span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-bold border border-slate-200">${l.action}</span></td>
+                        <td class="px-6 py-4 text-slate-500">${l.details}</td>
+                        <td class="px-6 py-4 text-right text-xs text-slate-400 font-mono">${l.time}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // --- INTERACTIONS ---
+        function toggleStatus(id) {
+            // Cycle status for demo: on_time -> delayed -> suspended -> on_time
+            const f = ferries.find(x => x.id === id);
+            if(f.status === 'on_time') f.status = 'delayed';
+            else if(f.status === 'delayed') f.status = 'suspended';
+            else f.status = 'on_time';
+            
+            renderFerries(); // Re-render table
+            showToast(`${f.name} status updated`, 'success');
+        }
+
+        function filterFerries() {
+            const input = document.getElementById('ferry-search').value.toLowerCase();
+            const rows = document.getElementById('ferries-table-body').getElementsByTagName('tr');
+            for(let row of rows) {
+                const txt = row.textContent.toLowerCase();
+                row.style.display = txt.includes(input) ? '' : 'none';
+            }
+        }
+
+        function showToast(msg, type) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            
+            // Setup styles based on type
+            const title = document.getElementById('toast-title');
+            const icon = document.getElementById('toast-icon');
+            const container = toast.children[0];
+            
+            if(type === 'success') {
+                title.innerText = 'Success';
+                container.classList.remove('border-red-500');
+                container.classList.add('border-primary');
+                icon.innerHTML = '<iconify-icon icon="solar:check-circle-bold"></iconify-icon>';
+                icon.className = 'text-primary text-xl';
+            } else {
+                title.innerText = 'Info';
+                // ... logic for other types
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+
+</body></html>
