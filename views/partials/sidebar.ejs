@@ -1,0 +1,45 @@
+<aside class="w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col z-20 shadow-sm">
+    <!-- Brand -->
+    <div class="h-20 flex items-center px-8 border-b border-slate-50">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center">
+                <iconify-icon icon="solar:wheel-angle-bold" width="18"></iconify-icon>
+            </div>
+            <span class="font-display font-bold text-lg text-slate-800 tracking-tight">AquaRoute</span>
+        </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 px-4 py-6 space-y-1">
+        <a href="/admin/dashboard" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl <%= currentPage === 'dashboard' ? 'text-primary bg-blue-50' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' %> transition-all nav-item">
+            <iconify-icon icon="solar:widget-5-bold-duotone" width="20"></iconify-icon>
+            Dashboard
+        </a>
+        <a href="/admin/ferries" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl <%= currentPage === 'ferries' ? 'text-primary bg-blue-50' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' %> transition-all nav-item">
+            <iconify-icon icon="solar:ship-bold-duotone" width="20"></iconify-icon>
+            Ferry Management
+        </a>
+        <a href="/admin/ports" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl <%= currentPage === 'ports' ? 'text-primary bg-blue-50' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' %> transition-all nav-item">
+            <iconify-icon icon="solar:anchor-circle-bold-duotone" width="20"></iconify-icon>
+            Port Management
+        </a>
+        <a href="/admin/logs" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl <%= currentPage === 'logs' ? 'text-primary bg-blue-50' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' %> transition-all nav-item">
+            <iconify-icon icon="solar:clipboard-list-bold-duotone" width="20"></iconify-icon>
+            Audit Logs
+        </a>
+    </nav>
+
+    <!-- User -->
+    <div class="p-4 border-t border-slate-100">
+        <div class="flex items-center gap-3 px-4 py-2">
+            <img src="https://ui-avatars.com/api/?name=<%= user.name.replace(' ', '+') %>&background=0A4D8C&color=fff" class="w-9 h-9 rounded-full border-2 border-slate-100">
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-bold text-slate-800 truncate"><%= user.name %></p>
+                <p class="text-xs text-slate-500 truncate capitalize"><%= user.role %></p>
+            </div>
+            <a href="/logout" class="text-slate-400 hover:text-red-500 transition-colors">
+                <iconify-icon icon="solar:logout-2-bold" width="20"></iconify-icon>
+            </a>
+        </div>
+    </div>
+</aside>

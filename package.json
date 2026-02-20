@@ -1,13 +1,23 @@
 {
   "dependencies": {
+    "axios": "^1.13.5",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "ejs": "^4.0.1",
     "express": "^5.2.1",
-    "firebase": "^12.9.0"
+    "express-handlebars": "^8.0.6",
+    "express-session": "^1.19.0",
+    "firebase": "^12.9.0",
+    "firebase-admin": "^13.6.1",
+    "helmet": "^8.1.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
   },
   "name": "aquaroute-system-web",
   "version": "1.0.0",
   "description": "AquaRoute is an open-source real-time ferry tracking and ETA system that offers map-based visualization of vessel locations, dynamic arrival estimates, status indicators, and weather overlays to empower passengers with centralized, informed decision-making for water transportation.",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -1,0 +1,120 @@
+<%- include('../partials/sidebar', { currentPage: 'ferries' }) %>
+
+<main class="flex-1 flex flex-col min-w-0 relative">
+    
+    <header class="h-16 lg:h-20 bg-white/80 backdrop-blur border-b border-slate-200 flex items-center justify-between px-6 z-10 sticky top-0">
+        <div class="flex items-center gap-4 lg:hidden">
+            <button class="text-slate-500"><iconify-icon icon="solar:hamburger-menu-bold" width="24"></iconify-icon></button>
+            <span class="font-bold text-slate-800">AquaRoute</span>
+        </div>
+        
+        <div>
+            <h2 class="text-lg font-bold text-slate-800">Ferry Management</h2>
+            <p class="text-xs font-medium text-slate-400">Monitor and update vessel statuses</p>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <button class="relative w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors">
+                <iconify-icon icon="solar:bell-bold" width="20"></iconify-icon>
+                <span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="flex-1 overflow-auto p-6 md:p-8">
+        <div class="space-y-6 fade-in">
+            <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                <div class="flex gap-2">
+                     <input type="text" id="ferry-search" onkeyup="filterFerries()" placeholder="Search vessels..." class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-primary shadow-sm w-64">
+                     <button class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-500 hover:text-primary shadow-sm"><iconify-icon icon="solar:filter-bold"></iconify-icon></button>
+                </div>
+                <button onclick="showToast('Add ferry functionality coming soon!', 'info')" class="bg-primary text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md hover:bg-blue-800 transition-colors flex items-center gap-2">
+                    <iconify-icon icon="solar:add-circle-bold" width="18"></iconify-icon>
+                    Add New Ferry
+                </button>
+            </div>
+
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 text-slate-500 uppercase text-xs font-bold tracking-wider">
+                        <tr>
+                            <th class="px-6 py-4">Vessel Name</th>
+                            <th class="px-6 py-4">Route</th>
+                            <th class="px-6 py-4">Current Status</th>
+                            <th class="px-6 py-4">ETA (Mins)</th>
+                            <th class="px-6 py-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50" id="ferries-table-body">
+                        <% ferries.forEach(f => { %>
+                        <tr class="hover:bg-slate-50/50 transition-colors group" data-id="<%= f.id %>">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-primary flex items-center justify-center font-bold">
+                                        <iconify-icon icon="solar:ship-bold-duotone"></iconify-icon>
+                                    </div>
+                                    <span class="font-bold text-slate-700"><%= f.name %></span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-slate-500 font-medium"><%= f.route %></td>
+                            <td class="px-6 py-4 cursor-pointer" onclick="toggleStatus('<%= f.id %>')">
+                                <% if (f.status === 'on_time') { %>
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-600 border border-green-100">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 status-dot"></span> On Time
+                                </span>
+                                <% } else if (f.status === 'delayed') { %>
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span> Delayed
+                                </span>
+                                <% } else { %>
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-100">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Suspended
+                                </span>
+                                <% } %>
+                            </td>
+                            <td class="px-6 py-4 font-mono font-medium text-slate-600"><%= f.eta %> min</td>
+                            <td class="px-6 py-4 text-right">
+                                <button class="text-slate-400 hover:text-primary transition-colors p-2"><iconify-icon icon="solar:pen-bold" width="18"></iconify-icon></button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+                <div class="px-6 py-4 border-t border-slate-50 flex items-center justify-between text-xs font-medium text-slate-400">
+                    <span>Showing all records</span>
+                    <div class="flex gap-2">
+                        <button class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center hover:bg-slate-100">1</button>
+                        <button class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-slate-100">2</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    async function toggleStatus(id) {
+        try {
+            const response = await fetch(`/api/ferries/${id}/toggle-status`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            
+            if (response.ok) {
+                location.reload();
+                showToast('Ferry status updated successfully', 'success');
+            }
+        } catch (error) {
+            showToast('Error updating status', 'error');
+        }
+    }
+
+    function filterFerries() {
+        const input = document.getElementById('ferry-search').value.toLowerCase();
+        const rows = document.getElementById('ferries-table-body').getElementsByTagName('tr');
+        for(let row of rows) {
+            const txt = row.textContent.toLowerCase();
+            row.style.display = txt.includes(input) ? '' : 'none';
+        }
+    }
+</script>
