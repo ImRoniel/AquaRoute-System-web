@@ -2,6 +2,16 @@
 const { db, admin } = require('../config/firebase');
 const { calculatePosition, calculateETA, calculateDistance } = require('../utils/ferryMovement');
 
+if (!db) {
+    try {
+        const firebase = require('../config/firebase');
+        db = firebase.db;
+    } catch (error) {
+        console.log(' Firebase not available, using mock data mode');
+        db = null;
+    }
+}
+
 class Ferry {
     constructor() {
         this.collection = db.collection('ferries');
