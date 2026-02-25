@@ -1,3 +1,4 @@
+// C:\xampp\htdocs\AquaRoute-System-web\models\port.js
 const { db, admin } = require('../config/firebase');
 
 class Port {
@@ -8,11 +9,17 @@ class Port {
     /**
      * Get all ports from Firebase
      */
-    async getAll() {
+    async getPaginated(limit = 20, lastDoc = null) {
         try {
-            const snapshot = await this.collection.get();
+            let query = this.collection.orderBy('name').limit(limit);
+
+            if (lastDoc) {
+                query = query.startAfter(lastDoc);
+            }
+
+            const snapshot = await query.get();
+
             const ports = [];
-            
             snapshot.forEach(doc => {
                 const data = doc.data();
                 ports.push({
@@ -23,16 +30,20 @@ class Port {
                     type: data.type || 'unknown',
                     status: data.status || 'unknown',
                     source: data.source || 'unknown',
-                    createdAt: data.createdAt ? data.createdAt.toDate() : new Date(),
-                    // Keep raw timestamp if needed
-                    createdAtTimestamp: data.createdAt
+                    createdAt: data.createdAt ? data.createdAt.toDate() : null
                 });
             });
-            
-            return ports;
+
+            const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+
+            return {
+                ports,
+                lastVisible
+            };
+
         } catch (error) {
-            console.error('❌ Error getting ports:', error);
-            return [];
+            console.error('Pagination error:', error);
+            return { ports: [], lastVisible: null };
         }
     }
 
