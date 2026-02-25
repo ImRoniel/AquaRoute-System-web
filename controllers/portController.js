@@ -1,20 +1,26 @@
+//C:\xampp\htdocs\AquaRoute-System-web\controllers\portController.js
 const DEBUG = require('../config/debug');
 const Port = require('../models/port');
 
 const portController = {
   getAllPorts: async (req, res) => {
-    const portModel = new Port(req.db);
-    try {
-      const ports = await portModel.getAll();
-      res.render('admin/ports', { 
-        title: 'Port Management - AquaRoute Admin', 
-        user: req.session.user, 
-        ports 
-      });
-    } catch (error) {
-      DEBUG.error('PORTS', 'Error loading ports', error);
-      res.status(500).send('Error loading ports');
-    }
+    const portModel = new Port();
+
+      try { 
+          const limit = 25; // Only load 25
+          const result = await portModel.getPaginated(limit);
+
+          res.render('admin/ports', {
+              title: 'Port Management - AquaRoute Admin',
+              user: req.session.user,
+              ports: result.ports,
+              lastVisible: result.lastVisible ? result.lastVisible.id : null
+          });
+
+      } catch (error) {
+          DEBUG.error('PORTS', 'Error loading ports', error);
+          res.status(500).send('Error loading ports');
+      }
   },
 
   addPort: async (req, res) => {

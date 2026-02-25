@@ -4,7 +4,7 @@ const router = express.Router();
 
 // Import controllers - MAKE SURE THESE PATHS ARE CORRECT
 const authController = require('../controllers/authController');
-const ferryController = require('../controllers/ferryController');  // Fix spelling: ferryContoller.js → ferryController.js
+const ferryController = require('../controllers/ferryController');  
 const portController = require('../controllers/portController');
 
 // Import middleware
@@ -21,9 +21,9 @@ router.get('/', (req, res) => {
 });
 
 // Auth routes
-router.get('/login', authController.showLogin);  // Make sure this function exists
-router.post('/login', authController.processLogin);  // Make sure this function exists
-router.get('/logout', authController.logout);  // Make sure this function exists
+router.get('/login', authController.showLogin); 
+router.post('/login', authController.processLogin);  
+router.get('/logout', authController.logout);  
 
 // ==================== PROTECTED ROUTES ====================
 
