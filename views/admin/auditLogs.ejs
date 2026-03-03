@@ -1,211 +1,377 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %> - AquaRoute</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Iconify -->
-    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #F8FAFC;
-            -webkit-font-smoothing: antialiased;
-        }
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title><%= title %> - AquaRoute</title>
         
-        h1, h2, h3, h4, h5, h6 { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            letter-spacing: -0.025em; 
-        }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
-
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
         
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-    </style>
-</head>
-<body class="h-screen bg-[#F8FAFC] flex overflow-hidden">
-
-    <!-- Sidebar -->
-    <aside class="w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col z-20 shadow-sm">
-        <!-- Brand -->
-        <div class="h-20 flex items-center px-8 border-b border-slate-50">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center">
-                    <iconify-icon icon="solar:wheel-angle-bold" width="18"></iconify-icon>
-                </div>
-                <span class="font-display font-bold text-lg text-slate-800 tracking-tight">AquaRoute</span>
-            </div>
-        </div>
-
-        <!-- Nav -->
-        <nav class="flex-1 px-4 py-6 space-y-1">
-            <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all nav-item">
-                <iconify-icon icon="solar:widget-5-bold-duotone" width="20"></iconify-icon>
-                Dashboard
-            </a>
-            <a href="/admin/ferries" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all nav-item">
-                <iconify-icon icon="solar:ship-bold-duotone" width="20"></iconify-icon>
-                Ferry Management
-            </a>
-            <a href="/admin/ports" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all nav-item">
-                <iconify-icon icon="solar:anchor-circle-bold-duotone" width="20"></iconify-icon>
-                Port Management
-            </a>
-            <a href="/admin/logs" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-primary bg-blue-50 transition-all nav-item">
-                <iconify-icon icon="solar:clipboard-list-bold-duotone" width="20"></iconify-icon>
-                Audit Logs
-            </a>
-            <a href="/admin/users" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-primary bg-blue-50 transition-all nav-item">
-                <iconify-icon icon="solar:clipboard-list-bold-duotone" width="20"></iconify-icon>
-                Users
-            </a>
-        </nav>
-
-        <!-- User -->
-        <div class="p-4 border-t border-slate-100">
-            <div class="flex items-center gap-3 px-4 py-2">
-                <img src="https://ui-avatars.com/api/?name=<%= user.name.replace(' ', '+') %>&background=0A4D8C&color=fff" class="w-9 h-9 rounded-full border-2 border-slate-100">
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-bold text-slate-800 truncate"><%= user.name %></p>
-                    <p class="text-xs text-slate-500 truncate"><%= user.role || 'Super Admin' %></p>
-                </div>
-                <a href="/logout" class="text-slate-400 hover:text-red-500 transition-colors">
-                    <iconify-icon icon="solar:logout-2-bold" width="20"></iconify-icon>
-                </a>
-            </div>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col min-w-0 relative">
+        <!-- Iconify -->
+        <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
         
-        <header class="h-16 lg:h-20 bg-white/80 backdrop-blur border-b border-slate-200 flex items-center justify-between px-6 z-10 sticky top-0">
-            <div class="flex items-center gap-4 lg:hidden">
-                <button class="text-slate-500"><iconify-icon icon="solar:hamburger-menu-bold" width="24"></iconify-icon></button>
-                <span class="font-bold text-slate-800">AquaRoute</span>
-            </div>
-            
-            <div>
-                <h2 class="text-lg font-bold text-slate-800">Audit Logs</h2>
-                <p class="text-xs font-medium text-slate-400">Track all administrative actions</p>
-            </div>
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-            <div class="flex items-center gap-4">
-                <button class="relative w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors">
-                    <iconify-icon icon="solar:bell-bold" width="20"></iconify-icon>
-                    <span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-                </button>
-            </div>
-        </header>
-
-        <div class="flex-1 overflow-auto p-6 md:p-8">
-            <div class="space-y-6 fade-in">
-                <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-                    <div class="px-6 py-4 border-b border-slate-50 flex justify-between items-center">
-                        <h3 class="font-bold text-slate-800">System Activity Logs</h3>
-                        <button onclick="showToast('Clear history functionality coming soon!', 'info')" class="text-xs text-slate-400 hover:text-red-500 font-bold flex items-center gap-1">
-                            <iconify-icon icon="solar:trash-bin-bold"></iconify-icon> Clear History
-                        </button>
-                    </div>
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 text-slate-500 uppercase text-xs font-bold">
-                            <tr>
-                                <th class="px-6 py-4">Admin</th>
-                                <th class="px-6 py-4">Action</th>
-                                <th class="px-6 py-4">Details</th>
-                                <th class="px-6 py-4 text-right">Time</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-50" id="logs-table-body">
-                            <% logs.forEach(log => { %>
-                            <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="px-6 py-4 font-bold text-slate-700 flex items-center gap-2">
-                                     <div class="w-6 h-6 rounded-full bg-slate-200 text-xs flex items-center justify-center">
-                                        <%= log.admin.charAt(0).toUpperCase() %>
-                                     </div>
-                                     <%= log.admin %>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-bold border border-slate-200">
-                                        <%= log.action %>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-slate-500"><%= log.details %></td>
-                                <td class="px-6 py-4 text-right text-xs text-slate-400 font-mono"><%= log.time %></td>
-                            </tr>
-                            <% }) %>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-        <div class="bg-white border-l-4 border-primary rounded-lg shadow-2xl p-4 flex items-center gap-3 w-80">
-            <div id="toast-icon" class="text-primary text-xl">
-                <iconify-icon icon="solar:check-circle-bold"></iconify-icon>
-            </div>
-            <div>
-                <h4 id="toast-title" class="font-bold text-sm text-slate-800">Success</h4>
-                <p id="toast-message" class="text-xs text-slate-500">Operation completed successfully.</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function showToast(msg, type) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-message').innerText = msg;
-            
-            const title = document.getElementById('toast-title');
-            const icon = document.getElementById('toast-icon');
-            const container = toast.children[0];
-            
-            if(type === 'success') {
-                title.innerText = 'Success';
-                container.classList.remove('border-red-500', 'border-orange-500');
-                container.classList.add('border-primary');
-                icon.innerHTML = '<iconify-icon icon="solar:check-circle-bold"></iconify-icon>';
-                icon.className = 'text-primary text-xl';
-            } else if(type === 'error') {
-                title.innerText = 'Error';
-                container.classList.remove('border-primary', 'border-orange-500');
-                container.classList.add('border-red-500');
-                icon.innerHTML = '<iconify-icon icon="solar:danger-circle-bold"></iconify-icon>';
-                icon.className = 'text-red-500 text-xl';
-            } else {
-                title.innerText = 'Info';
-                container.classList.remove('border-primary', 'border-red-500');
-                container.classList.add('border-orange-500');
-                icon.innerHTML = '<iconify-icon icon="solar:info-circle-bold"></iconify-icon>';
-                icon.className = 'text-orange-500 text-xl';
+        <style>
+            body { 
+                font-family: 'Inter', sans-serif; 
+                background-color: #FFD7C4;
+                color: #2D2F31;
             }
 
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-    </script>
-</body> 
-</html>
+            /* Minimal scrollbar */
+            ::-webkit-scrollbar { width: 4px; }
+            ::-webkit-scrollbar-thumb { background: #BD77FF; border-radius: 2px; }
+
+            /* Sidebar */
+            .sidebar {
+                background-color: #FFF4B5;
+                border-right: 1px solid #87A2FF;
+            }
+
+            .nav-item {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.625rem 1rem;
+                border-radius: 8px;
+                font-size: 0.875rem;
+                font-weight: 500;
+                color: #65676B;
+                transition: all 0.15s ease;
+            }
+
+            .nav-item:hover {
+                background-color: #FEC1A0;
+                color: #2D2F31;
+            }
+
+            .nav-item.active {
+                background-color: #87A2FF;
+                color: white;
+            }
+
+            /* User profile */
+            .user-profile {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.75rem;
+                border-top: 1px solid #87A2FF;
+            }
+
+            .user-avatar {
+                width: 2.25rem;
+                height: 2.25rem;
+                border-radius: 9999px;
+                border: 2px solid #99123D;
+            }
+
+            /* Header */
+            .header {
+                background-color: rgba(255, 244, 181, 0.8);
+                backdrop-filter: blur(8px);
+                border-bottom: 1px solid #87A2FF;
+            }
+
+            /* Table */
+            .table-container {
+                background-color: white;
+                border: 1px solid #87A2FF;
+                border-radius: 12px;
+                overflow: hidden;
+            }
+
+            .table-header {
+                background-color: #C4D7FF;
+                padding: 1rem 1.5rem;
+                border-bottom: 1px solid #87A2FF;
+            }
+
+            .table-header h3 {
+                font-weight: 600;
+                color: #2D2F31;
+            }
+
+            .table-row {
+                border-bottom: 1px solid #87A2FF;
+            }
+
+            .table-row td {
+                padding: 1rem 1.5rem;
+                font-size: 0.875rem;
+            }
+
+            .table-row:hover {
+                background-color: #FEC1A020;
+            }
+
+            /* Admin avatar */
+            .admin-avatar {
+                width: 1.75rem;
+                height: 1.75rem;
+                border-radius: 9999px;
+                background-color: #C4D7FF;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #99123D;
+                border: 1px solid #87A2FF;
+            }
+
+            /* Action badge */
+            .action-badge {
+                background-color: #FEC1A0;
+                color: #2D2F31;
+                padding: 0.25rem 0.75rem;
+                border-radius: 30px;
+                font-size: 0.75rem;
+                font-weight: 500;
+                border: 1px solid #99123D;
+                display: inline-block;
+            }
+
+            /* Clear button */
+            .clear-btn {
+                color: #65676B;
+                font-size: 0.75rem;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 0.25rem;
+                padding: 0.375rem 0.75rem;
+                border-radius: 20px;
+                border: 1px solid #87A2FF;
+                transition: all 0.15s ease;
+            }
+
+            .clear-btn:hover {
+                background-color: #99123D;
+                color: white;
+                border-color: #99123D;
+            }
+
+            /* Notification button */
+            .notification-btn {
+                width: 2.5rem;
+                height: 2.5rem;
+                border-radius: 9999px;
+                border: 1px solid #87A2FF;
+                background-color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #65676B;
+                position: relative;
+                transition: all 0.15s ease;
+            }
+
+            .notification-btn:hover {
+                background-color: #FEC1A0;
+            }
+
+            .notification-badge {
+                position: absolute;
+                top: 0.5rem;
+                right: 0.75rem;
+                width: 0.375rem;
+                height: 0.375rem;
+                background-color: #99123D;
+                border-radius: 50%;
+            }
+
+            /* Toast */
+            .toast {
+                background-color: white;
+                border: 1px solid #87A2FF;
+                border-radius: 8px;
+                padding: 0.75rem 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                min-width: 250px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Empty state */
+            .empty-state {
+                padding: 3rem;
+                text-align: center;
+                color: #65676B;
+            }
+        </style>
+    </head>
+    <body class="h-screen flex overflow-hidden">
+
+        <!-- Sidebar -->
+        <aside class="w-64 sidebar hidden lg:flex flex-col">
+            <!-- Brand -->
+            <div class="h-16 flex items-center px-6 border-b border-[#87A2FF]">
+                <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded flex items-center justify-center" style="background-color: #87A2FF;">
+                        <iconify-icon icon="solar:wheel-angle-bold" width="14" style="color: white;"></iconify-icon>
+                    </div>
+                    <span class="font-semibold text-base" style="color: #99123D;">AquaRoute</span>
+                </div>
+            </div>
+
+            <!-- Nav -->
+            <nav class="flex-1 px-3 py-4 space-y-0.5">
+                <a href="/admin/dashboard" class="nav-item">
+                    <iconify-icon icon="solar:widget-5-bold-duotone" width="18"></iconify-icon>
+                    Dashboard
+                </a>
+                <a href="/admin/ferries" class="nav-item">
+                    <iconify-icon icon="solar:ship-bold-duotone" width="18"></iconify-icon>
+                    Ferry Management
+                </a>
+                <a href="/admin/ports" class="nav-item">
+                    <iconify-icon icon="solar:anchor-circle-bold-duotone" width="18"></iconify-icon>
+                    Port Management
+                </a>
+                <a href="/admin/logs" class="nav-item active">
+                    <iconify-icon icon="solar:clipboard-list-bold-duotone" width="18"></iconify-icon>
+                    Audit Logs
+                </a>
+                <a href="/admin/users" class="nav-item">
+                    <iconify-icon icon="solar:users-group-rounded-bold" width="18"></iconify-icon>
+                    Users
+                </a>
+            </nav>
+
+            <!-- User -->
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=<%= user ? user.name.replace(' ', '+') : 'Admin' %>&background=99123D&color=fff" class="user-avatar">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold truncate"><%= user ? user.name : 'Admin User' %></p>
+                    <p class="text-xs" style="color: #65676B;"><%= user ? (user.role || 'Admin') : 'Administrator' %></p>
+                </div>
+                <a href="/logout" style="color: #99123D;">
+                    <iconify-icon icon="solar:logout-2-bold" width="18"></iconify-icon>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col min-w-0">
+            
+            <!-- Header -->
+            <header class="h-16 header flex items-center justify-between px-6">
+                <div class="flex items-center gap-4 lg:hidden">
+                    <button style="color: #87A2FF;"><iconify-icon icon="solar:hamburger-menu-bold" width="20"></iconify-icon></button>
+                    <span class="font-semibold" style="color: #99123D;">AquaRoute</span>
+                </div>
+                
+                <div>
+                    <h1 class="text-lg font-semibold" style="color: #2D2F31;">Audit Logs</h1>
+                    <p class="text-xs" style="color: #65676B;">Track all administrative actions</p>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button class="notification-btn">
+                        <iconify-icon icon="solar:bell-bold" width="18"></iconify-icon>
+                        <span class="notification-badge"></span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="flex-1 overflow-auto p-6">
+                <div class="space-y-5 fade-in">
+                    <!-- Logs Table -->
+                    <div class="table-container">
+                        <div class="table-header flex justify-between items-center">
+                            <h3>System Activity Logs</h3>
+                            <button onclick="showToast('Clear history functionality coming soon!', 'info')" class="clear-btn">
+                                <iconify-icon icon="solar:trash-bin-bold" width="14"></iconify-icon>
+                                Clear History
+                            </button>
+                        </div>
+                        
+                        <% if (logs && logs.length > 0) { %>
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-[#C4D7FF20]">
+                                    <th class="px-6 py-3 text-left text-xs font-semibold" style="color: #65676B;">Admin</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold" style="color: #65676B;">Action</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold" style="color: #65676B;">Details</th>
+                                    <th class="px-6 py-3 text-right text-xs font-semibold" style="color: #65676B;">Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% logs.forEach(log => { %>
+                                <tr class="table-row">
+                                    <td class="px-6 py-3">
+                                        <div class="flex items-center gap-2">
+                                            <div class="admin-avatar">
+                                                <%= log.admin ? log.admin.charAt(0).toUpperCase() : 'A' %>
+                                            </div>
+                                            <span class="font-medium"><%= log.admin || 'System' %></span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-3">
+                                        <span class="action-badge">
+                                            <%= log.action || 'Unknown' %>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-3" style="color: #65676B;"><%= log.details || 'No details' %></td>
+                                    <td class="px-6 py-3 text-right text-xs" style="color: #87A2FF; font-family: monospace;"><%= log.time || 'Just now' %></td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                        <% } else { %>
+                        <div class="empty-state">
+                            <iconify-icon icon="solar:clipboard-list-bold" width="48" style="color: #87A2FF; margin-bottom: 1rem;"></iconify-icon>
+                            <p>No audit logs available</p>
+                            <p class="text-xs mt-1">Actions will appear here as they occur</p>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="fixed bottom-4 right-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+            <div class="toast">
+                <div id="toast-icon" style="color: #62AE7D;">
+                    <iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>
+                </div>
+                <p id="toast-message" class="text-sm" style="color: #2D2F31;">Success</p>
+            </div>
+        </div>
+
+        <script>
+            function showToast(msg, type) {
+                const toast = document.getElementById('toast');
+                const icon = document.getElementById('toast-icon');
+                const message = document.getElementById('toast-message');
+                
+                message.innerText = msg;
+                
+                if(type === 'success') {
+                    icon.innerHTML = '<iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>';
+                    icon.style.color = '#62AE7D';
+                } else if(type === 'error') {
+                    icon.innerHTML = '<iconify-icon icon="solar:danger-circle-bold" width="18"></iconify-icon>';
+                    icon.style.color = '#99123D';
+                } else {
+                    icon.innerHTML = '<iconify-icon icon="solar:info-circle-bold" width="18"></iconify-icon>';
+                    icon.style.color = '#BD77FF';
+                }
+
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                setTimeout(() => {
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                }, 3000);
+            }
+        </script>
+    </body> 
+    </html>

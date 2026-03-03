@@ -9,16 +9,9 @@ class Port {
     /**
      * Get all ports from Firebase
      */
-    async getPaginated(limit = 20, lastDoc = null) {
+    async getAll() {
         try {
-            let query = this.collection.orderBy('name').limit(limit);
-
-            if (lastDoc) {
-                query = query.startAfter(lastDoc);
-            }
-
-            const snapshot = await query.get();
-
+            const snapshot = await this.collection.get();
             const ports = [];
             snapshot.forEach(doc => {
                 const data = doc.data();
@@ -30,20 +23,110 @@ class Port {
                     type: data.type || 'unknown',
                     status: data.status || 'unknown',
                     source: data.source || 'unknown',
+                    location: data.location || '',
                     createdAt: data.createdAt ? data.createdAt.toDate() : null
                 });
             });
+            return ports;
+        } catch (error) {
+            console.error('Error getting all ports:', error);
+            return [];
+        }
+    }
 
-            const lastVisible = snapshot.docs[snapshot.docs.length - 1];
-
+    /**
+     * Get paginated ports
+     */
+    async getPaginated(limit = 20, lastDocId = null) {
+        try {
+            let query = this.collection.orderBy('name').limit(limit);
+            
+            if (lastDocId) {
+                const lastDoc = await this.collection.doc(lastDocId).get();
+                if (lastDoc.exists) {
+                    query = query.startAfter(lastDoc);
+                }
+            }
+            
+            const snapshot = await query.get();
+            
+            const ports = [];
+            let lastVisible = null;
+            
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                ports.push({
+                    id: doc.id,
+                    name: data.name || 'Unknown Port',
+                    lat: data.lat || 0,
+                    lng: data.lng || 0,
+                    type: data.type || 'unknown',
+                    status: data.status || 'unknown',
+                    source: data.source || 'unknown',
+                    location: data.location || '',
+                    weather: data.weather || 'Unknown',
+                    createdAt: data.createdAt ? data.createdAt.toDate() : null
+                });
+                lastVisible = doc;
+            });
+            
             return {
                 ports,
                 lastVisible
             };
-
+            
         } catch (error) {
             console.error('Pagination error:', error);
             return { ports: [], lastVisible: null };
+        }
+    }
+
+    /**
+     * Load more ports (alias for getPaginated with lastDocId)
+     */
+    async loadMore(limit, lastDocId) {
+        return this.getPaginated(limit, lastDocId);
+    }
+
+    /**
+     * Search ports by name (case-insensitive)
+     */
+    async searchByName(query) {
+        try {
+            const searchTerm = query.toLowerCase();
+            
+            // Get all ports (for small to medium datasets)
+            // For large datasets, consider using Algolia or Firebase Extensions
+            const snapshot = await this.collection.get();
+            
+            const ports = [];
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const name = (data.name || '').toLowerCase();
+                const location = (data.location || '').toLowerCase();
+                
+                // Simple client-side filtering
+                if (name.includes(searchTerm) || location.includes(searchTerm)) {
+                    ports.push({
+                        id: doc.id,
+                        name: data.name || 'Unknown Port',
+                        lat: data.lat || 0,
+                        lng: data.lng || 0,
+                        type: data.type || 'unknown',
+                        status: data.status || 'unknown',
+                        source: data.source || 'unknown',
+                        location: data.location || '',
+                        weather: data.weather || 'Unknown',
+                        createdAt: data.createdAt ? data.createdAt.toDate() : null
+                    });
+                }
+            });
+            
+            return ports;
+            
+        } catch (error) {
+            console.error('Error searching ports:', error);
+            throw error;
         }
     }
 
@@ -64,6 +147,8 @@ class Port {
                 type: data.type || 'unknown',
                 status: data.status || 'unknown',
                 source: data.source || 'unknown',
+                location: data.location || '',
+                weather: data.weather || 'Unknown',
                 createdAt: data.createdAt ? data.createdAt.toDate() : new Date(),
                 createdAtTimestamp: data.createdAt
             };
@@ -105,6 +190,36 @@ class Port {
             return await this.getById(id);
         } catch (error) {
             console.error('❌ Error updating port:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Add new port
+     */
+    async add(data) {
+        try {
+            const docRef = await this.collection.add({
+                ...data,
+                createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                updatedAt: admin.firestore.FieldValue.serverTimestamp()
+            });
+            return { id: docRef.id, ...data };
+        } catch (error) {
+            console.error('❌ Error adding port:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Delete port
+     */
+    async delete(id) {
+        try {
+            await this.collection.doc(id).delete();
+            return { id };
+        } catch (error) {
+            console.error('❌ Error deleting port:', error);
             throw error;
         }
     }
@@ -197,10 +312,10 @@ class Port {
      * Format port name for display (remove "FERRY TERMINAL " prefix if needed)
      */
     formatDisplayName(port) {
-        if (port.name.startsWith('FERRY TERMINAL ')) {
+        if (port.name && port.name.startsWith('FERRY TERMINAL ')) {
             return port.name.replace('FERRY TERMINAL ', '');
         }
-        return port.name;
+        return port.name || 'Unknown Port';
     }
 
     /**
@@ -258,5 +373,5 @@ class Port {
     }
 }
 
-// ✅ CRITICAL: Export the class properly
+// ✅ Export the class
 module.exports = Port;

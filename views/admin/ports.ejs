@@ -85,12 +85,20 @@
             border-radius: 30px;
             padding: 0.5rem 1rem 0.5rem 2.5rem;
             font-size: 0.875rem;
-            width: 16rem;
+            width: 20rem;
         }
 
         .search-input:focus {
             outline: none;
             border-color: #BD77FF;
+        }
+
+        .search-loading {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: none;
         }
 
         /* Port Cards */
@@ -229,9 +237,71 @@
             min-width: 250px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(3px);
+        }
+
+        .loading-spinner {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 50%;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #87A2FF;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            color: #65676B;
+            background: white;
+            border: 1px solid #87A2FF;
+            border-radius: 16px;
+            display: none;
+        }
+
+        .initial-ports {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 1.25rem;
+        }
+
+        @media (min-width: 768px) {
+            .initial-ports {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .initial-ports {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
     </style>
 </head>
 <body class="h-screen flex overflow-hidden">
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <svg class="animate-spin h-8 w-8" style="color: #99123D;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+        </div>
+    </div>
 
     <!-- Sidebar -->
     <aside class="w-64 sidebar hidden lg:flex flex-col">
@@ -308,14 +378,28 @@
                 <div class="flex justify-between items-center">
                     <div class="relative">
                         <iconify-icon icon="solar:magnifer-linear" class="absolute left-3 top-1/2 -translate-y-1/2" style="color: #87A2FF; font-size: 0.875rem;"></iconify-icon>
-                        <input type="text" id="port-search" onkeyup="filterPorts()" placeholder="Search ports..." class="search-input">
+                        <input type="text" 
+                               id="port-search" 
+                               onkeyup="debounceSearch()" 
+                               placeholder="Search all ports (e.g., Dagupan, Manila, etc.)..." 
+                               class="search-input"
+                               autocomplete="off">
+                        <div id="searchLoading" class="search-loading">
+                            <svg class="animate-spin h-4 w-4" style="color: #99123D;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="text-sm" style="color: #65676B;">
+                        <span id="resultCount"><%= ports.length %></span> ports loaded
                     </div>
                 </div>
 
-                <!-- Ports Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="ports-grid">
+                <!-- Ports Grid - Initially shows the 25 paginated ports -->
+                <div class="initial-ports" id="ports-grid">
                     <% ports.forEach(p => { %>
-                    <div class="port-card" data-name="<%= p.name.toLowerCase() %>">
+                    <div class="port-card" data-id="<%= p.id %>">
                         <div class="flex justify-between items-start mb-4">
                             <div class="port-icon">
                                 <iconify-icon icon="solar:anchor-bold-duotone" width="20"></iconify-icon>
@@ -357,6 +441,25 @@
                     </div>
                     <% }) %>
                 </div>
+
+                <!-- Search Results Grid (hidden by default, shows when searching) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="search-results-grid" style="display: none;"></div>
+
+                <!-- No Results Message -->
+                <div id="noResults" class="no-results">
+                    <iconify-icon icon="solar:map-point-wave-bold-duotone" width="48" style="color: #87A2FF; margin-bottom: 1rem;"></iconify-icon>
+                    <h3 class="text-lg font-semibold mb-2" style="color: #2D2F31;">No ports found</h3>
+                    <p>Try searching with a different name or location.</p>
+                </div>
+
+                <!-- Load More Button (only shown when not searching) -->
+                <% if (lastVisible) { %>
+                <div class="text-center" id="loadMoreContainer">
+                    <button onclick="loadMorePorts()" class="update-btn px-6 py-2">
+                        Load More Ports
+                    </button>
+                </div>
+                <% } %>
             </div>
         </div>
     </main>
@@ -372,7 +475,240 @@
     </div>
 
     <script>
-        function showToast(msg, type) {
+        // Store the lastVisible for pagination
+        let lastVisibleId = '<%= lastVisible ? lastVisible : "" %>';
+        
+        // Debounce function to prevent too many API calls
+        let searchTimeout;
+        function debounceSearch() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                performSearch();
+            }, 500); // Wait 500ms after user stops typing
+        }
+
+        // Function to render port cards
+        function renderPorts(ports, containerId = 'search-results-grid') {
+            const container = document.getElementById(containerId);
+            const initialGrid = document.getElementById('ports-grid');
+            const searchResultsGrid = document.getElementById('search-results-grid');
+            const noResults = document.getElementById('noResults');
+            const loadMoreContainer = document.getElementById('loadMoreContainer');
+            const resultCount = document.getElementById('resultCount');
+            
+            if (ports.length === 0) {
+                // Hide both grids, show no results
+                initialGrid.style.display = 'none';
+                searchResultsGrid.style.display = 'none';
+                noResults.style.display = 'block';
+                if (loadMoreContainer) loadMoreContainer.style.display = 'none';
+                resultCount.innerText = '0';
+                return;
+            }
+
+            // We're in search mode - hide initial grid, show search results
+            if (containerId === 'search-results-grid') {
+                initialGrid.style.display = 'none';
+                searchResultsGrid.style.display = 'grid';
+                if (loadMoreContainer) loadMoreContainer.style.display = 'none';
+                noResults.style.display = 'none';
+                resultCount.innerText = ports.length;
+            }
+            
+            let html = '';
+            ports.forEach(p => {
+                let statusBadge = '';
+                
+                if (p.status === 'open') {
+                    statusBadge = `
+                        <span class="badge badge-open">
+                            <iconify-icon icon="solar:check-circle-bold" width="12"></iconify-icon>
+                            Open
+                        </span>
+                    `;
+                } else if (p.status === 'limited') {
+                    statusBadge = `
+                        <span class="badge badge-limited">
+                            <iconify-icon icon="solar:danger-triangle-bold" width="12"></iconify-icon>
+                            Limited
+                        </span>
+                    `;
+                } else {
+                    statusBadge = `
+                        <span class="badge badge-closed">
+                            <iconify-icon icon="solar:forbidden-circle-bold" width="12"></iconify-icon>
+                            Closed
+                        </span>
+                    `;
+                }
+
+                html += `
+                    <div class="port-card" data-id="${p.id}">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="port-icon">
+                                <iconify-icon icon="solar:anchor-bold-duotone" width="20"></iconify-icon>
+                            </div>
+                            <button class="menu-btn">
+                                <iconify-icon icon="solar:menu-dots-bold" width="18"></iconify-icon>
+                            </button>
+                        </div>
+                        
+                        <h4 class="font-semibold text-base mb-1" style="color: #2D2F31;">${p.name}</h4>
+                        
+                        <div class="weather-text mb-4">
+                            <iconify-icon icon="solar:cloud-sun-2-bold" width="14"></iconify-icon>
+                            Weather: ${p.weather || 'Unknown'}
+                        </div>
+                        
+                        <div class="flex justify-between items-center pt-3 border-t border-[#87A2FF]">
+                            ${statusBadge}
+                            
+                            <button onclick="togglePortStatus('${p.id}')" class="update-btn">
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Function to perform search
+        async function performSearch() {
+            const searchInput = document.getElementById('port-search');
+            const searchLoading = document.getElementById('searchLoading');
+            const query = searchInput.value.trim();
+            
+            // If search is empty, reload the initial paginated view
+            if (!query) {
+                window.location.reload();
+                return;
+            }
+            
+            // Show loading indicator
+            searchLoading.style.display = 'block';
+            
+            try {
+                const response = await fetch(`/api/ports/search?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                
+                // Render search results
+                renderPorts(data, 'search-results-grid');
+                
+            } catch (error) {
+                console.error('Search error:', error);
+                showToast('Error searching ports', 'error');
+            } finally {
+                // Hide loading indicator
+                searchLoading.style.display = 'none';
+            }
+        }
+
+        // Function to load more ports (pagination)
+        async function loadMorePorts() {
+            if (!lastVisibleId) return;
+            
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.display = 'flex';
+            
+            try {
+                const response = await fetch(`/api/ports/load-more?lastId=${lastVisibleId}`);
+                const data = await response.json();
+                
+                if (data.ports && data.ports.length > 0) {
+                    // Append new ports to the grid
+                    const grid = document.getElementById('ports-grid');
+                    let html = grid.innerHTML;
+                    
+                    data.ports.forEach(p => {
+                        let statusBadge = '';
+                        
+                        if (p.status === 'open') {
+                            statusBadge = `<span class="badge badge-open"><iconify-icon icon="solar:check-circle-bold" width="12"></iconify-icon> Open</span>`;
+                        } else if (p.status === 'limited') {
+                            statusBadge = `<span class="badge badge-limited"><iconify-icon icon="solar:danger-triangle-bold" width="12"></iconify-icon> Limited</span>`;
+                        } else {
+                            statusBadge = `<span class="badge badge-closed"><iconify-icon icon="solar:forbidden-circle-bold" width="12"></iconify-icon> Closed</span>`;
+                        }
+
+                        html += `
+                            <div class="port-card" data-id="${p.id}">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div class="port-icon">
+                                        <iconify-icon icon="solar:anchor-bold-duotone" width="20"></iconify-icon>
+                                    </div>
+                                    <button class="menu-btn">
+                                        <iconify-icon icon="solar:menu-dots-bold" width="18"></iconify-icon>
+                                    </button>
+                                </div>
+                                <h4 class="font-semibold text-base mb-1" style="color: #2D2F31;">${p.name}</h4>
+                                <div class="weather-text mb-4">
+                                    <iconify-icon icon="solar:cloud-sun-2-bold" width="14"></iconify-icon>
+                                    Weather: ${p.weather || 'Unknown'}
+                                </div>
+                                <div class="flex justify-between items-center pt-3 border-t border-[#87A2FF]">
+                                    ${statusBadge}
+                                    <button onclick="togglePortStatus('${p.id}')" class="update-btn">Update</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    grid.innerHTML = html;
+                    
+                    // Update lastVisible for next load
+                    if (data.lastVisible) {
+                        lastVisibleId = data.lastVisible.id;
+                    } else {
+                        // No more ports to load
+                        document.getElementById('loadMoreContainer').style.display = 'none';
+                    }
+                    
+                    // Update result count
+                    document.getElementById('resultCount').innerText = 
+                        parseInt(document.getElementById('resultCount').innerText) + data.ports.length;
+                }
+            } catch (error) {
+                console.error('Error loading more ports:', error);
+                showToast('Error loading more ports', 'error');
+            } finally {
+                loadingOverlay.style.display = 'none';
+            }
+        }
+
+        // Function to toggle port status
+        async function togglePortStatus(id) {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.display = 'flex';
+            
+            try {
+                const response = await fetch(`/api/ports/${id}/toggle-status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (response.ok) {
+                    // Check if we're in search mode or normal mode
+                    const searchInput = document.getElementById('port-search').value.trim();
+                    if (searchInput) {
+                        await performSearch(); // Refresh search results
+                    } else {
+                        window.location.reload(); // Refresh normal view
+                    }
+                    showToast('Port status updated', 'success');
+                } else {
+                    showToast('Error updating port status', 'error');
+                }
+            } catch (error) {
+                showToast('Error updating port status', 'error');
+            } finally {
+                loadingOverlay.style.display = 'none';
+            }
+        }
+
+        // Toast notification function
+        function showToast(msg, type = 'success') {
             const toast = document.getElementById('toast');
             const icon = document.getElementById('toast-icon');
             const message = document.getElementById('toast-message');
@@ -396,30 +732,17 @@
             }, 3000);
         }
 
-        async function togglePortStatus(id) {
-            try {
-                const response = await fetch(`/api/ports/${id}/toggle-status`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                
-                if (response.ok) {
-                    location.reload();
-                    showToast('Port status updated', 'success');
-                }
-            } catch (error) {
-                showToast('Error updating port status', 'error');
+        // Clear search when clicking outside
+        document.addEventListener('click', function(e) {
+            const searchInput = document.getElementById('port-search');
+            const searchResults = document.getElementById('search-results-grid');
+            const initialGrid = document.getElementById('ports-grid');
+            
+            // If clicking outside search and search is empty, reload normal view
+            if (!searchInput.contains(e.target) && searchInput.value.trim() === '' && searchResults.style.display === 'grid') {
+                window.location.reload();
             }
-        }
-
-        function filterPorts() {
-            const input = document.getElementById('port-search').value.toLowerCase();
-            const cards = document.querySelectorAll('[data-name]');
-            cards.forEach(card => {
-                const name = card.getAttribute('data-name');
-                card.style.display = name.includes(input) ? '' : 'none';
-            });
-        }
+        });
     </script>
 </body>
 </html>
