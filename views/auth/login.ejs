@@ -14,16 +14,16 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         body { 
-            font-family: 'Quicksand', sans-serif; 
+            font-family: 'Inter', sans-serif; 
             background-color: #FFD7C4;
         }
         
         h1, h2, h3, h4, h5, h6 { 
-            font-family: 'Rubik', sans-serif; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
         }
         
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
@@ -38,31 +38,74 @@
             animation: spin 1s linear infinite;
         }
 
-        /* Custom focus styles */
-        .input-focus:focus {
-            border-color: #87A2FF;
-            box-shadow: 0 0 0 4px rgba(135, 162, 255, 0.1);
+        /* Form styles matching image.png */
+        .form-container {
+            background-color: #FFF4B5;
+            border: 2px solid #87A2FF;
+            border-radius: 32px;
+            box-shadow: 0 10px 0 #87A2FF;
         }
 
-        /* Button hover effect */
+        .input-field {
+            background-color: #C4D7FF;
+            border: 2px solid #87A2FF;
+            border-radius: 20px;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            width: 100%;
+            font-size: 0.95rem;
+            color: #2D2F31;
+            transition: all 0.2s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #BD77FF;
+            box-shadow: 0 0 0 3px rgba(189, 119, 255, 0.2);
+        }
+
+        .input-field::placeholder {
+            color: #65676B;
+            opacity: 0.7;
+        }
+
+        .input-label {
+            color: #65676B;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-left: 0.5rem;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+
         .login-button {
             background-color: #87A2FF;
             color: white;
             font-weight: 700;
-            padding: 1rem 0;
-            border-radius: 1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 15px -3px rgba(135, 162, 255, 0.3);
+            padding: 1rem;
+            border-radius: 20px;
+            width: 100%;
+            border: 2px solid #87A2FF;
+            transition: all 0.2s ease;
+            font-size: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            width: 100%;
+            box-shadow: 0 5px 0 #65676B;
         }
 
         .login-button:hover:not(:disabled) {
-            background-color: #99123D;
-            transform: scale(0.95);
+            background-color: #BD77FF;
+            border-color: #BD77FF;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #65676B;
+        }
+
+        .login-button:active:not(:disabled) {
+            transform: translateY(5px);
+            box-shadow: 0 2px 0 #65676B;
         }
 
         .login-button:disabled {
@@ -70,141 +113,216 @@
             cursor: not-allowed;
         }
 
-        /* Demo credentials clickable */
         .demo-credentials {
             background-color: #FFF4B5;
-            border: 1px solid #87A2FF;
-            color: #65676B;
-            padding: 0.25rem 0.75rem;
-            border-radius: 0.5rem;
+            border: 2px solid #87A2FF;
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
             font-size: 0.75rem;
+            color: #65676B;
             display: inline-block;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 0 #87A2FF;
         }
 
         .demo-credentials:hover {
             background-color: #FEC1A0;
-            border-color: #99123D;
+            border-color: #BD77FF;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 0 #87A2FF;
         }
 
         .demo-credentials span {
             color: #2D2F31;
             font-weight: 700;
-            font-family: monospace;
         }
 
-        /* Back button */
         .back-button {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             color: #65676B;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 0.875rem;
-            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            background-color: #FFF4B5;
+            border: 2px solid #87A2FF;
+            border-radius: 30px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 0 #87A2FF;
         }
 
         .back-button:hover {
-            color: #99123D;
+            background-color: #FEC1A0;
+            border-color: #BD77FF;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #87A2FF;
+            color: #2D2F31;
         }
 
-        /* Forgot password link */
         .forgot-link {
             color: #87A2FF;
             font-weight: 600;
-            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            transition: all 0.2s ease;
         }
 
         .forgot-link:hover {
             color: #99123D;
         }
 
-        /* Remember me checkbox */
         .remember-checkbox {
-            width: 1rem;
-            height: 1rem;
-            border-radius: 0.25rem;
-            border-color: #87A2FF;
-            color: #87A2FF;
+            width: 1.125rem;
+            height: 1.125rem;
+            border: 2px solid #87A2FF;
+            border-radius: 6px;
+            background-color: #C4D7FF;
+            cursor: pointer;
+            accent-color: #BD77FF;
         }
 
-        .remember-checkbox:focus {
-            ring-color: #BD77FF;
+        .remember-label {
+            color: #65676B;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
         }
 
-        /* Error message */
         .error-message {
             background-color: #FEC1A0;
-            border: 1px solid #99123D;
-            color: #99123D;
+            border: 2px solid #99123D;
+            border-radius: 16px;
             padding: 0.75rem;
-            border-radius: 0.75rem;
-            font-size: 0.75rem;
+            color: #99123D;
             font-weight: 600;
+            font-size: 0.75rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
+
+        .icon-container {
+            background-color: #C4D7FF;
+            border: 2px solid #87A2FF;
+            border-radius: 16px;
+            width: 3.5rem;
+            height: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        .icon-container iconify-icon {
+            color: #99123D;
+            font-size: 2rem;
+        }
+
+        /* Decorative shapes */
+        .shape-circle {
+            background-color: #99123D;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            position: absolute;
+            opacity: 0.1;
+        }
+
+        .shape-square {
+            background-color: #FEC1A0;
+            width: 150px;
+            height: 150px;
+            border-radius: 30px;
+            position: absolute;
+            opacity: 0.15;
+            transform: rotate(15deg);
+        }
+
+        .shape-triangle {
+            width: 0;
+            height: 0;
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-bottom: 173px solid #62AE7D;
+            position: absolute;
+            opacity: 0.1;
+        }
+
+        .shape-star {
+            color: #BD77FF;
+            font-size: 150px;
+            position: absolute;
+            opacity: 0.1;
+        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6 relative overflow-hidden" style="background-color: #FFD7C4;">
+<body class="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
     
+    <!-- Decorative shapes from image.png -->
+    <div class="shape-circle" style="top: 10%; right: 5%;"></div>
+    <div class="shape-square" style="bottom: 10%; left: 5%;"></div>
+    <div class="shape-triangle" style="top: 20%; left: 10%; transform: rotate(45deg);"></div>
+    <div class="shape-star" style="bottom: 20%; right: 10%;">★</div>
+
     <a href="/" class="absolute top-8 left-8 back-button">
-        <iconify-icon icon="solar:arrow-left-linear" width="20"></iconify-icon>
+        <iconify-icon icon="solar:arrow-left-linear" width="18"></iconify-icon>
         Back to Home
     </a>
 
-    <!-- Decorative Background - updated with palette colors -->
-    <div class="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full blur-3xl" style="background-color: #BD77FF; opacity: 0.2;"></div>
-    <div class="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full blur-3xl" style="background-color: #62AE7D; opacity: 0.2;"></div>
+    <!-- Decorative Background - using palette colors -->
+    <div class="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full blur-3xl" style="background-color: #BD77FF; opacity: 0.1;"></div>
+    <div class="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full blur-3xl" style="background-color: #62AE7D; opacity: 0.1;"></div>
 
-    <div class="w-full max-w-md rounded-[32px] shadow-2xl p-8 md:p-10 relative z-10 border fade-in" style="background-color: #FFF4B5; border-color: #87A2FF;">
-        <div class="text-center mb-10">
-            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-6" style="background-color: #C4D7FF; color: #99123D;">
-                <iconify-icon icon="solar:lock-keyhole-minimalistic-bold-duotone" width="32"></iconify-icon>
+    <div class="w-full max-w-md form-container p-8 md:p-10 relative z-10 fade-in">
+        <div class="text-center mb-8">
+            <div class="icon-container">
+                <iconify-icon icon="solar:lock-keyhole-minimalistic-bold-duotone"></iconify-icon>
             </div>
             <h2 class="text-2xl font-display font-bold" style="color: #2D2F31;">Admin Login</h2>
-            <p class="text-sm mt-2" style="color: #65676B;">Welcome back! Please enter your credentials.</p>
+            <p class="text-sm mt-1" style="color: #65676B;">Welcome back! Please enter your credentials.</p>
         </div>
 
-        <!-- Login Form with Protection -->
+        <!-- Login Form -->
         <form action="/login" method="POST" class="space-y-5" id="loginForm">
             <!-- Username -->
-            <div class="space-y-1.5">
-                <label class="text-xs font-bold uppercase tracking-wide ml-1" style="color: #65676B;">Username</label>
-                <div class="relative group">
-                    <iconify-icon icon="solar:user-bold" class="absolute left-4 top-1/2 -translate-y-1/2 transition-colors" style="color: #87A2FF;"></iconify-icon>
+            <div>
+                <label class="input-label">Username</label>
+                <div class="relative">
+                    <iconify-icon icon="solar:user-bold" class="absolute left-4 top-1/2 -translate-y-1/2" style="color: #87A2FF; font-size: 1.25rem;"></iconify-icon>
                     <input type="text" 
                            name="username"  
                            id="username"
                            value="admin"
-                           class="w-full border rounded-2xl py-3.5 pl-12 pr-4 text-sm font-medium focus:outline-none transition-all placeholder:opacity-50 input-focus"
-                           style="background-color: #C4D7FF; border-color: #87A2FF; color: #2D2F31;"
+                           class="input-field pl-12" 
                            placeholder="Enter username"
                            required>
                 </div>
             </div>
 
             <!-- Password -->
-            <div class="space-y-1.5">
-                <label class="text-xs font-bold uppercase tracking-wide ml-1" style="color: #65676B;">Password</label>
-                <div class="relative group">
-                    <iconify-icon icon="solar:lock-password-bold" class="absolute left-4 top-1/2 -translate-y-1/2 transition-colors" style="color: #87A2FF;"></iconify-icon>
+            <div>
+                <label class="input-label">Password</label>
+                <div class="relative">
+                    <iconify-icon icon="solar:lock-password-bold" class="absolute left-4 top-1/2 -translate-y-1/2" style="color: #87A2FF; font-size: 1.25rem;"></iconify-icon>
                     <input type="password" 
                            name="password" 
                            id="password"
                            value="admin123"
-                           class="w-full border rounded-2xl py-3.5 pl-12 pr-4 text-sm font-medium focus:outline-none transition-all placeholder:opacity-50 input-focus"
-                           style="background-color: #C4D7FF; border-color: #87A2FF; color: #2D2F31;"
+                           class="input-field pl-12" 
                            placeholder="••••••••"
                            required>
                 </div>
             </div>
             
-            <!-- Remember Me -->
-            <div class="flex items-center justify-between text-sm">
-                <label class="flex items-center gap-2 cursor-pointer font-medium" style="color: #65676B;">
+            <!-- Remember Me and Forgot Password -->
+            <div class="flex items-center justify-between">
+                <label class="remember-label">
                     <input type="checkbox" name="remember" class="remember-checkbox">
                     Remember me
                 </label>
@@ -214,56 +332,52 @@
             <!-- Error Message -->
             <% if (error) { %>
             <div class="error-message">
-                <iconify-icon icon="solar:danger-circle-bold" style="color: #99123D;"></iconify-icon>
+                <iconify-icon icon="solar:danger-circle-bold"></iconify-icon>
                 <%= error %>
             </div>
             <% } %>
             
-            <!-- Submit Button with Loading State -->
+            <!-- Submit Button -->
             <button type="submit" 
                     id="loginButton"
                     class="login-button">
-                
-                <!-- Normal state -->
                 <span id="buttonText">Login to Dashboard</span>
-                
-                <!-- Loading state (hidden by default) -->
                 <span id="buttonSpinner" class="hidden">
                     <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                 </span>
-                
-                <!-- Icon -->
-                <iconify-icon id="buttonIcon" icon="solar:arrow-right-linear" stroke-width="2.5"></iconify-icon>
+                <iconify-icon id="buttonIcon" icon="solar:arrow-right-linear" width="18"></iconify-icon>
             </button>
+
+            <!-- "I'm already a member" link - matching image.png -->
+            <div class="text-center mt-4">
+                <a href="#" class="text-sm font-semibold hover:underline" style="color: #000000;">I'm already a member</a>
+            </div>
         </form>
 
         <!-- Demo Credentials -->
-        <div class="mt-8 pt-6 border-t text-center" style="border-color: #87A2FF;">
+        <div class="mt-6 text-center">
             <p class="demo-credentials">
                 Demo credentials: <span>admin</span> / <span>admin123</span>
             </p>
         </div>
     </div>
 
-    <!-- JavaScript to prevent multiple submissions (unchanged functionality) -->
+    <!-- JavaScript (unchanged functionality) -->
     <script>
         (function() {
             'use strict';
             
-            // Get form elements
             const loginForm = document.getElementById('loginForm');
             const loginButton = document.getElementById('loginButton');
             const buttonText = document.getElementById('buttonText');
             const buttonSpinner = document.getElementById('buttonSpinner');
             const buttonIcon = document.getElementById('buttonIcon');
             
-            // Flag to track if form is submitting
             let isSubmitting = false;
             
-            // Function to show loading state
             function setLoadingState(isLoading) {
                 if (isLoading) {
                     loginButton.disabled = true;
@@ -278,18 +392,12 @@
                 }
             }
             
-            // Handle form submission
             loginForm.addEventListener('submit', function(e) {
-                console.log('Form submission triggered');
-                
-                // Prevent multiple submissions
                 if (isSubmitting) {
-                    console.log('Form already submitting, preventing duplicate');
                     e.preventDefault();
                     return false;
                 }
                 
-                // Validate form
                 const username = document.getElementById('username').value.trim();
                 const password = document.getElementById('password').value.trim();
                 
@@ -299,34 +407,19 @@
                     return false;
                 }
                 
-                // Set submitting flag
                 isSubmitting = true;
-                
-                // Show loading state
                 setLoadingState(true);
                 
-                // Allow form to submit normally
                 return true;
             });
             
-            // Also prevent double-click on the button itself
             loginButton.addEventListener('click', function(e) {
                 if (isSubmitting) {
-                    console.log('Button already clicked, preventing double-click');
                     e.preventDefault();
                     return false;
                 }
             });
             
-            // Handle page navigation warnings
-            window.addEventListener('beforeunload', function(e) {
-                if (isSubmitting) {
-                    // Don't show warning, let it submit
-                    return undefined;
-                }
-            });
-            
-            // Reset submitting flag if page is restored from bfcache
             window.addEventListener('pageshow', function(e) {
                 if (e.persisted) {
                     isSubmitting = false;
@@ -334,13 +427,10 @@
                 }
             });
             
-            // Auto-fill demo credentials when clicking on the demo text
             document.querySelector('.demo-credentials').addEventListener('click', function() {
                 document.getElementById('username').value = 'admin';
                 document.getElementById('password').value = 'admin123';
             });
-            
-            console.log('Login form protection initialized');
         })();
     </script>
 </body>

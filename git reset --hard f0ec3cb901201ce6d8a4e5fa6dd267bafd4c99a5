@@ -1,0 +1,10 @@
+[33mba62d31[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: commit: modified the coloring of my landing page and authentication.
+[33mf0ec3cb[m HEAD@{1}: commit: change the logo in the landing page
+[33m4046934[m HEAD@{2}: commit: feat: change the getAll function in ports model to minimize to 25 ports only
+[33m1227825[m HEAD@{3}: pull --tags origin main: Merge made by the 'ort' strategy.
+[33m1461589[m HEAD@{4}: commit: feat: tranform the code to php approach to express bootstrap approach.
+[33mec7cf53[m HEAD@{5}: reset: moving to ec7cf53fb7ff1b35ef92122f6cda1377620c8f56
+[33ma337166[m HEAD@{6}: reset: moving to a337166
+[33m0829105[m HEAD@{7}: commit: Add proper Node.js/Express structure without secrets
+[33mec7cf53[m HEAD@{8}: reset: moving to ec7cf53
+[33me07b80d[m HEAD@{9}: commit: cleaning comments
