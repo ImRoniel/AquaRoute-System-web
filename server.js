@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const { initializeDatabase } = require('./config/database');
 const webRoutes = require('./routes/web');
+const { exp } = require('firebase/firestore/pipelines');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,7 +33,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // ================= Database Bootstrap =================
 (async () => {
-  try {
+  try { 
     const db = await initializeDatabase();
 
     // Make db globally accessible to controllers
