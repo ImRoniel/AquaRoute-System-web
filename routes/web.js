@@ -1,8 +1,7 @@
-//C:\xampp\htdocs\AquaRoute-System-web\routes\web.js
 const express = require('express');
 const router = express.Router();
 
-// Import controllers - MAKE SURE THESE PATHS ARE CORRECT
+// Import controllers
 const authController = require('../controllers/authController');
 const ferryController = require('../controllers/ferryController');  
 const portController = require('../controllers/portController');
@@ -25,7 +24,7 @@ router.get('/login', authController.showLogin);
 router.post('/login', authController.processLogin);  
 router.get('/logout', authController.logout);  
 
-// ==================== PROTECTED ROUTES ====================
+// ==================== PROTECTED ROUTES (HTML pages) ====================
 
 // Dashboard
 router.get('/admin/dashboard', isAuthenticated, ferryController.getDashboard);
@@ -36,7 +35,7 @@ router.post('/admin/ferries/add', isAuthenticated, ferryController.addFerry);
 router.post('/admin/ferries/:id/update', isAuthenticated, ferryController.updateFerry);
 router.post('/admin/ferries/:id/delete', isAuthenticated, ferryController.deleteFerry);
 
-// Ports management
+// Ports management (HTML pages)
 router.get('/admin/ports', isAuthenticated, portController.getAllPorts);
 router.post('/admin/ports/add', isAuthenticated, portController.addPort);
 router.post('/admin/ports/:id/update', isAuthenticated, portController.updatePort);
@@ -44,5 +43,16 @@ router.post('/admin/ports/:id/delete', isAuthenticated, portController.deletePor
 
 // Logs
 router.get('/admin/logs', isAuthenticated, ferryController.getLogs);
+
+// ==================== API ROUTES (JSON responses) ====================
+
+// Ports API
+router.get('/api/ports/search', isAuthenticated, portController.searchPorts);
+router.get('/api/ports/load-more', isAuthenticated, portController.loadMorePorts);
+router.post('/api/ports/:id/toggle-status', isAuthenticated, portController.togglePortStatus);
+
+// Ferries API (if needed)
+// router.get('/api/ferries', isAuthenticated, ferryController.getAllFerriesApi);
+// router.post('/api/ferries/:id/toggle-status', isAuthenticated, ferryController.toggleFerryStatus);
 
 module.exports = router;
