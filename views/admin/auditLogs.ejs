@@ -1,377 +1,751 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title><%= title %> - AquaRoute</title>
-        
-        <!-- Tailwind CSS -->
-        <script src="https://cdn.tailwindcss.com"></script>
-        
-        <!-- Iconify -->
-        <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-        
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- C:\xampp\htdocs\AquaRoute-System-web\views\admin\auditLogs.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Audit Logs' %> - AquaRoute</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Iconify -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-        <style>
-            body { 
-                font-family: 'Inter', sans-serif; 
-                background-color: #FFD7C4;
-                color: #2D2F31;
-            }
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FFD7C4;
+            color: #2D2F31;
+        }
 
-            /* Minimal scrollbar */
-            ::-webkit-scrollbar { width: 4px; }
-            ::-webkit-scrollbar-thumb { background: #BD77FF; border-radius: 2px; }
+        /* Minimal scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #BD77FF; border-radius: 2px; }
 
-            /* Sidebar */
-            .sidebar {
-                background-color: #FFF4B5;
-                border-right: 1px solid #87A2FF;
-            }
+        /* Sidebar */
+        .sidebar {
+            background-color: #FFF4B5;
+            border-right: 1px solid #87A2FF;
+        }
 
-            .nav-item {
-                display: flex;
-                align-items: center;
-                gap: 0.75rem;
-                padding: 0.625rem 1rem;
-                border-radius: 8px;
-                font-size: 0.875rem;
-                font-weight: 500;
-                color: #65676B;
-                transition: all 0.15s ease;
-            }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #65676B;
+            transition: all 0.15s ease;
+        }
 
-            .nav-item:hover {
-                background-color: #FEC1A0;
-                color: #2D2F31;
-            }
+        .nav-item:hover {
+            background-color: #FEC1A0;
+            color: #2D2F31;
+        }
 
-            .nav-item.active {
-                background-color: #87A2FF;
-                color: white;
-            }
+        .nav-item.active {
+            background-color: #87A2FF;
+            color: white;
+        }
 
-            /* User profile */
-            .user-profile {
-                display: flex;
-                align-items: center;
-                gap: 0.75rem;
-                padding: 0.75rem;
-                border-top: 1px solid #87A2FF;
-            }
+        /* User profile */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-top: 1px solid #87A2FF;
+        }
 
-            .user-avatar {
-                width: 2.25rem;
-                height: 2.25rem;
-                border-radius: 9999px;
-                border: 2px solid #99123D;
-            }
+        .user-avatar {
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 9999px;
+            border: 2px solid #99123D;
+        }
 
-            /* Header */
-            .header {
-                background-color: rgba(255, 244, 181, 0.8);
-                backdrop-filter: blur(8px);
-                border-bottom: 1px solid #87A2FF;
-            }
+        /* Header */
+        .header {
+            background-color: rgba(255, 244, 181, 0.8);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #87A2FF;
+        }
 
-            /* Table */
-            .table-container {
-                background-color: white;
-                border: 1px solid #87A2FF;
-                border-radius: 12px;
-                overflow: hidden;
-            }
+        /* Filter tabs */
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid #87A2FF;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
 
-            .table-header {
-                background-color: #C4D7FF;
-                padding: 1rem 1.5rem;
-                border-bottom: 1px solid #87A2FF;
-            }
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #65676B;
+            background-color: white;
+            border: 1px solid #87A2FF;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
 
-            .table-header h3 {
-                font-weight: 600;
-                color: #2D2F31;
-            }
+        .filter-tab:hover {
+            background-color: #FEC1A0;
+        }
 
-            .table-row {
-                border-bottom: 1px solid #87A2FF;
-            }
+        .filter-tab.active {
+            background-color: #87A2FF;
+            color: white;
+            border-color: #87A2FF;
+        }
 
-            .table-row td {
-                padding: 1rem 1.5rem;
-                font-size: 0.875rem;
-            }
+        /* Table */
+        .table-container {
+            background-color: white;
+            border: 1px solid #87A2FF;
+            border-radius: 12px;
+            overflow: hidden;
+        }
 
-            .table-row:hover {
-                background-color: #FEC1A020;
-            }
+        .table-header {
+            background-color: #C4D7FF;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #87A2FF;
+        }
 
-            /* Admin avatar */
-            .admin-avatar {
-                width: 1.75rem;
-                height: 1.75rem;
-                border-radius: 9999px;
-                background-color: #C4D7FF;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 0.75rem;
-                font-weight: 600;
-                color: #99123D;
-                border: 1px solid #87A2FF;
-            }
+        .table-header h3 {
+            font-weight: 600;
+            color: #2D2F31;
+        }
 
-            /* Action badge */
-            .action-badge {
-                background-color: #FEC1A0;
-                color: #2D2F31;
-                padding: 0.25rem 0.75rem;
-                border-radius: 30px;
-                font-size: 0.75rem;
-                font-weight: 500;
-                border: 1px solid #99123D;
-                display: inline-block;
-            }
+        .table-row {
+            border-bottom: 1px solid #87A2FF;
+        }
 
-            /* Clear button */
-            .clear-btn {
-                color: #65676B;
-                font-size: 0.75rem;
-                font-weight: 600;
-                display: flex;
-                align-items: center;
-                gap: 0.25rem;
-                padding: 0.375rem 0.75rem;
-                border-radius: 20px;
-                border: 1px solid #87A2FF;
-                transition: all 0.15s ease;
-            }
+        .table-row td {
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+        }
 
-            .clear-btn:hover {
-                background-color: #99123D;
-                color: white;
-                border-color: #99123D;
-            }
+        .table-row:hover {
+            background-color: #FEC1A020;
+        }
 
-            /* Notification button */
-            .notification-btn {
-                width: 2.5rem;
-                height: 2.5rem;
-                border-radius: 9999px;
-                border: 1px solid #87A2FF;
-                background-color: white;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #65676B;
-                position: relative;
-                transition: all 0.15s ease;
-            }
+        /* Admin avatar */
+        .admin-avatar {
+            width: 1.75rem;
+            height: 1.75rem;
+            border-radius: 9999px;
+            background-color: #C4D7FF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #99123D;
+            border: 1px solid #87A2FF;
+        }
 
-            .notification-btn:hover {
-                background-color: #FEC1A0;
-            }
+        /* Action badges - color coded by type */
+        .action-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+            white-space: nowrap;
+        }
 
-            .notification-badge {
-                position: absolute;
-                top: 0.5rem;
-                right: 0.75rem;
-                width: 0.375rem;
-                height: 0.375rem;
-                background-color: #99123D;
-                border-radius: 50%;
-            }
+        .action-status {
+            background-color: #FEC1A0;
+            color: #2D2F31;
+            border: 1px solid #99123D;
+        }
 
-            /* Toast */
-            .toast {
-                background-color: white;
-                border: 1px solid #87A2FF;
-                border-radius: 8px;
-                padding: 0.75rem 1rem;
-                display: flex;
-                align-items: center;
-                gap: 0.75rem;
-                min-width: 250px;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            }
+        .action-cargo {
+            background-color: #BD77FF;
+            color: white;
+            border: 1px solid #99123D;
+        }
 
-            /* Empty state */
-            .empty-state {
-                padding: 3rem;
-                text-align: center;
-                color: #65676B;
-            }
-        </style>
-    </head>
-    <body class="h-screen flex overflow-hidden">
+        .action-ferry {
+            background-color: #62AE7D;
+            color: white;
+            border: 1px solid #2D2F31;
+        }
 
-        <!-- Sidebar -->
-        <aside class="w-64 sidebar hidden lg:flex flex-col">
-            <!-- Brand -->
-            <div class="h-16 flex items-center px-6 border-b border-[#87A2FF]">
-                <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 rounded flex items-center justify-center" style="background-color: #87A2FF;">
-                        <iconify-icon icon="solar:wheel-angle-bold" width="14" style="color: white;"></iconify-icon>
-                    </div>
-                    <span class="font-semibold text-base" style="color: #99123D;">AquaRoute</span>
+        .action-route {
+            background-color: #87A2FF;
+            color: white;
+            border: 1px solid #2D2F31;
+        }
+
+        .action-system {
+            background-color: #65676B;
+            color: white;
+            border: 1px solid #2D2F31;
+        }
+
+        /* Search bar */
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: white;
+            border: 1px solid #87A2FF;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            flex: 1;
+        }
+
+        .search-container input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 0.875rem;
+            background: transparent;
+        }
+
+        /* Clear button */
+        .clear-btn {
+            color: #65676B;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 20px;
+            border: 1px solid #87A2FF;
+            transition: all 0.15s ease;
+        }
+
+        .clear-btn:hover {
+            background-color: #99123D;
+            color: white;
+            border-color: #99123D;
+        }
+
+        /* Export button */
+        .export-btn {
+            background-color: white;
+            color: #65676B;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 20px;
+            border: 1px solid #87A2FF;
+            transition: all 0.15s ease;
+        }
+
+        .export-btn:hover {
+            background-color: #62AE7D;
+            color: white;
+            border-color: #62AE7D;
+        }
+
+        /* Notification button */
+        .notification-btn {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 9999px;
+            border: 1px solid #87A2FF;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #65676B;
+            position: relative;
+            transition: all 0.15s ease;
+        }
+
+        .notification-btn:hover {
+            background-color: #FEC1A0;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.75rem;
+            width: 0.375rem;
+            height: 0.375rem;
+            background-color: #99123D;
+            border-radius: 50%;
+        }
+
+        /* Toast */
+        .toast {
+            background-color: white;
+            border: 1px solid #87A2FF;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 250px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Empty state */
+        .empty-state {
+            padding: 3rem;
+            text-align: center;
+            color: #65676B;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #87A2FF;
+        }
+
+        .page-btn {
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            border: 1px solid #87A2FF;
+            background-color: white;
+            color: #65676B;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background-color: #FEC1A0;
+        }
+
+        .page-btn.active {
+            background-color: #87A2FF;
+            color: white;
+            border-color: #87A2FF;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Details tooltip */
+        .details-cell {
+            max-width: 300px;
+            position: relative;
+        }
+
+        .details-content {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: help;
+        }
+
+        .details-content:hover::after {
+            content: attr(data-full);
+            position: absolute;
+            left: 0;
+            top: 100%;
+            background-color: #2D2F31;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            z-index: 10;
+            white-space: normal;
+            max-width: 300px;
+            border: 1px solid #87A2FF;
+        }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-64 sidebar hidden lg:flex flex-col">
+        <!-- Brand -->
+        <div class="h-16 flex items-center px-6 border-b border-[#87A2FF]">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded flex items-center justify-center" style="background-color: #87A2FF;">
+                    <iconify-icon icon="solar:wheel-angle-bold" width="14" style="color: white;"></iconify-icon>
                 </div>
-            </div>
-
-            <!-- Nav -->
-            <nav class="flex-1 px-3 py-4 space-y-0.5">
-                <a href="/admin/dashboard" class="nav-item">
-                    <iconify-icon icon="solar:widget-5-bold-duotone" width="18"></iconify-icon>
-                    Dashboard
-                </a>
-                <a href="/admin/ferries" class="nav-item">
-                    <iconify-icon icon="solar:ship-bold-duotone" width="18"></iconify-icon>
-                    Ferry Management
-                </a>
-                <a href="/admin/ports" class="nav-item">
-                    <iconify-icon icon="solar:anchor-circle-bold-duotone" width="18"></iconify-icon>
-                    Port Management
-                </a>
-                <a href="/admin/logs" class="nav-item active">
-                    <iconify-icon icon="solar:clipboard-list-bold-duotone" width="18"></iconify-icon>
-                    Audit Logs
-                </a>
-                <a href="/admin/users" class="nav-item">
-                    <iconify-icon icon="solar:users-group-rounded-bold" width="18"></iconify-icon>
-                    Users
-                </a>
-            </nav>
-
-            <!-- User -->
-            <div class="user-profile">
-                <img src="https://ui-avatars.com/api/?name=<%= user ? user.name.replace(' ', '+') : 'Admin' %>&background=99123D&color=fff" class="user-avatar">
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold truncate"><%= user ? user.name : 'Admin User' %></p>
-                    <p class="text-xs" style="color: #65676B;"><%= user ? (user.role || 'Admin') : 'Administrator' %></p>
-                </div>
-                <a href="/logout" style="color: #99123D;">
-                    <iconify-icon icon="solar:logout-2-bold" width="18"></iconify-icon>
-                </a>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="flex-1 flex flex-col min-w-0">
-            
-            <!-- Header -->
-            <header class="h-16 header flex items-center justify-between px-6">
-                <div class="flex items-center gap-4 lg:hidden">
-                    <button style="color: #87A2FF;"><iconify-icon icon="solar:hamburger-menu-bold" width="20"></iconify-icon></button>
-                    <span class="font-semibold" style="color: #99123D;">AquaRoute</span>
-                </div>
-                
-                <div>
-                    <h1 class="text-lg font-semibold" style="color: #2D2F31;">Audit Logs</h1>
-                    <p class="text-xs" style="color: #65676B;">Track all administrative actions</p>
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <button class="notification-btn">
-                        <iconify-icon icon="solar:bell-bold" width="18"></iconify-icon>
-                        <span class="notification-badge"></span>
-                    </button>
-                </div>
-            </header>
-
-            <!-- Content -->
-            <div class="flex-1 overflow-auto p-6">
-                <div class="space-y-5 fade-in">
-                    <!-- Logs Table -->
-                    <div class="table-container">
-                        <div class="table-header flex justify-between items-center">
-                            <h3>System Activity Logs</h3>
-                            <button onclick="showToast('Clear history functionality coming soon!', 'info')" class="clear-btn">
-                                <iconify-icon icon="solar:trash-bin-bold" width="14"></iconify-icon>
-                                Clear History
-                            </button>
-                        </div>
-                        
-                        <% if (logs && logs.length > 0) { %>
-                        <table class="w-full">
-                            <thead>
-                                <tr class="bg-[#C4D7FF20]">
-                                    <th class="px-6 py-3 text-left text-xs font-semibold" style="color: #65676B;">Admin</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold" style="color: #65676B;">Action</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold" style="color: #65676B;">Details</th>
-                                    <th class="px-6 py-3 text-right text-xs font-semibold" style="color: #65676B;">Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% logs.forEach(log => { %>
-                                <tr class="table-row">
-                                    <td class="px-6 py-3">
-                                        <div class="flex items-center gap-2">
-                                            <div class="admin-avatar">
-                                                <%= log.admin ? log.admin.charAt(0).toUpperCase() : 'A' %>
-                                            </div>
-                                            <span class="font-medium"><%= log.admin || 'System' %></span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-3">
-                                        <span class="action-badge">
-                                            <%= log.action || 'Unknown' %>
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-3" style="color: #65676B;"><%= log.details || 'No details' %></td>
-                                    <td class="px-6 py-3 text-right text-xs" style="color: #87A2FF; font-family: monospace;"><%= log.time || 'Just now' %></td>
-                                </tr>
-                                <% }) %>
-                            </tbody>
-                        </table>
-                        <% } else { %>
-                        <div class="empty-state">
-                            <iconify-icon icon="solar:clipboard-list-bold" width="48" style="color: #87A2FF; margin-bottom: 1rem;"></iconify-icon>
-                            <p>No audit logs available</p>
-                            <p class="text-xs mt-1">Actions will appear here as they occur</p>
-                        </div>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <!-- Toast Notification -->
-        <div id="toast" class="fixed bottom-4 right-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-            <div class="toast">
-                <div id="toast-icon" style="color: #62AE7D;">
-                    <iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>
-                </div>
-                <p id="toast-message" class="text-sm" style="color: #2D2F31;">Success</p>
+                <span class="font-semibold text-base" style="color: #99123D;">AquaRoute</span>
             </div>
         </div>
 
-        <script>
-            function showToast(msg, type) {
-                const toast = document.getElementById('toast');
-                const icon = document.getElementById('toast-icon');
-                const message = document.getElementById('toast-message');
-                
-                message.innerText = msg;
-                
-                if(type === 'success') {
-                    icon.innerHTML = '<iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>';
-                    icon.style.color = '#62AE7D';
-                } else if(type === 'error') {
-                    icon.innerHTML = '<iconify-icon icon="solar:danger-circle-bold" width="18"></iconify-icon>';
-                    icon.style.color = '#99123D';
-                } else {
-                    icon.innerHTML = '<iconify-icon icon="solar:info-circle-bold" width="18"></iconify-icon>';
-                    icon.style.color = '#BD77FF';
-                }
+        <!-- Nav -->
+        <nav class="flex-1 px-3 py-4 space-y-0.5">
+            <a href="/admin/dashboard" class="nav-item">
+                <iconify-icon icon="solar:widget-5-bold-duotone" width="18"></iconify-icon>
+                Dashboard
+            </a>
+            <a href="/admin/ferries" class="nav-item">
+                <iconify-icon icon="solar:ship-bold-duotone" width="18"></iconify-icon>
+                Ferry Management
+            </a>
+            <a href="/admin/ports" class="nav-item">
+                <iconify-icon icon="solar:anchor-circle-bold-duotone" width="18"></iconify-icon>
+                Port Management
+            </a>
+            <a href="/admin/cargo" class="nav-item">
+                <iconify-icon icon="solar:box-bold-duotone" width="18"></iconify-icon>
+                Cargo Tracking
+            </a>
+            <a href="/admin/logs" class="nav-item active">
+                <iconify-icon icon="solar:clipboard-list-bold-duotone" width="18"></iconify-icon>
+                Audit Logs
+            </a>
+            <a href="/admin/users" class="nav-item">
+                <iconify-icon icon="solar:users-group-rounded-bold" width="18"></iconify-icon>
+                Users
+            </a>
+        </nav>
 
-                toast.classList.remove('translate-y-20', 'opacity-0');
-                setTimeout(() => {
-                    toast.classList.add('translate-y-20', 'opacity-0');
-                }, 3000);
+        <!-- User -->
+        <div class="user-profile">
+            <img src="https://ui-avatars.com/api/?name=<%= user ? user.name.replace(' ', '+') : 'Admin' %>&background=99123D&color=fff" class="user-avatar">
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold truncate"><%= user ? user.name : 'Admin User' %></p>
+                <p class="text-xs" style="color: #65676B;"><%= user ? (user.role || 'Admin') : 'Administrator' %></p>
+            </div>
+            <a href="/logout" style="color: #99123D;">
+                <iconify-icon icon="solar:logout-2-bold" width="18"></iconify-icon>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col min-w-0">
+        
+        <!-- Header -->
+        <header class="h-16 header flex items-center justify-between px-6">
+            <div class="flex items-center gap-4 lg:hidden">
+                <button style="color: #87A2FF;"><iconify-icon icon="solar:hamburger-menu-bold" width="20"></iconify-icon></button>
+                <span class="font-semibold" style="color: #99123D;">AquaRoute</span>
+            </div>
+            
+            <div>
+                <h1 class="text-lg font-semibold" style="color: #2D2F31;">Audit Logs</h1>
+                <p class="text-xs" style="color: #65676B;">Complete history of all administrative actions and system events</p>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button class="notification-btn">
+                    <iconify-icon icon="solar:bell-bold" width="18"></iconify-icon>
+                    <span class="notification-badge"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="flex-1 overflow-auto p-6">
+            <div class="space-y-5 fade-in">
+                
+                <!-- Filter Tabs - Based on Project Charter Categories -->
+                <div class="filter-tabs">
+                    <button class="filter-tab active" onclick="filterLogs('all')">All Activity</button>
+                    <button class="filter-tab" onclick="filterLogs('status')">Status Changes</button>
+                    <button class="filter-tab" onclick="filterLogs('cargo')">Cargo Operations</button>
+                    <button class="filter-tab" onclick="filterLogs('ferry')">Ferry Management</button>
+                    <button class="filter-tab" onclick="filterLogs('route')">Route Advisories</button>
+                    <button class="filter-tab" onclick="filterLogs('system')">System Events</button>
+                </div>
+
+                <!-- Search and Actions Bar -->
+                <div class="flex items-center gap-3">
+                    <div class="search-container">
+                        <iconify-icon icon="solar:magnifier-bold" width="16" style="color: #87A2FF;"></iconify-icon>
+                        <input type="text" id="searchLogs" placeholder="Search by admin, action, or details..." onkeyup="searchLogs()">
+                    </div>
+                    <button onclick="exportLogs()" class="export-btn">
+                        <iconify-icon icon="solar:export-bold" width="14"></iconify-icon>
+                        Export CSV
+                    </button>
+                    <button onclick="showToast('Clear history functionality coming soon!', 'info')" class="clear-btn">
+                        <iconify-icon icon="solar:trash-bin-bold" width="14"></iconify-icon>
+                        Clear History
+                    </button>
+                </div>
+
+                <!-- Logs Table -->
+                <div class="table-container">
+                    <div class="table-header flex justify-between items-center">
+                        <h3>System Activity Logs - <%= logs ? logs.length : 0 %> Records</h3>
+                        <span class="text-xs" style="color: #65676B;">Last updated: <%= new Date().toLocaleString() %></span>
+                    </div>
+                    
+                    <% if (logs && logs.length > 0) { %>
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-[#C4D7FF20]">
+                                <th class="px-6 py-3 text-left text-xs font-semibold" style="color: #65676B;">Admin</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold" style="color: #65676B;">Action Type</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold" style="color: #65676B;">Action</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold" style="color: #65676B;">Details</th>
+                                <th class="px-6 py-3 text-right text-xs font-semibold" style="color: #65676B;">Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody">
+                            <% logs.forEach((log, index) => { 
+                                // Determine action type for badge styling
+                                let actionClass = 'action-system';
+                                if (log.action && log.action.toLowerCase().includes('status') || log.action && log.action.toLowerCase().includes('suspended')) {
+                                    actionClass = 'action-status';
+                                } else if (log.action && log.action.toLowerCase().includes('cargo')) {
+                                    actionClass = 'action-cargo';
+                                } else if (log.action && log.action.toLowerCase().includes('ferry') || log.action && log.action.toLowerCase().includes('vessel')) {
+                                    actionClass = 'action-ferry';
+                                } else if (log.action && log.action.toLowerCase().includes('route') || log.action && log.action.toLowerCase().includes('advisory')) {
+                                    actionClass = 'action-route';
+                                }
+                            %>
+                            <tr class="table-row" data-action-type="<%= 
+                                log.action && log.action.toLowerCase().includes('status') ? 'status' : 
+                                log.action && log.action.toLowerCase().includes('cargo') ? 'cargo' :
+                                log.action && log.action.toLowerCase().includes('ferry') ? 'ferry' :
+                                log.action && log.action.toLowerCase().includes('route') ? 'route' : 'system'
+                            %>">
+                                <td class="px-6 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="admin-avatar">
+                                            <%= log.admin ? log.admin.charAt(0).toUpperCase() : 'S' %>
+                                        </div>
+                                        <span class="font-medium"><%= log.admin || 'System' %></span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-3">
+                                    <span class="action-badge <%= actionClass %>">
+                                        <% 
+                                        // Categorize the action type
+                                        if (log.action && log.action.toLowerCase().includes('status')) { 
+                                        %>Status Change<%
+                                        } else if (log.action && log.action.toLowerCase().includes('cargo')) { 
+                                        %>Cargo Operation<%
+                                        } else if (log.action && (log.action.toLowerCase().includes('ferry') || log.action.toLowerCase().includes('vessel'))) { 
+                                        %>Ferry Management<%
+                                        } else if (log.action && (log.action.toLowerCase().includes('route') || log.action.toLowerCase().includes('advisory'))) { 
+                                        %>Route Advisory<%
+                                        } else if (log.action && log.action.toLowerCase().includes('user')) { 
+                                        %>User Management<%
+                                        } else { 
+                                        %>System Event<%
+                                        } 
+                                        %>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-3">
+                                    <span class="font-medium"><%= log.action || 'Unknown Action' %></span>
+                                </td>
+                                <td class="px-6 py-3 details-cell">
+                                    <div class="details-content" data-full="<%= log.details || 'No additional details' %>">
+                                        <%= log.details ? (log.details.length > 50 ? log.details.substring(0, 50) + '...' : log.details) : '—' %>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-3 text-right text-xs" style="color: #87A2FF; font-family: monospace;">
+                                    <%= log.time ? new Date(log.time).toLocaleString() : 'Just now' %>
+                                    <% if (log.time) { %>
+                                        <br>
+                                        <span class="text-[10px]" style="color: #65676B;">
+                                            <%= formatTimeAgo(log.time) %>
+                                        </span>
+                                    <% } %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination -->
+                    <div class="pagination">
+                        <button class="page-btn" onclick="previousPage()" <%= page <= 1 ? 'disabled' : '' %>>
+                            <iconify-icon icon="solar:alt-arrow-left-bold" width="14"></iconify-icon>
+                        </button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn" onclick="nextPage()">
+                            <iconify-icon icon="solar:alt-arrow-right-bold" width="14"></iconify-icon>
+                        </button>
+                    </div>
+
+                    <% } else { %>
+                    <div class="empty-state">
+                        <iconify-icon icon="solar:clipboard-list-bold" width="48" style="color: #87A2FF; margin-bottom: 1rem;"></iconify-icon>
+                        <p class="font-medium">No audit logs available</p>
+                        <p class="text-xs mt-1" style="color: #65676B;">Actions will appear here as they occur</p>
+                        
+                        <!-- Sample empty state with examples of what will be logged -->
+                        <div class="mt-4 p-3 bg-[#C4D7FF20] rounded-lg text-left text-xs" style="color: #65676B;">
+                            <p class="font-semibold mb-2" style="color: #2D2F31;">What gets logged:</p>
+                            <ul class="space-y-1 list-disc pl-4">
+                                <li>Admin status changes (On Time → Delayed → Suspended)</li>
+                                <li>Cargo assignments and tracking updates</li>
+                                <li>Ferry route modifications</li>
+                                <li>Weather advisory postings</li>
+                                <li>Port status updates</li>
+                                <li>User account management</li>
+                                <li>System ETA recalculations</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <div class="toast">
+            <div id="toast-icon" style="color: #62AE7D;">
+                <iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>
+            </div>
+            <p id="toast-message" class="text-sm" style="color: #2D2F31;">Success</p>
+        </div>
+    </div>
+
+    <script>
+        // Toast notification function
+        function showToast(msg, type) {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            const message = document.getElementById('toast-message');
+            
+            message.innerText = msg;
+            
+            if(type === 'success') {
+                icon.innerHTML = '<iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>';
+                icon.style.color = '#62AE7D';
+            } else if(type === 'error') {
+                icon.innerHTML = '<iconify-icon icon="solar:danger-circle-bold" width="18"></iconify-icon>';
+                icon.style.color = '#99123D';
+            } else {
+                icon.innerHTML = '<iconify-icon icon="solar:info-circle-bold" width="18"></iconify-icon>';
+                icon.style.color = '#BD77FF';
             }
-        </script>
-    </body> 
-    </html>
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Filter logs by type (based on Project Charter categories)
+        function filterLogs(type) {
+            const tabs = document.querySelectorAll('.filter-tab');
+            tabs.forEach(tab => {
+                if (tab.textContent.toLowerCase().includes(type) || (type === 'all' && tab.textContent.includes('All'))) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            const rows = document.querySelectorAll('#logsTableBody tr');
+            rows.forEach(row => {
+                if (type === 'all') {
+                    row.style.display = '';
+                } else {
+                    const actionType = row.getAttribute('data-action-type');
+                    if (actionType === type) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+
+            showToast(`Filtered to show ${type} logs`, 'info');
+        }
+
+        // Search logs
+        function searchLogs() {
+            const searchTerm = document.getElementById('searchLogs').value.toLowerCase();
+            const rows = document.querySelectorAll('#logsTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Format time ago
+        function formatTimeAgo(timestamp) {
+            const now = new Date();
+            const past = new Date(timestamp);
+            const diffMs = now - past;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMins / 60);
+            const diffDays = Math.floor(diffHours / 24);
+
+            if (diffMins < 1) return 'just now';
+            if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+        }
+
+        // Export logs to CSV
+        function exportLogs() {
+            const rows = document.querySelectorAll('#logsTableBody tr');
+            if (rows.length === 0) {
+                showToast('No logs to export', 'info');
+                return;
+            }
+
+            let csv = 'Admin,Action Type,Action,Details,Timestamp\n';
+            
+            rows.forEach(row => {
+                if (row.style.display !== 'none') {
+                    const cols = row.querySelectorAll('td');
+                    const admin = cols[0].textContent.trim().replace(/,/g, ';');
+                    const actionType = cols[1].textContent.trim().replace(/,/g, ';');
+                    const action = cols[2].textContent.trim().replace(/,/g, ';');
+                    const details = cols[3].textContent.trim().replace(/,/g, ';');
+                    const timestamp = cols[4].textContent.trim().replace(/,/g, ';');
+                    
+                    csv += `"${admin}","${actionType}","${action}","${details}","${timestamp}"\n`;
+                }
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `audit-logs-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            
+            showToast('Logs exported successfully', 'success');
+        }
+
+        // Pagination functions
+        function previousPage() {
+            showToast('Navigation to previous page', 'info');
+        }
+
+        function nextPage() {
+            showToast('Navigation to next page', 'info');
+        }
+    </script>
+</body> 
+</html>

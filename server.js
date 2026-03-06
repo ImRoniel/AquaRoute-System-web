@@ -61,7 +61,7 @@ app.set('views', path.join(__dirname, 'views'));
     // ================= Error Handler =================
     app.use((err, req, res, next) => {
       console.error(err);
-      res.status(500).render('error', {
+      res.status(500).render('layouts/error', {
         title: 'Server Error',
         error: 'Something went wrong.',
         user: req.session?.user || null
