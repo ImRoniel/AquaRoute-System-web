@@ -81,7 +81,7 @@ const ferryController = {
     const ferryModel = new Ferry(req.db);
     try {
       const logs = await ferryModel.getLogs(50);
-      res.render('admin/logs', { 
+      res.render('admin/auditLogs', { 
         title: 'Audit Logs - AquaRoute Admin', 
         user: req.session.user, 
         logs 
