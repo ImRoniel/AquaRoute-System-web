@@ -1,3 +1,4 @@
+//C:\xampp\htdocs\AquaRoute-System-web\controllers\portController.js 
 const DEBUG = require('../config/debug');
 const Port = require('../models/port');
 
@@ -14,7 +15,8 @@ const portController = {
               title: 'Port Management - AquaRoute Admin',
               user: req.session.user,
               ports: result.ports,
-              lastVisible: result.lastVisible ? result.lastVisible.id : null
+              lastVisible: result.lastVisible ? result.lastVisible.id : null,
+              currentPage: 'ports' 
           });
 
       } catch (error) {

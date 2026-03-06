@@ -1,3 +1,4 @@
+// C:\xampp\htdocs\AquaRoute-System-web\routes\web.js
 const express = require('express');
 const router = express.Router();
 
@@ -5,10 +6,22 @@ const router = express.Router();
 const authController = require('../controllers/authController');
 const ferryController = require('../controllers/ferryController');  
 const portController = require('../controllers/portController');
-
+const cargoController = require('../controllers/cargoController'); // Add this
+const userController = require('../controllers/userController');
 // Import middleware
 const { isAuthenticated } = require('../midleware/auth');  // Note: folder is 'midleware' (misspelled)
 
+// Add this right after your imports
+console.log('=== CARGO CONTROLLER DEBUG ===');
+console.log('getAllCargo:', typeof cargoController.getAllCargo);
+console.log('searchCargo:', typeof cargoController.searchCargo);
+console.log('trackCargo:', typeof cargoController.trackCargo);
+console.log('addCargo:', typeof cargoController.addCargo);
+console.log('updateCargo:', typeof cargoController.updateCargo);
+console.log('deleteCargo:', typeof cargoController.deleteCargo);
+console.log('updateStatus:', typeof cargoController.updateStatus);
+console.log('getStats:', typeof cargoController.getStats);
+console.log('==============================');
 // ==================== PUBLIC ROUTES ====================
 
 // Home page
@@ -41,6 +54,20 @@ router.post('/admin/ports/add', isAuthenticated, portController.addPort);
 router.post('/admin/ports/:id/update', isAuthenticated, portController.updatePort);
 router.post('/admin/ports/:id/delete', isAuthenticated, portController.deletePort);
 
+// CARGO ROUTES - Add these
+router.get('/admin/cargo', isAuthenticated, cargoController.getAllCargo);
+router.get('/admin/cargo/search', isAuthenticated, cargoController.searchCargo);
+router.get('/admin/cargo/track/:reference', isAuthenticated, cargoController.trackCargo);
+router.post('/admin/cargo/add', isAuthenticated, cargoController.addCargo);
+router.post('/admin/cargo/:id/update', isAuthenticated, cargoController.updateCargo);
+router.post('/admin/cargo/:id/delete', isAuthenticated, cargoController.deleteCargo);
+
+// Users management
+router.get('/admin/users', isAuthenticated, userController.getUsers);
+router.post('/admin/users/add', isAuthenticated, userController.addUser);
+router.post('/admin/users/:id/update', isAuthenticated, userController.updateUser);
+router.post('/admin/users/:id/delete', isAuthenticated, userController.deleteUser);
+
 // Logs
 router.get('/admin/logs', isAuthenticated, ferryController.getLogs);
 
@@ -51,8 +78,8 @@ router.get('/api/ports/search', isAuthenticated, portController.searchPorts);
 router.get('/api/ports/load-more', isAuthenticated, portController.loadMorePorts);
 router.post('/api/ports/:id/toggle-status', isAuthenticated, portController.togglePortStatus);
 
-// Ferries API (if needed)
-// router.get('/api/ferries', isAuthenticated, ferryController.getAllFerriesApi);
-// router.post('/api/ferries/:id/toggle-status', isAuthenticated, ferryController.toggleFerryStatus);
+// Cargo API - Add these
+router.post('/api/cargo/:id/status', isAuthenticated, cargoController.updateStatus);
+router.get('/api/cargo/stats', isAuthenticated, cargoController.getStats);
 
 module.exports = router;
