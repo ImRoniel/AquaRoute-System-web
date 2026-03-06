@@ -1,3 +1,4 @@
+// C:\xampp\htdocs\AquaRoute-System-web\controllers\ferryController.js
 const DEBUG = require('../config/debug');
 const Ferry = require('../models/ferry');
 
@@ -13,14 +14,16 @@ const ferryController = {
         user: req.session.user, 
         stats, 
         ferries: ferries.slice(0,5), 
-        logs 
+        logs,
+        currentPage: 'dashboard'  // ← ADD THIS
       });
     } catch (error) {
       DEBUG.error('DASHBOARD', 'Error loading dashboard', error);
       res.status(500).render('error', { 
         title: 'Error', 
         error: 'Failed to load dashboard', 
-        user: req.session.user 
+        user: req.session.user,
+        currentPage: 'error'  // ← ADD THIS
       });
     }
   },
@@ -32,7 +35,8 @@ const ferryController = {
       res.render('admin/ferries', { 
         title: 'Ferry Management - AquaRoute Admin', 
         user: req.session.user, 
-        ferries 
+        ferries,
+        currentPage: 'ferries'  // ← ADD THIS
       });
     } catch (error) {
       DEBUG.error('FERRIES', 'Error loading ferries', error);
@@ -84,7 +88,8 @@ const ferryController = {
       res.render('admin/auditLogs', { 
         title: 'Audit Logs - AquaRoute Admin', 
         user: req.session.user, 
-        logs 
+        logs,
+        currentPage: 'logs'  // ← ADD THIS
       });
     } catch (error) {
       DEBUG.error('LOGS', 'Error loading logs', error);

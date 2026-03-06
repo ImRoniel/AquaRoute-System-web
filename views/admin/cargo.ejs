@@ -1,4 +1,4 @@
-<!-- views/admin/users.ejs -->
+<!-- views/admin/cargo.ejs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,7 +28,7 @@
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #BD77FF; border-radius: 2px; }
 
-        /* Sidebar */
+        /* Sidebar - minimal */
         .sidebar {
             background-color: #FFF4B5;
             border-right: 1px solid #87A2FF;
@@ -56,30 +56,7 @@
             color: white;
         }
 
-        /* User profile */
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            border-top: 1px solid #87A2FF;
-        }
-
-        .user-avatar {
-            width: 2.25rem;
-            height: 2.25rem;
-            border-radius: 9999px;
-            border: 2px solid #99123D;
-        }
-
-        /* Header */
-        .header {
-            background-color: rgba(255, 244, 181, 0.8);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid #87A2FF;
-        }
-
-        /* Stats cards */
+        /* Stats cards - minimal */
         .stat-card {
             background-color: white;
             border: 1px solid #87A2FF;
@@ -102,7 +79,7 @@
             line-height: 1.2;
         }
 
-        /* Table */
+        /* Table - minimal */
         .table-container {
             background-color: white;
             border: 1px solid #87A2FF;
@@ -139,7 +116,7 @@
             background-color: #C4D7FF20;
         }
 
-        /* Role badges */
+        /* Status badges - minimal */
         .badge {
             padding: 0.25rem 0.75rem;
             border-radius: 20px;
@@ -148,18 +125,19 @@
             display: inline-block;
         }
 
-        .badge-super_admin {
-            background-color: #99123D;
-            color: white;
-        }
-
-        .badge-admin {
+        .badge-in-transit {
             background-color: #BD77FF;
             color: white;
         }
 
-        .badge-user {
-            background-color: #87A2FF;
+        .badge-pending {
+            background-color: #FEC1A0;
+            color: #2D2F31;
+            border: 1px solid #99123D;
+        }
+
+        .badge-delivered {
+            background-color: #62AE7D;
             color: white;
         }
 
@@ -211,21 +189,55 @@
         }
 
         /* Search input */
-        .search-input {
+        .search-container {
             background-color: white;
             border: 1px solid #87A2FF;
             border-radius: 30px;
             padding: 0.5rem 1rem 0.5rem 2.5rem;
             font-size: 0.875rem;
-            width: 16rem;
+            width: 100%;
+            position: relative;
         }
 
-        .search-input:focus {
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #87A2FF;
+            font-size: 0.875rem;
+        }
+
+        .search-input {
+            width: 100%;
+            border: none;
             outline: none;
-            border-color: #BD77FF;
+            background: transparent;
         }
 
-        /* Notification button */
+        /* User profile - minimal */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-top: 1px solid #87A2FF;
+        }
+
+        .user-avatar {
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 9999px;
+            border: 2px solid #99123D;
+        }
+
+        /* Header - minimal */
+        .header {
+            background-color: rgba(255, 244, 181, 0.8);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #87A2FF;
+        }
+
         .notification-btn {
             width: 2.5rem;
             height: 2.5rem;
@@ -273,6 +285,8 @@
             border-radius: 12px;
             width: 100%;
             max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-header {
@@ -323,31 +337,41 @@
         }
 
         .form-group input,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 0.5rem;
             border: 1px solid #87A2FF;
             border-radius: 6px;
             font-size: 0.875rem;
             outline: none;
+            background-color: white;
         }
 
         .form-group input:focus,
-        .form-group select:focus {
+        .form-group select:focus,
+        .form-group textarea:focus {
             border-color: #99123D;
         }
 
-        /* Toast */
-        .toast {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            min-width: 250px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        /* Empty state */
+        .empty-state {
+            padding: 3rem;
+            text-align: center;
+            color: #65676B;
+        }
+
+        .empty-state iconify-icon {
+            margin-bottom: 1rem;
+            color: #87A2FF;
+        }
+
+        .empty-state p {
+            margin-top: 0.5rem;
+        }
+
+        .empty-state .text-xs {
+            color: #65676B;
         }
     </style>
 </head>
@@ -359,7 +383,7 @@
         <div class="h-16 flex items-center px-6 border-b border-[#87A2FF]">
             <div class="flex items-center gap-2">
                 <div class="w-6 h-6 rounded flex items-center justify-center" style="background-color: #87A2FF;">
-                    <iconify-icon icon="solar:users-group-rounded-bold" width="14" style="color: white;"></iconify-icon>
+                    <iconify-icon icon="solar:ship-bold" width="14" style="color: white;"></iconify-icon>
                 </div>
                 <span class="font-semibold text-base" style="color: #99123D;">AquaRoute</span>
             </div>
@@ -379,7 +403,7 @@
                 <iconify-icon icon="solar:anchor-circle-bold-duotone" width="18"></iconify-icon>
                 Port Management
             </a>
-            <a href="/admin/cargo" class="nav-item">
+            <a href="/admin/cargo" class="nav-item active">
                 <iconify-icon icon="solar:box-bold-duotone" width="18"></iconify-icon>
                 Cargo Tracking
             </a>
@@ -387,7 +411,7 @@
                 <iconify-icon icon="solar:clipboard-list-bold-duotone" width="18"></iconify-icon>
                 Audit Logs
             </a>
-            <a href="/admin/users" class="nav-item active">
+            <a href="/admin/users" class="nav-item">
                 <iconify-icon icon="solar:users-group-rounded-bold" width="18"></iconify-icon>
                 Users
             </a>
@@ -417,14 +441,14 @@
             </div>
             
             <div>
-                <h1 class="text-lg font-semibold" style="color: #2D2F31;">User Management</h1>
-                <p class="text-xs" style="color: #65676B;">Manage system users and permissions</p>
+                <h1 class="text-lg font-semibold" style="color: #2D2F31;">Cargo Tracking</h1>
+                <p class="text-xs" style="color: #65676B;">Track shipments by reference number</p>
             </div>
 
             <div class="flex items-center gap-3">
                 <button onclick="openAddModal()" class="action-btn btn-primary">
                     <iconify-icon icon="solar:add-circle-bold" width="16"></iconify-icon>
-                    Add User
+                    Add Cargo
                 </button>
                 <button class="notification-btn">
                     <iconify-icon icon="solar:bell-bold" width="18"></iconify-icon>
@@ -438,78 +462,99 @@
             <div class="space-y-6">
                 
                 <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div class="stat-card">
-                        <div class="stat-label">Total Users</div>
-                        <div class="stat-value"><%= users ? users.length : 0 %></div>
+                        <div class="stat-label">Total Shipments</div>
+                        <div class="stat-value"><%= stats ? stats.total : (cargo ? cargo.length : 0) %></div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Admins</div>
-                        <div class="stat-value" style="color: #BD77FF;">
-                            <%= users ? users.filter(u => u.role === 'admin' || u.role === 'super_admin').length : 0 %>
-                        </div>
+                        <div class="stat-label">In Transit</div>
+                        <div class="stat-value" style="color: #BD77FF;"><%= stats ? stats.inTransit : 0 %></div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Regular Users</div>
-                        <div class="stat-value" style="color: #87A2FF;">
-                            <%= users ? users.filter(u => u.role === 'user').length : 0 %>
-                        </div>
+                        <div class="stat-label">Pending</div>
+                        <div class="stat-value" style="color: #FEC1A0;"><%= stats ? stats.pending : 0 %></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Delivered</div>
+                        <div class="stat-value" style="color: #62AE7D;"><%= stats ? stats.delivered : 0 %></div>
                     </div>
                 </div>
 
                 <!-- Search Bar -->
                 <div class="relative max-w-md">
-                    <iconify-icon icon="solar:magnifer-linear" class="absolute left-3 top-1/2 -translate-y-1/2" style="color: #87A2FF;"></iconify-icon>
-                    <input type="text" id="userSearch" placeholder="Search users..." class="search-input pl-10" onkeyup="filterUsers()">
+                    <iconify-icon icon="solar:magnifer-linear" class="search-icon"></iconify-icon>
+                    <form action="/admin/cargo/search" method="GET">
+                        <input type="text" name="query" placeholder="Search by reference or description..." 
+                               value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>" 
+                               class="search-container pl-10">
+                    </form>
                 </div>
 
-                <!-- Users Table -->
+                <!-- Cargo Table -->
                 <div class="table-container">
                     <div class="table-header flex justify-between items-center">
-                        <span>System Users</span>
-                        <span class="text-xs" style="color: #65676B;"><%= users ? users.length : 0 %> records</span>
+                        <span>Active Shipments</span>
+                        <span class="text-xs" style="color: #65676B;"><%= cargo ? cargo.length : 0 %> records</span>
                     </div>
                     
-                    <% if (users && users.length > 0) { %>
+                    <% if (cargo && cargo.length > 0) { %>
                     <div class="overflow-x-auto">
                         <table class="w-full">
                             <thead>
                                 <tr>
-                                    <th class="text-left">Username</th>
-                                    <th class="text-left">Name</th>
-                                    <th class="text-left">Role</th>
+                                    <th class="text-left">Reference #</th>
+                                    <th class="text-left">Description</th>
+                                    <th class="text-left">Weight</th>
+                                    <th class="text-left">Assigned Ferry</th>
+                                    <th class="text-left">Status</th>
                                     <th class="text-left">Created</th>
                                     <th class="text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="usersTableBody">
-                                <% users.forEach(function(u) { %>
-                                <tr class="table-row" data-username="<%= u.username.toLowerCase() %>" data-name="<%= u.name.toLowerCase() %>">
-                                    <td class="px-6 py-3 font-medium"><%= u.username %></td>
-                                    <td class="px-6 py-3"><%= u.name %></td>
+                            <tbody>
+                                <% cargo.forEach(function(item) { %>
+                                <tr class="table-row">
+                                    <td class="px-6 py-3 font-mono text-sm font-medium">
+                                        <a href="/admin/cargo/track/<%= item.reference %>" style="color: #99123D;">
+                                            <%= item.reference %>
+                                        </a>
+                                    </td>
+                                    <td class="px-6 py-3"><%= item.description %></td>
+                                    <td class="px-6 py-3"><%= item.weight %> kg</td>
+                                    <td class="px-6 py-3"><%= item.ferryName || 'Unassigned' %></td>
                                     <td class="px-6 py-3">
-                                        <% if (u.role === 'super_admin') { %>
-                                        <span class="badge badge-super_admin">Super Admin</span>
-                                        <% } else if (u.role === 'admin') { %>
-                                        <span class="badge badge-admin">Admin</span>
+                                        <% if (item.status === 'in_transit') { %>
+                                        <span class="badge badge-in-transit">In Transit</span>
+                                        <% } else if (item.status === 'pending') { %>
+                                        <span class="badge badge-pending">Pending</span>
+                                        <% } else if (item.status === 'delivered') { %>
+                                        <span class="badge badge-delivered">Delivered</span>
                                         <% } else { %>
-                                        <span class="badge badge-user">User</span>
+                                        <span class="badge badge-pending"><%= item.status %></span>
                                         <% } %>
                                     </td>
                                     <td class="px-6 py-3" style="color: #65676B;">
-                                        <%= new Date(u.created_at).toLocaleDateString() %>
+                                        <%= new Date(item.createdAt).toLocaleDateString() %>
                                     </td>
                                     <td class="px-6 py-3 text-right">
-                                        <% if (u.username !== user.username) { %>
-                                        <button onclick="editUser(<%= u.id %>, '<%= u.username %>', '<%= u.name %>', '<%= u.role %>')" class="btn-icon" title="Edit">
+                                        <button 
+                                            onclick="editCargo(this)" 
+                                            data-id="<%= item.id %>"
+                                            data-description="<%= item.description ? item.description.replace(/"/g, '&quot;') : '' %>"
+                                            data-weight="<%= item.weight || 0 %>"
+                                            data-ferryid="<%= item.ferryId || '' %>"
+                                            data-status="<%= item.status || 'pending' %>"
+                                            class="btn-icon" 
+                                            title="Edit">
                                             <iconify-icon icon="solar:pen-bold" width="16"></iconify-icon>
                                         </button>
-                                        <button onclick="deleteUser(<%= u.id %>, '<%= u.username %>')" class="btn-icon" title="Delete">
+                                        <button 
+                                            onclick="deleteCargo('<%= item.id %>', '<%= item.reference %>')" 
+                                            class="btn-icon" 
+                                            title="Delete">
                                             <iconify-icon icon="solar:trash-bin-trash-bold" width="16"></iconify-icon>
                                         </button>
-                                        <% } else { %>
-                                        <span class="text-xs" style="color: #65676B;">Current User</span>
-                                        <% } %>
                                     </td>
                                 </tr>
                                 <% }); %>
@@ -518,8 +563,9 @@
                     </div>
                     <% } else { %>
                     <div class="empty-state">
-                        <iconify-icon icon="solar:users-group-rounded-bold" width="48" style="color: #87A2FF;"></iconify-icon>
-                        <p class="font-medium">No users found</p>
+                        <iconify-icon icon="solar:box-bold" width="48"></iconify-icon>
+                        <p class="font-medium">No cargo shipments found</p>
+                        <p class="text-xs mt-1">Click "Add Cargo" to create a new shipment</p>
                     </div>
                     <% } %>
                 </div>
@@ -527,41 +573,47 @@
         </div>
     </main>
 
-    <!-- Add/Edit User Modal -->
-    <div id="userModal" class="modal">
+    <!-- Add/Edit Modal -->
+    <div id="cargoModal" class="modal">
         <div class="modal-content">
-            <form id="userForm" method="POST">
+            <form id="cargoForm" method="POST">
                 <div class="modal-header">
-                    <h3 id="modalTitle">Add New User</h3>
+                    <h3 id="modalTitle">Add New Cargo</h3>
                     <span onclick="closeModal()" class="modal-close">
                         <iconify-icon icon="solar:close-circle-bold" width="20"></iconify-icon>
                     </span>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="userId" name="id">
+                    <input type="hidden" id="cargoId" name="id">
                     
                     <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" name="username" required>
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="2" required></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password">
-                        <small style="color: #65676B; font-size: 0.75rem;">Leave blank to keep current password when editing</small>
+                        <label for="weight">Weight (kg)</label>
+                        <input type="number" id="weight" name="weight" step="0.1" min="0" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="name">Full Name</label>
-                        <input type="text" id="name" name="name" required>
+                        <label for="ferryId">Assign to Ferry</label>
+                        <select id="ferryId" name="ferryId">
+                            <option value="">-- Unassigned --</option>
+                            <% if (ferries) { %>
+                                <% ferries.forEach(function(f) { %>
+                                <option value="<%= f.id %>"><%= f.name %> - <%= f.route %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="role">Role</label>
-                        <select id="role" name="role" required>
-                            <option value="user">User</option>
-                            <option value="admin">Admin</option>
-                            <option value="super_admin">Super Admin</option>
+                        <label for="status">Status</label>
+                        <select id="status" name="status" required>
+                            <option value="pending">Pending</option>
+                            <option value="in_transit">In Transit</option>
+                            <option value="delivered">Delivered</option>
                         </select>
                     </div>
                 </div>
@@ -575,7 +627,7 @@
 
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-4 right-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-        <div class="toast">
+        <div class="bg-white border border-[#87A2FF] rounded-lg shadow-lg p-3 flex items-center gap-2 min-w-[200px]">
             <div id="toast-icon" style="color: #62AE7D;">
                 <iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>
             </div>
@@ -586,59 +638,44 @@
     <script>
         // Modal functions
         function openAddModal() {
-            document.getElementById('modalTitle').textContent = 'Add New User';
-            document.getElementById('userForm').action = '/admin/users/add';
-            document.getElementById('userId').value = '';
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('password').required = true;
-            document.getElementById('name').value = '';
-            document.getElementById('role').value = 'user';
-            document.getElementById('userModal').classList.add('active');
+            document.getElementById('modalTitle').textContent = 'Add New Cargo';
+            document.getElementById('cargoForm').action = '/admin/cargo/add';
+            document.getElementById('cargoId').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('weight').value = '';
+            document.getElementById('ferryId').value = '';
+            document.getElementById('status').value = 'pending';
+            document.getElementById('cargoModal').classList.add('active');
         }
 
-        function editUser(id, username, name, role) {
-            document.getElementById('modalTitle').textContent = 'Edit User';
-            document.getElementById('userForm').action = '/admin/users/' + id + '/update';
-            document.getElementById('userId').value = id;
-            document.getElementById('username').value = username;
-            document.getElementById('username').disabled = true;
-            document.getElementById('password').value = '';
-            document.getElementById('password').required = false;
-            document.getElementById('name').value = name;
-            document.getElementById('role').value = role;
-            document.getElementById('userModal').classList.add('active');
+        function editCargo(button) {
+            var id = button.getAttribute('data-id');
+            var description = button.getAttribute('data-description');
+            var weight = button.getAttribute('data-weight');
+            var ferryId = button.getAttribute('data-ferryid');
+            var status = button.getAttribute('data-status');
+            
+            document.getElementById('modalTitle').textContent = 'Edit Cargo';
+            document.getElementById('cargoForm').action = '/admin/cargo/' + id + '/update';
+            document.getElementById('cargoId').value = id;
+            document.getElementById('description').value = description;
+            document.getElementById('weight').value = weight;
+            document.getElementById('ferryId').value = ferryId || '';
+            document.getElementById('status').value = status || 'pending';
+            document.getElementById('cargoModal').classList.add('active');
         }
 
         function closeModal() {
-            document.getElementById('userModal').classList.remove('active');
-            document.getElementById('username').disabled = false;
-            document.getElementById('password').required = true;
+            document.getElementById('cargoModal').classList.remove('active');
         }
 
-        function deleteUser(id, username) {
-            if (confirm('Are you sure you want to delete user ' + username + '?')) {
+        function deleteCargo(id, reference) {
+            if (confirm('Are you sure you want to delete cargo ' + reference + '?')) {
                 var form = document.createElement('form');
                 form.method = 'POST';
-                form.action = '/admin/users/' + id + '/delete';
+                form.action = '/admin/cargo/' + id + '/delete';
                 document.body.appendChild(form);
                 form.submit();
-            }
-        }
-
-        // Search/filter users
-        function filterUsers() {
-            var input = document.getElementById('userSearch').value.toLowerCase();
-            var rows = document.getElementById('usersTableBody').getElementsByTagName('tr');
-            
-            for (var i = 0; i < rows.length; i++) {
-                var username = rows[i].getAttribute('data-username');
-                var name = rows[i].getAttribute('data-name');
-                if (username.includes(input) || name.includes(input)) {
-                    rows[i].style.display = '';
-                } else {
-                    rows[i].style.display = 'none';
-                }
             }
         }
 

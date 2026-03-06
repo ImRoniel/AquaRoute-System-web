@@ -1,3 +1,4 @@
+// C:\xampp\htdocs\AquaRoute-System-web\controllers\authController.js
 const DEBUG = require('../config/debug');
 const Admin = require('../models/admin');
 

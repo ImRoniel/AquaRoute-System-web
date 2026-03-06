@@ -237,21 +237,29 @@
 
         <!-- Nav -->
         <nav class="flex-1 px-3 py-4 space-y-0.5">
-            <a href="/admin/dashboard" class="nav-item active">
+            <a href="/admin/dashboard" class="nav-item <%= currentPage === 'dashboard' ? 'active' : '' %>">
                 <iconify-icon icon="solar:widget-5-bold-duotone" width="18"></iconify-icon>
                 Dashboard
             </a>
-            <a href="/admin/ferries" class="nav-item">
+            <a href="/admin/ferries" class="nav-item <%= currentPage === 'ferries' ? 'active' : '' %>">
                 <iconify-icon icon="solar:ship-bold-duotone" width="18"></iconify-icon>
                 Ferry Management
             </a>
-            <a href="/admin/ports" class="nav-item">
+            <a href="/admin/ports" class="nav-item <%= currentPage === 'ports' ? 'active' : '' %>">
                 <iconify-icon icon="solar:anchor-circle-bold-duotone" width="18"></iconify-icon>
                 Port Management
             </a>
-            <a href="/admin/logs" class="nav-item">
+            <a href="/admin/cargo" class="nav-item <%= currentPage === 'cargo' ? 'active' : '' %>">
+                <iconify-icon icon="solar:box-bold-duotone" width="18"></iconify-icon>
+                Cargo Tracking
+            </a>
+            <a href="/admin/logs" class="nav-item <%= currentPage === 'logs' ? 'active' : '' %>">
                 <iconify-icon icon="solar:clipboard-list-bold-duotone" width="18"></iconify-icon>
                 Audit Logs
+            </a>
+            <a href="/admin/users" class="nav-item <%= currentPage === 'users' ? 'active' : '' %>">
+                <iconify-icon icon="solar:users-group-rounded-bold" width="18"></iconify-icon>
+                Users
             </a>
         </nav>
 
