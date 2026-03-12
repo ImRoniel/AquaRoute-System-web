@@ -5,7 +5,6 @@ require('dotenv').config();
 
 const { initializeDatabase } = require('./config/database');
 const webRoutes = require('./routes/web');
-const { exp } = require('firebase/firestore/pipelines');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -34,7 +33,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // ================= Database Bootstrap =================
 (async () => {
-  try { 
+  try {
     const db = await initializeDatabase();
 
     // Make db globally accessible to controllers
@@ -70,9 +69,9 @@ app.set('views', path.join(__dirname, 'views'));
     });
 
     // ================= Start Server =================
-    app.listen(PORT, () => {
-      console.log(` AquaRoute running at http://localhost:${PORT}`);
-    });
+    app.listen(PORT, '0.0.0.0', () => { // <-- '0.0.0.0' is crucial
+  console.log(`🚀 Server running on port ${PORT}`);
+});
 
   } catch (error) {
     console.error('Failed to start server:', error);

@@ -8,8 +8,10 @@ const ferryController = require('../controllers/ferryController');
 const portController = require('../controllers/portController');
 const cargoController = require('../controllers/cargoController'); // Add this
 const userController = require('../controllers/userController');
+const { refreshWeatherForPorts } = require('../services/weatherService');
 // Import middleware
 const { isAuthenticated } = require('../midleware/auth');  // Note: folder is 'midleware' (misspelled)
+
 
 // Add this right after your imports
 console.log('=== CARGO CONTROLLER DEBUG ===');
@@ -82,4 +84,13 @@ router.post('/api/ports/:id/toggle-status', isAuthenticated, portController.togg
 router.post('/api/cargo/:id/status', isAuthenticated, cargoController.updateStatus);
 router.get('/api/cargo/stats', isAuthenticated, cargoController.getStats);
 
+// Weather API
+router.post('/weather/refresh', async (req, res) => {
+  const { portIds } = req.body;
+  if (!Array.isArray(portIds)) {
+    return res.status(400).json({ error: 'portIds must be an array' });
+  }
+  const result = await refreshWeatherForPorts(portIds);
+  res.json(result);
+});
 module.exports = router;
