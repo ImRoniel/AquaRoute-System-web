@@ -19,8 +19,11 @@
   "description": "AquaRoute is an open-source real-time ferry tracking and ETA system that offers map-based visualization of vessel locations, dynamic arrival estimates, status indicators, and weather overlays to empower passengers with centralized, informed decision-making for water transportation.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
+  "engines": {
+  "node": "22.x"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ImRoniel/AquaRoute-System-web.git"
