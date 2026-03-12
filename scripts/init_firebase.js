@@ -1,5 +1,6 @@
+// C:\xampp\htdocs\AquaRoute-System-web\scripts\init_firebase.js
 const admin = require('firebase-admin');
-const serviceAccount = require('../serviceAccountKey.json');
+const serviceAccount = require('../config/serviceAccountKey.json');
 const OverpassService = require('../utils/overpassService');
 
 // Initialize Firebase Admin

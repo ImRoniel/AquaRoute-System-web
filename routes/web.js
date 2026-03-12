@@ -9,6 +9,8 @@ const portController = require('../controllers/portController');
 const cargoController = require('../controllers/cargoController'); // Add this
 const userController = require('../controllers/userController');
 const { refreshWeatherForPorts } = require('../services/weatherService');
+const { refreshFerriesFromOverpass } = require('../services/ferryService');
+
 // Import middleware
 const { isAuthenticated } = require('../midleware/auth');  // Note: folder is 'midleware' (misspelled)
 
@@ -92,5 +94,16 @@ router.post('/weather/refresh', async (req, res) => {
   }
   const result = await refreshWeatherForPorts(portIds);
   res.json(result);
+});
+
+// Ferry refresh API
+router.post('/api/ferries/refresh', async (req, res) => {
+  try {
+    const result = await refreshFerriesFromOverpass();
+    res.json({ success: true, count: result.count });
+  } catch (error) {
+    console.error('Ferry refresh error:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 module.exports = router;

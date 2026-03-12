@@ -687,8 +687,13 @@
 
         // Function to toggle port status
         async function togglePortStatus(id) {
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            loadingOverlay.style.display = 'flex';
+            const button = event.target;
+            const card = button.closest('.port-card');
+            const badge = card.querySelector('.badge');
+            const oldText = badge.innerText;
+            
+            // Disable button to prevent double-clicks
+            button.disabled = true;
             
             try {
                 const response = await fetch(`/api/ports/${id}/toggle-status`, {
@@ -697,22 +702,27 @@
                 });
                 
                 if (response.ok) {
-                    // Check if we're in search mode or normal mode
-                    const searchInput = document.getElementById('port-search').value.trim();
-                    if (searchInput) {
-                        await performSearch(); // Refresh search results
-                    } else {
-                        window.location.reload(); // Refresh normal view
-                    }
+                    const data = await response.json(); // assume returns new status
+                    // Update badge directly
+                    badge.className = `badge badge-${data.status}`;
+                    badge.innerHTML = getStatusIcon(data.status) + ' ' + data.status.charAt(0).toUpperCase() + data.status.slice(1);
                     showToast('Port status updated', 'success');
                 } else {
                     showToast('Error updating port status', 'error');
+                    // revert badge? optional
                 }
             } catch (error) {
                 showToast('Error updating port status', 'error');
             } finally {
-                loadingOverlay.style.display = 'none';
+                button.disabled = false;
             }
+        }
+
+        // Helper to return icon based on status
+        function getStatusIcon(status) {
+            if (status === 'open') return '<iconify-icon icon="solar:check-circle-bold" width="12"></iconify-icon>';
+            if (status === 'limited') return '<iconify-icon icon="solar:danger-triangle-bold" width="12"></iconify-icon>';
+            return '<iconify-icon icon="solar:forbidden-circle-bold" width="12"></iconify-icon>';
         }
 
         // Toast notification function
