@@ -12,7 +12,7 @@ const { refreshWeatherForPorts } = require('../services/weatherService');
 const { refreshFerriesFromOverpass } = require('../services/ferryService');
 
 // Import middleware
-const { isAuthenticated } = require('../midleware/auth');  // Note: folder is 'midleware' (misspelled)
+const { isAuthenticated } = require('../midleware/auth');  
 
 
 // Add this right after your imports
@@ -105,5 +105,10 @@ router.post('/api/ferries/refresh', async (req, res) => {
     console.error('Ferry refresh error:', error);
     res.status(500).json({ error: error.message });
   }
+});
+
+// TEMPORARY TEST ROUTE - Add this right after the router is created
+router.get('/test', (req, res) => {
+  res.json({ message: 'Router is working' });
 });
 module.exports = router;
