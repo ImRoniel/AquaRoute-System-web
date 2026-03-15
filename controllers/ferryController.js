@@ -95,7 +95,61 @@ const ferryController = {
       DEBUG.error('LOGS', 'Error loading logs', error);
       res.status(500).send('Error loading logs');
     }
-  }
+  },
+  showAddForm: async(req, res) => {
+     res.render('admin/add-ferry', {
+        title: 'Add New Ferry - AquaRoute Admin',
+        user: req.session.user,
+        currentPage: 'ferries',
+        error: null,
+        formData: {}
+    });
+},
+addFerry: async (req, res) => {
+    try {
+        const { name, route, speed_knots, status, eta, pointA_lat, pointA_lng, pointB_lat, pointB_lng, source } = req.body;
+
+        // Basic validation
+        if (!name || !route || !pointA_lat || !pointA_lng || !pointB_lat || !pointB_lng) {
+            return res.render('admin/add-ferry', {
+                title: 'Add New Ferry - AquaRoute Admin',
+                user: req.session.user,
+                currentPage: 'ferries',
+                error: 'Name, route, and coordinates are required.',
+                formData: req.body
+            });
+        }
+
+        const FerryModel = new (require('../models/ferry'))();
+        
+        const newFerry = await FerryModel.create({
+            name,
+            route,
+            speed_knots: parseInt(speed_knots) || 20,
+            status: status || 'on_time',
+            eta: parseInt(eta) || 60,
+            pointA: { lat: parseFloat(pointA_lat), lng: parseFloat(pointA_lng) },
+            pointB: { lat: parseFloat(pointB_lat), lng: parseFloat(pointB_lng) },
+            source: source || 'manual'
+        });
+
+        // Log the action (optional)
+        await logAudit(req.db, req.session.user.username, 'ADD_FERRY', `Added ferry: ${name}`);
+
+        res.redirect('/admin/ferries');
+    } catch (error) {
+        console.error('Error adding ferry:', error);
+        res.render('admin/add-ferry', {
+            title: 'Add New Ferry - AquaRoute Admin',
+            user: req.session.user,
+            currentPage: 'ferries',
+            error: 'Failed to add ferry: ' + error.message,
+            formData: req.body
+        });
+    }
+}
+  
+
 };
 
 module.exports = ferryController;

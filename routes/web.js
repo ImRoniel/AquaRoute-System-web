@@ -49,6 +49,7 @@ router.get('/admin/dashboard', isAuthenticated, ferryController.getDashboard);
 // Ferries management
 router.get('/admin/ferries', isAuthenticated, ferryController.getAllFerries);
 router.post('/admin/ferries/add', isAuthenticated, ferryController.addFerry);
+router.get('/admin/ferries/add', isAuthenticated, ferryController.showAddForm); // Add this route for the add ferry form
 router.post('/admin/ferries/:id/update', isAuthenticated, ferryController.updateFerry);
 router.post('/admin/ferries/:id/delete', isAuthenticated, ferryController.deleteFerry);
 
@@ -107,8 +108,11 @@ router.post('/api/ferries/refresh', async (req, res) => {
   }
 });
 
-// TEMPORARY TEST ROUTE - Add this right after the router is created
 router.get('/test', (req, res) => {
-  res.json({ message: 'Router is working' });
+    res.json({ message: 'Router is working' });
 });
+
+
+
+// i addeed this to test if the router is working without needing to go through the controllers
 module.exports = router;
