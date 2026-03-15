@@ -4,7 +4,7 @@ const fs = require("fs");
 console.log("🚀 Script started");
 
 // Load service account
-const serviceAccount = require("./serviceAccountKey.json");
+const serviceAccount = require("./config/serviceAccountKey.json");
 console.log("✅ Service account loaded");
 
 // Initialize Firebase Admin
