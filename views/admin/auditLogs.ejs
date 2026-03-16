@@ -469,19 +469,40 @@
                 </div>
 
                 <!-- Search and Actions Bar -->
-                <div class="flex items-center gap-3">
-                    <div class="search-container">
-                        <iconify-icon icon="solar:magnifier-bold" width="16" style="color: #87A2FF;"></iconify-icon>
-                        <input type="text" id="searchLogs" placeholder="Search by admin, action, or details..." onkeyup="searchLogs()">
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-4 bg-white p-4 rounded-xl border border-[#87A2FF]">
+                    <div class="flex-1 w-full">
+                        <div class="search-container">
+                            <iconify-icon icon="solar:magnifier-bold" width="16" style="color: #87A2FF;"></iconify-icon>
+                            <input type="text" id="searchLogs" placeholder="Search by admin, action, or details..." onkeyup="searchLogs()">
+                        </div>
                     </div>
-                    <button onclick="exportLogs()" class="export-btn">
-                        <iconify-icon icon="solar:export-bold" width="14"></iconify-icon>
-                        Export CSV
-                    </button>
-                    <button onclick="showToast('Clear history functionality coming soon!', 'info')" class="clear-btn">
-                        <iconify-icon icon="solar:trash-bin-bold" width="14"></iconify-icon>
-                        Clear History
-                    </button>
+                    
+                    <form action="/admin/logs" method="GET" class="flex items-center gap-2">
+                        <div class="flex items-center gap-2">
+                            <input type="date" name="start" value="<%= typeof start !== 'undefined' ? start : '' %>" 
+                                class="text-xs p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]">
+                            <span class="text-xs text-[#65676B]">to</span>
+                            <input type="date" name="end" value="<%= typeof end !== 'undefined' ? end : '' %>" 
+                                class="text-xs p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]">
+                        </div>
+                        <button type="submit" class="bg-[#87A2FF] text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-opacity-90 transition-all">
+                            Apply Filter
+                        </button>
+                        <% if (typeof start !== 'undefined' && (start || end)) { %>
+                            <a href="/admin/logs" class="text-xs text-[#99123D] hover:underline">Reset</a>
+                        <% } %>
+                    </form>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="exportLogs()" class="export-btn">
+                            <iconify-icon icon="solar:export-bold" width="14"></iconify-icon>
+                            Export CSV
+                        </button>
+                        <button onclick="clearLogs()" class="clear-btn">
+                            <iconify-icon icon="solar:trash-bin-bold" width="14"></iconify-icon>
+                            Clear History
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Logs Table -->
@@ -738,13 +759,38 @@
             showToast('Logs exported successfully', 'success');
         }
 
+        // Clear history functionality
+        async function clearLogs() {
+            if (!confirm('Are you sure you want to clear all audit logs? This action cannot be undone.')) return;
+            
+            try {
+                const response = await fetch('/api/admin/logs/clear', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showToast(result.message || 'Logs cleared successfully', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showToast(result.error || 'Failed to clear logs', 'error');
+                }
+            } catch (error) {
+                console.error('Error clearing logs:', error);
+                showToast('An error occurred while clearing logs', 'error');
+            }
+        }
+
         // Pagination functions
         function previousPage() {
-            showToast('Navigation to previous page', 'info');
+            showToast('Pagination is currently handled by server filters.', 'info');
         }
 
         function nextPage() {
-            showToast('Navigation to next page', 'info');
+            showToast('Pagination is currently handled by server filters.', 'info');
         }
     </script>
 </body> 

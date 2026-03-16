@@ -1,16 +1,13 @@
 const DEBUG = require('../config/debug');
 const Ferry = require('../models/ferry');
+const Log = require('../models/log');
 const { db } = require('../config/firebase'); // ✅ Firestore instance
 
-// Helper for audit logs – uses Firestore directly
+// Helper for audit logs – uses Log model
 const logAudit = async (adminName, action, details) => {
     try {
-        await db.collection('logs').add({
-            admin: adminName,
-            action,
-            details,
-            timestamp: new Date().toISOString()
-        });
+        const logModel = new Log();
+        await logModel.add(adminName, action, details);
     } catch (err) {
         console.error('Audit log failed:', err.message);
     }
@@ -91,22 +88,6 @@ const ferryController = {
         }
     },
 
-    getLogs: async (req, res) => {
-        const ferryModel = new Ferry(req.db);
-        try {
-            const logs = await ferryModel.getLogs(50);
-            res.render('admin/auditLogs', {
-                title: 'Audit Logs - AquaRoute Admin',
-                user: req.session.user,
-                logs,
-                currentPage: 'logs',
-                page: 1
-            });
-        } catch (error) {
-            DEBUG.error('LOGS', 'Error loading logs', error);
-            res.status(500).send('Error loading logs');
-        }
-    },
 
     showAddForm: async (req, res) => {
         res.render('admin/add-ferry', {

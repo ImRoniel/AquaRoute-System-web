@@ -8,6 +8,7 @@ const ferryController = require('../controllers/ferryController');
 const portController = require('../controllers/portController');
 const cargoController = require('../controllers/cargoController'); // Add this
 const userController = require('../controllers/userController');
+const logController = require('../controllers/logController');
 const { refreshWeatherForPorts } = require('../services/weatherService');
 const { refreshFerriesFromOverpass } = require('../services/ferryService');
 
@@ -74,7 +75,8 @@ router.post('/admin/users/:id/update', isAuthenticated, userController.updateUse
 router.post('/admin/users/:id/delete', isAuthenticated, userController.deleteUser);
 
 // Logs
-router.get('/admin/logs', isAuthenticated, ferryController.getLogs);
+router.get('/admin/logs', isAuthenticated, logController.getLogs);
+router.post('/api/admin/logs/clear', isAuthenticated, logController.clearLogs);
 
 // ==================== API ROUTES (JSON responses) ====================
 
