@@ -590,10 +590,14 @@
             document.getElementById('userForm').action = '/admin/users/add';
             document.getElementById('userId').value = '';
             document.getElementById('username').value = '';
+            document.getElementById('username').type = 'email'; // Ensure email validation
+            document.getElementById('username').disabled = false;
             document.getElementById('password').value = '';
             document.getElementById('password').required = true;
             document.getElementById('name').value = '';
             document.getElementById('role').value = 'user';
+            // Enable role select for new users
+            document.getElementById('role').disabled = false;
             document.getElementById('userModal').classList.add('active');
         }
 
@@ -602,17 +606,27 @@
             document.getElementById('userForm').action = '/admin/users/' + id + '/update';
             document.getElementById('userId').value = id;
             document.getElementById('username').value = username;
-            document.getElementById('username').disabled = true;
+            document.getElementById('username').type = 'email';
+            document.getElementById('username').disabled = true; // Email/Username usually immutable in both systems
             document.getElementById('password').value = '';
             document.getElementById('password').required = false;
             document.getElementById('name').value = name;
             document.getElementById('role').value = role;
+            
+            // For Firebase users (role === 'user'), role change via this modal is restricted
+            if (role === 'user') {
+                document.getElementById('role').disabled = true;
+            } else {
+                document.getElementById('role').disabled = false;
+            }
+            
             document.getElementById('userModal').classList.add('active');
         }
 
         function closeModal() {
             document.getElementById('userModal').classList.remove('active');
             document.getElementById('username').disabled = false;
+            document.getElementById('role').disabled = false;
             document.getElementById('password').required = true;
         }
 

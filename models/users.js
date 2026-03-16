@@ -22,7 +22,7 @@ class Users {
             snapshot.forEach(doc => {
                 const data = doc.data();
                 users.push({
-                    id: doc.id, // UID from Auth is typically the document ID
+                    id: doc.id,
                     username: data.email || data.username,
                     name: data.displayName || data.name,
                     role: data.role || data.userType || 'user',
@@ -33,8 +33,6 @@ class Users {
             return users;
         } catch (error) {
             console.error('Error fetching users:', error);
-            // If the query fails because of missing index on createdAt, 
-            // fallback to unordered fetch for now so the UI doesn't break
             if (error.code === 9) { // FAILED_PRECONDITION (usually missing index)
                 const snapshot = await this.collection.limit(limit).get();
                 const users = [];
@@ -56,17 +54,35 @@ class Users {
     }
 
     async getById(uid) {
-        const doc = await this.collection.doc(uid).get();
-        if (!doc.exists) return null;
-        const data = doc.data();
-        return {
-            id: doc.id,
-            username: data.email || data.username,
-            name: data.displayName || data.name,
-            role: data.role || data.userType || 'user',
-            created_at: data.createdAt?.toDate ? data.createdAt.toDate() : (data.createdAt || new Date()),
-            ...data
-        };
+        try {
+            const doc = await this.collection.doc(uid).get();
+            if (!doc.exists) return null;
+            const data = doc.data();
+            return {
+                id: doc.id,
+                username: data.email || data.username,
+                name: data.displayName || data.name,
+                role: data.role || data.userType || 'user',
+                created_at: data.createdAt?.toDate ? data.createdAt.toDate() : (data.createdAt || new Date()),
+                ...data
+            };
+        } catch (error) {
+            console.error('Error fetching user by id:', error);
+            throw error;
+        }
+    }
+
+    async findByEmail(email) {
+        try {
+            const snapshot = await this.collection.where('email', '==', email).limit(1).get();
+            if (snapshot.empty) return null;
+            const doc = snapshot.docs[0];
+            const data = doc.data();
+            return { id: doc.id, ...data };
+        } catch (error) {
+            console.error('Error finding user by email:', error);
+            throw error;
+        }
     }
 
     /**
@@ -77,7 +93,7 @@ class Users {
         try {
             // 1. Create in Firebase Auth
             authUser = await admin.auth().createUser({
-                email: userData.username, // Using username as email for Auth
+                email: userData.username,
                 password: userData.password,
                 displayName: userData.name,
             });
@@ -87,17 +103,15 @@ class Users {
                 uid: authUser.uid,
                 email: userData.username,
                 displayName: userData.name,
-                role: userData.role || 'user',
-                userType: userData.role || 'user', // backward compat
+                role: 'user', // For regular users only
+                userType: 'user',
                 createdAt: admin.firestore.FieldValue.serverTimestamp(),
                 preferences: { darkMode: false, language: 'en', notificationsEnabled: true }
             };
 
             await this.collection.doc(authUser.uid).set(firestoreData);
-
             return { id: authUser.uid, ...firestoreData };
         } catch (error) {
-            // Cleanup: if Firestore fails, we might want to delete the Auth user
             if (authUser) {
                 await admin.auth().deleteUser(authUser.uid).catch(console.error);
             }
@@ -111,28 +125,30 @@ class Users {
                 lastUpdated: admin.firestore.FieldValue.serverTimestamp()
             };
 
+            const authUpdates = {};
+
             if (data.name) {
                 updateData.displayName = data.name;
                 updateData.name = data.name;
-                // Update Auth display name
-                await admin.auth().updateUser(uid, { displayName: data.name });
-            }
-
-            if (data.role) {
-                updateData.role = data.role;
-                updateData.userType = data.role;
-            }
-
-            if (data.password) {
-                await admin.auth().updateUser(uid, { password: data.password });
+                authUpdates.displayName = data.name;
             }
 
             if (data.username) {
                 updateData.email = data.username;
                 updateData.username = data.username;
-                await admin.auth().updateUser(uid, { email: data.username });
+                authUpdates.email = data.username;
             }
 
+            if (data.password) {
+                authUpdates.password = data.password;
+            }
+
+            // Update Auth if needed
+            if (Object.keys(authUpdates).length > 0) {
+                await admin.auth().updateUser(uid, authUpdates);
+            }
+
+            // Update Firestore
             await this.collection.doc(uid).update(updateData);
             return true;
         } catch (error) {
@@ -143,9 +159,7 @@ class Users {
 
     async delete(uid) {
         try {
-            // Delete from Auth
             await admin.auth().deleteUser(uid);
-            // Delete from Firestore
             await this.collection.doc(uid).delete();
             return true;
         } catch (error) {
@@ -155,4 +169,5 @@ class Users {
     }
 }
 
-module.exports = new Users();
+module.exports = new Users();
+

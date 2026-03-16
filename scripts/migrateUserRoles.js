@@ -1,58 +1,52 @@
 // c:\xampp\htdocs\AquaRoute-System-web\scripts\migrateUserRoles.js
-const { db, admin } = require('../config/firebase');
+const { admin, db } = require('../config/firebase');
 
 async function migrateUsers() {
-    console.log('🚀 Starting user migration...');
-    const usersRef = db.collection('users');
-    const snapshot = await usersRef.get();
+    console.log('🚀 Starting User Role Migration...');
+    const usersCollection = db.collection('users');
+    const snapshot = await usersCollection.get();
 
     if (snapshot.empty) {
-        console.log('📅 No users found to migrate.');
+        console.log('ℹ️ No users found in Firestore.');
         return;
     }
 
-    let updatedCount = 0;
     const batch = db.batch();
+    let count = 0;
 
     snapshot.forEach(doc => {
         const data = doc.data();
         const updates = {};
-        let needsUpdate = false;
 
-        // Ensure role exists
-        if (!data.role) {
-            updates.role = data.userType || 'user';
-            needsUpdate = true;
+        // Force role to 'user' for Firestore records (admins go to SQLite)
+        if (data.role !== 'user') {
+            updates.role = 'user';
+            updates.userType = 'user';
         }
 
-        // Ensure createdAt exists
+        // Fix missing createdAt
         if (!data.createdAt) {
-            // Use lastLoginAt if available, otherwise now
-            if (data.lastLoginAt) {
-                updates.createdAt = admin.firestore.Timestamp.fromMillis(data.lastLoginAt);
-            } else {
-                updates.createdAt = admin.firestore.FieldValue.serverTimestamp();
-            }
-            needsUpdate = true;
+            updates.createdAt = data.lastLoginAt ? 
+                admin.firestore.Timestamp.fromMillis(parseInt(data.lastLoginAt)) : 
+                admin.firestore.FieldValue.serverTimestamp();
         }
 
-        // Ensure uid corresponds to doc ID
-        if (!data.uid || data.uid !== doc.id) {
+        // Ensure UID is correct
+        if (data.uid !== doc.id) {
             updates.uid = doc.id;
-            needsUpdate = true;
         }
 
-        if (needsUpdate) {
+        if (Object.keys(updates).length > 0) {
             batch.update(doc.ref, updates);
-            updatedCount++;
+            count++;
         }
     });
 
-    if (updatedCount > 0) {
+    if (count > 0) {
         await batch.commit();
-        console.log(`✅ Migration complete. Updated ${updatedCount} users.`);
+        console.log(`✅ Migration complete. Updated ${count} users.`);
     } else {
-        console.log('✨ No updates needed. All users are consistent.');
+        console.log('✅ No updates needed.');
     }
 }
 
