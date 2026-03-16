@@ -6,33 +6,7 @@ class Port {
         this.collection = db.collection('ports');
     }
 
-    /**
-     * Get all ports from Firebase
-     */
-    async getAll() {
-        try {
-            const snapshot = await this.collection.get();
-            const ports = [];
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                ports.push({
-                    id: doc.id,
-                    name: data.name || 'Unknown Port',
-                    lat: data.lat || 0,
-                    lng: data.lng || 0,
-                    type: data.type || 'unknown',
-                    status: data.status || 'unknown',
-                    source: data.source || 'unknown',
-                    location: data.location || '',
-                    createdAt: data.createdAt ? data.createdAt.toDate() : null
-                });
-            });
-            return ports;
-        } catch (error) {
-            console.error('Error getting all ports:', error);
-            return [];
-        }
-    }
+    // getAll() has been removed to prevent Firestore quota exhaustion.
 
     /**
      * Get paginated ports
@@ -64,12 +38,37 @@ class Port {
                     status: data.status || 'unknown',
                     source: data.source || 'unknown',
                     location: data.location || '',
-                    weather: data.weather || 'Unknown',
                     createdAt: data.createdAt ? data.createdAt.toDate() : null
                 });
                 lastVisible = doc;
             });
             
+            // Fetch weather data for the batch of ports
+            if (ports.length > 0) {
+                const weatherCollection = db.collection('weather');
+                
+                // whereIn allows max 10 items per array filter, so chunk the IDs
+                const portIds = ports.map(p => p.id);
+                const weatherMap = {};
+                
+                // Process in chunks of 10
+                for (let i = 0; i < portIds.length; i += 10) {
+                    const chunk = portIds.slice(i, i + 10);
+                    try {
+                        const weatherSnapshot = await weatherCollection.where(admin.firestore.FieldPath.documentId(), 'in', chunk).get();
+                        weatherSnapshot.forEach(doc => {
+                            weatherMap[doc.id] = doc.data();
+                        });
+                    } catch (err) {
+                        console.error('Error fetching weather chunk:', err);
+                    }
+                }
+                
+                // Map weather back to ports
+                ports.forEach(port => {
+                    port.weatherData = weatherMap[port.id] || null;
+                });
+            }
             return {
                 ports,
                 lastVisible
@@ -89,39 +88,57 @@ class Port {
     }
 
     /**
-     * Search ports by name (case-insensitive)
+     * Search ports by name (case-insensitive indexed search)
      */
     async searchByName(query) {
         try {
             const searchTerm = query.toLowerCase();
             
-            // Get all ports (for small to medium datasets)
-            // For large datasets, consider using Algolia or Firebase Extensions
-            const snapshot = await this.collection.get();
+            // Use indexed prefix query on searchName field instead of full collection read
+            const snapshot = await this.collection
+                .where('searchName', '>=', searchTerm)
+                .where('searchName', '<=', searchTerm + '\uf8ff')
+                .limit(50)
+                .get();
             
             const ports = [];
             snapshot.forEach(doc => {
                 const data = doc.data();
-                const name = (data.name || '').toLowerCase();
-                const location = (data.location || '').toLowerCase();
-                
-                // Simple client-side filtering
-                if (name.includes(searchTerm) || location.includes(searchTerm)) {
-                    ports.push({
-                        id: doc.id,
-                        name: data.name || 'Unknown Port',
-                        lat: data.lat || 0,
-                        lng: data.lng || 0,
-                        type: data.type || 'unknown',
-                        status: data.status || 'unknown',
-                        source: data.source || 'unknown',
-                        location: data.location || '',
-                        weather: data.weather || 'Unknown',
-                        createdAt: data.createdAt ? data.createdAt.toDate() : null
-                    });
-                }
+                ports.push({
+                    id: doc.id,
+                    name: data.name || 'Unknown Port',
+                    lat: data.lat || 0,
+                    lng: data.lng || 0,
+                    type: data.type || 'unknown',
+                    status: data.status || 'unknown',
+                    source: data.source || 'unknown',
+                    location: data.location || '',
+                    createdAt: data.createdAt ? data.createdAt.toDate() : null
+                });
             });
             
+            // Fetch weather data for the filtered ports in batches (max 10)
+            if (ports.length > 0) {
+                const weatherCollection = db.collection('weather');
+                const portIds = ports.map(p => p.id);
+                const weatherMap = {};
+                
+                for (let i = 0; i < portIds.length; i += 10) {
+                    const chunk = portIds.slice(i, i + 10);
+                    try {
+                        const weatherSnapshot = await weatherCollection.where(admin.firestore.FieldPath.documentId(), 'in', chunk).get();
+                        weatherSnapshot.forEach(doc => {
+                            weatherMap[doc.id] = doc.data();
+                        });
+                    } catch (err) {
+                        console.error('Error fetching weather chunk:', err);
+                    }
+                }
+                
+                ports.forEach(port => {
+                    port.weatherData = weatherMap[port.id] || null;
+                });
+            }
             return ports;
             
         } catch (error) {
@@ -181,8 +198,16 @@ class Port {
      */
     async update(id, data) {
         try {
+            const cleanData = {};
+            Object.keys(data).forEach(key => {
+                if (data[key] !== undefined) {
+                    cleanData[key] = data[key];
+                }
+            });
+
             const updateData = {
-                ...data,
+                ...cleanData,
+                searchName: (cleanData.name || '').toLowerCase(),
                 updatedAt: admin.firestore.FieldValue.serverTimestamp()
             };
             
@@ -199,12 +224,19 @@ class Port {
      */
     async add(data) {
         try {
+            const cleanData = {};
+            Object.keys(data).forEach(key => {
+                if (data[key] !== undefined) {
+                    cleanData[key] = data[key];
+                }
+            });
+
             const docRef = await this.collection.add({
-                ...data,
+                ...cleanData,
+                searchName: (cleanData.name || '').toLowerCase(),
                 createdAt: admin.firestore.FieldValue.serverTimestamp(),
                 updatedAt: admin.firestore.FieldValue.serverTimestamp()
-            });
-            return { id: docRef.id, ...data };
+            });            return { id: docRef.id, ...cleanData };
         } catch (error) {
             console.error('❌ Error adding port:', error);
             throw error;
@@ -224,23 +256,29 @@ class Port {
         }
     }
 
-    /**
-     * Get port statistics
-     */
     async getStats() {
         try {
-            const ports = await this.getAll();
+            // Use count() aggregation instead of fetching all documents
+            const [totalSnap, openSnap, closedSnap, limitedSnap, ferrySnap, pierSnap, osmSnap] = await Promise.all([
+                this.collection.count().get(),
+                this.collection.where('status', '==', 'open').count().get(),
+                this.collection.where('status', '==', 'closed').count().get(),
+                this.collection.where('status', '==', 'limited').count().get(),
+                this.collection.where('type', '==', 'ferry_terminal').count().get(),
+                this.collection.where('type', '==', 'pier').count().get(),
+                this.collection.where('source', '==', 'OSM').count().get()
+            ]);
             
             return {
-                total: ports.length,
-                open: ports.filter(p => p.status?.toLowerCase() === 'open').length,
-                closed: ports.filter(p => p.status?.toLowerCase() === 'closed').length,
-                limited: ports.filter(p => p.status?.toLowerCase() === 'limited').length,
+                total: totalSnap.data().count,
+                open: openSnap.data().count,
+                closed: closedSnap.data().count,
+                limited: limitedSnap.data().count,
                 // Count by type
-                ferryTerminals: ports.filter(p => p.type === 'ferry_terminal').length,
-                piers: ports.filter(p => p.type === 'pier').length,
+                ferryTerminals: ferrySnap.data().count,
+                piers: pierSnap.data().count,
                 // Source breakdown
-                osm: ports.filter(p => p.source === 'OSM').length
+                osm: osmSnap.data().count
             };
         } catch (error) {
             console.error('❌ Error getting port stats:', error);
@@ -263,6 +301,7 @@ class Port {
         try {
             const snapshot = await this.collection
                 .where('type', '==', type)
+                .limit(100) // Added limit to prevent accidental large reads
                 .get();
             
             const ports = [];
@@ -289,6 +328,7 @@ class Port {
         try {
             const snapshot = await this.collection
                 .where('status', '==', status)
+                .limit(100) // Added limit to prevent accidental large reads
                 .get();
             
             const ports = [];
@@ -318,20 +358,35 @@ class Port {
         return port.name || 'Unknown Port';
     }
 
-    /**
-     * Get ports near coordinates (within radius in km)
-     */
     async getNearby(lat, lng, radiusKm = 10) {
         try {
-            const ports = await this.getAll();
+            // Approx 1 degree latitude = 111 km
+            const latOffset = radiusKm / 111.0;
+            const lngOffset = radiusKm / (111.0 * Math.cos(lat * (Math.PI / 180)));
             
-            // Filter ports within radius
-            const nearby = ports.filter(port => {
-                const distance = this.calculateDistance(
-                    lat, lng,
-                    port.lat, port.lng
-                );
-                return distance <= radiusKm;
+            const latMin = parseFloat(lat) - latOffset;
+            const latMax = parseFloat(lat) + latOffset;
+            
+            // Using bounding box query (requires composite index on lat/lng if we also bound by lng directly)
+            // Or we do a simple filter on lat, then manually filter lng to save reads
+            const snapshot = await this.collection
+                .where('lat', '>=', latMin)
+                .where('lat', '<=', latMax)
+                .get();
+                
+            let nearby = [];
+            
+            snapshot.forEach(doc => {
+                const port = doc.data();
+                if (port.lat && port.lng) {
+                    const distance = this.calculateDistance(lat, lng, port.lat, port.lng);
+                    if (distance <= radiusKm) {
+                        nearby.push({
+                            id: doc.id,
+                            ...port
+                        });
+                    }
+                }
             });
             
             return nearby;

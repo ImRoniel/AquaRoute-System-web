@@ -101,7 +101,7 @@ const portController = {
     const portModel = new Port();
     try {
       const { name, lat, lng, type, status, source, location, weather } = req.body;
-      await portModel.add({ name, lat, lng, type, status, source, location, weather });
+      await portModel.add({ name, lat: parseFloat(lat) || 0, lng: parseFloat(lng) || 0, type, status, source, location, weather });
       res.redirect('/admin/ports');
     } catch (error) {
       DEBUG.error('PORTS', 'Error adding port', error);
@@ -114,7 +114,7 @@ const portController = {
     const portId = req.params.id;
     try {
       const { name, lat, lng, type, status, source, location, weather } = req.body;
-      await portModel.update(portId, { name, lat, lng, type, status, source, location, weather });
+      await portModel.update(portId, { name, lat: parseFloat(lat) || 0, lng: parseFloat(lng) || 0, type, status, source, location, weather });
       res.redirect('/admin/ports');
     } catch (error) {
       DEBUG.error('PORTS', 'Error updating port', error);

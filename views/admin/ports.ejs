@@ -218,11 +218,83 @@
             font-size: 0.75rem;
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .weather-text span {
+            display: flex;
+            align-items: center;
             gap: 0.25rem;
         }
 
-        .weather-text iconify-icon {
-            color: #87A2FF;
+        .weather-info-pill {
+            background-color: #F8FAFC;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #E2E8F0;
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border: 1px solid #87A2FF;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            min-width: 140px;
+            z-index: 50;
+            display: none;
+            flex-direction: column;
+            padding: 0.25rem 0;
+        }
+
+        .dropdown-menu.show {
+            display: flex;
+        }
+
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            color: #2D2F31;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.15s ease;
+            text-align: left;
+            width: 100%;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+            background-color: #FEC1A0;
+            color: #99123D;
+        }
+
+        .relative-menu { position: relative; }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            border: 1px solid #87A2FF;
         }
 
         /* Toast */
@@ -412,16 +484,38 @@
                             <div class="port-icon">
                                 <iconify-icon icon="solar:anchor-bold-duotone" width="20"></iconify-icon>
                             </div>
-                            <button class="menu-btn">
-                                <iconify-icon icon="solar:menu-dots-bold" width="18"></iconify-icon>
-                            </button>
+                            <div class="relative-menu">
+                                <button class="menu-btn" onclick="toggleMenu('<%= p.id %>')">
+                                    <iconify-icon icon="solar:menu-dots-bold" width="18"></iconify-icon>
+                                </button>
+                                <div id="dropdown-<%= p.id %>" class="dropdown-menu">
+                                    <button onclick="openEditModal('<%= p.id %>', '<%= p.name ? p.name.replace(/'/g, `\\'`) : "" %>', '<%= p.type %>', '<%= p.status %>', <%= p.lat || 0 %>, <%= p.lng || 0 %>, '<%= p.location ? p.location.replace(/'/g, `\\'`) : "" %>')" class="dropdown-item">
+                                        <iconify-icon icon="solar:pen-bold" width="14"></iconify-icon>
+                                        Edit Port
+                                    </button>
+                                    <button onclick="togglePortStatus('<%= p.id %>')" class="dropdown-item">
+                                        <iconify-icon icon="solar:refresh-circle-bold" width="14"></iconify-icon>
+                                        Toggle Status
+                                    </button>
+                                    <button onclick="deletePort('<%= p.id %>')" class="dropdown-item" style="color: #99123D;">
+                                        <iconify-icon icon="solar:trash-bin-trash-bold" width="14"></iconify-icon>
+                                        Delete Port
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         
                         <h4 class="font-semibold text-base mb-1" style="color: #2D2F31;"><%= p.name %></h4>
                         
                         <div class="weather-text mb-4">
-                            <iconify-icon icon="solar:cloud-sun-2-bold" width="14"></iconify-icon>
-                            Weather: <%= p.weather || 'Unknown' %>
+                            <% if (p.weatherData) { %>
+                                <span class="weather-info-pill"><%= p.weatherData.icon %> <%= p.weatherData.temperature %>°C</span>
+                                <span class="weather-info-pill">🌊 <%= p.weatherData.waves || 'N/A' %></span>
+                                <span class="weather-info-pill">💨 <%= p.weatherData.windSpeed %></span>
+                            <% } else { %>
+                                <iconify-icon icon="solar:cloud-sun-2-bold" width="14"></iconify-icon>
+                                Weather: Unknown
+                            <% } %>
                         </div>
                         
                         <div class="flex justify-between items-center pt-3 border-t border-[#87A2FF]">
@@ -472,6 +566,62 @@
         </div>
     </main>
 
+    <!-- Edit Port Modal -->
+    <div id="editPortModal" class="modal">
+        <div class="modal-content">
+            <h3 class="text-lg font-semibold mb-4 text-[#2D2F31]">Edit Port</h3>
+            <form id="editPortForm" method="POST">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-[#65676B] mb-1">Port Name</label>
+                        <input type="text" id="editName" name="name" required
+                            class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-[#65676B] mb-1">Location / Area</label>
+                        <input type="text" id="editLocation" name="location" 
+                            class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]">
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="flex-1">
+                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Status</label>
+                            <select id="editStatus" name="status" class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none">
+                                <option value="open">Open</option>
+                                <option value="limited">Limited</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Type</label>
+                            <select id="editType" name="type" class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none">
+                                <option value="ferry_terminal">Ferry Terminal</option>
+                                <option value="pier">Pier</option>
+                                <option value="dock">Dock</option>
+                                <option value="unknown">Unknown</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="flex-1">
+                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Latitude</label>
+                            <input type="number" step="any" id="editLat" name="lat" required
+                                class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]">
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Longitude</label>
+                            <input type="number" step="any" id="editLng" name="lng" required
+                                class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" onclick="closeEditModal()" class="px-4 py-2 text-sm font-semibold text-[#65676B] bg-white border border-[#87A2FF] rounded-lg hover:bg-gray-50">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-[#87A2FF] rounded-lg hover:bg-opacity-90">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-4 right-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
         <div class="toast">
@@ -495,6 +645,58 @@
             }, 500); // Wait 500ms after user stops typing
         }
 
+        function toggleMenu(id) {
+            // close any open menus
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                if(menu.id !== 'dropdown-' + id) menu.classList.remove('show');
+            });
+            const d = document.getElementById('dropdown-' + id);
+            d.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.relative-menu')) {
+                document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
+            }
+        });
+
+        // Modal Functions
+        function openEditModal(id, name, type, status, lat, lng, location) {
+            const form = document.getElementById('editPortForm');
+            form.action = `/admin/ports/${id}/update`;
+            
+            document.getElementById('editName').value = name;
+            document.getElementById('editLocation').value = location && location !== 'undefined' ? location : '';
+            document.getElementById('editStatus').value = status;
+            document.getElementById('editType').value = type;
+            document.getElementById('editLat').value = lat;
+            document.getElementById('editLng').value = lng;
+
+            document.getElementById('editPortModal').style.display = 'flex';
+            toggleMenu(id); // close menu
+        }
+
+        function closeEditModal() {
+            document.getElementById('editPortModal').style.display = 'none';
+        }
+
+        async function deletePort(id) {
+            if(confirm('Are you sure you want to delete this port?')) {
+                try {
+                    const res = await fetch(`/admin/ports/${id}/delete`, { method: 'POST' });
+                    if(res.redirected || res.ok) {
+                        showToast('Port deleted', 'success');
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        showToast('Error deleting port', 'error');
+                    }
+                } catch(e) {
+                    showToast('Failed to delete port', 'error');
+                }
+            }
+        }
+
         // Function to render port cards
         function renderPorts(ports, containerId = 'search-results-grid') {
             const container = document.getElementById(containerId);
@@ -505,7 +707,6 @@
             const resultCount = document.getElementById('resultCount');
             
             if (ports.length === 0) {
-                // Hide both grids, show no results
                 initialGrid.style.display = 'none';
                 searchResultsGrid.style.display = 'none';
                 noResults.style.display = 'block';
@@ -514,7 +715,6 @@
                 return;
             }
 
-            // We're in search mode - hide initial grid, show search results
             if (containerId === 'search-results-grid') {
                 initialGrid.style.display = 'none';
                 searchResultsGrid.style.display = 'grid';
@@ -526,28 +726,23 @@
             let html = '';
             ports.forEach(p => {
                 let statusBadge = '';
-                
                 if (p.status === 'open') {
-                    statusBadge = `
-                        <span class="badge badge-open">
-                            <iconify-icon icon="solar:check-circle-bold" width="12"></iconify-icon>
-                            Open
-                        </span>
-                    `;
+                    statusBadge = `<span class="badge badge-open"><iconify-icon icon="solar:check-circle-bold" width="12"></iconify-icon>Open</span>`;
                 } else if (p.status === 'limited') {
-                    statusBadge = `
-                        <span class="badge badge-limited">
-                            <iconify-icon icon="solar:danger-triangle-bold" width="12"></iconify-icon>
-                            Limited
-                        </span>
+                    statusBadge = `<span class="badge badge-limited"><iconify-icon icon="solar:danger-triangle-bold" width="12"></iconify-icon>Limited</span>`;
+                } else {
+                    statusBadge = `<span class="badge badge-closed"><iconify-icon icon="solar:forbidden-circle-bold" width="12"></iconify-icon>Closed</span>`;
+                }
+
+                let weatherHtml = '';
+                if (p.weatherData) {
+                    weatherHtml = `
+                        <span class="weather-info-pill">${p.weatherData.icon} ${p.weatherData.temperature}°C</span>
+                        <span class="weather-info-pill">🌊 ${p.weatherData.waves || 'N/A'}</span>
+                        <span class="weather-info-pill">💨 ${p.weatherData.windSpeed}</span>
                     `;
                 } else {
-                    statusBadge = `
-                        <span class="badge badge-closed">
-                            <iconify-icon icon="solar:forbidden-circle-bold" width="12"></iconify-icon>
-                            Closed
-                        </span>
-                    `;
+                    weatherHtml = `<iconify-icon icon="solar:cloud-sun-2-bold" width="14"></iconify-icon> Weather: Unknown`;
                 }
 
                 html += `
@@ -556,29 +751,31 @@
                             <div class="port-icon">
                                 <iconify-icon icon="solar:anchor-bold-duotone" width="20"></iconify-icon>
                             </div>
-                            <button class="menu-btn">
-                                <iconify-icon icon="solar:menu-dots-bold" width="18"></iconify-icon>
-                            </button>
+                            <div class="relative-menu">
+                                <button class="menu-btn" onclick="toggleMenu('${p.id}')">
+                                    <iconify-icon icon="solar:menu-dots-bold" width="18"></iconify-icon>
+                                </button>
+                                <div id="dropdown-${p.id}" class="dropdown-menu">
+                                    <button onclick="openEditModal('${p.id}', '${p.name.replace(/'/g, "\\'")}', '${p.type}', '${p.status}', ${p.lat}, ${p.lng}, '${p.location || ''}')" class="dropdown-item">
+                                        <iconify-icon icon="solar:pen-bold" width="14"></iconify-icon> Edit Port
+                                    </button>
+                                    <button onclick="togglePortStatus('${p.id}')" class="dropdown-item">
+                                        <iconify-icon icon="solar:refresh-circle-bold" width="14"></iconify-icon> Toggle Status
+                                    </button>
+                                    <button onclick="deletePort('${p.id}')" class="dropdown-item" style="color: #99123D;">
+                                        <iconify-icon icon="solar:trash-bin-trash-bold" width="14"></iconify-icon> Delete Port
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        
                         <h4 class="font-semibold text-base mb-1" style="color: #2D2F31;">${p.name}</h4>
-                        
-                        <div class="weather-text mb-4">
-                            <iconify-icon icon="solar:cloud-sun-2-bold" width="14"></iconify-icon>
-                            Weather: ${p.weather || 'Unknown'}
-                        </div>
-                        
+                        <div class="weather-text mb-4">${weatherHtml}</div>
                         <div class="flex justify-between items-center pt-3 border-t border-[#87A2FF]">
                             ${statusBadge}
-                            
-                            <button onclick="togglePortStatus('${p.id}')" class="update-btn">
-                                Update
-                            </button>
+                            <button onclick="togglePortStatus('${p.id}')" class="update-btn">Update</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
-            
             container.innerHTML = html;
         }
 
@@ -639,6 +836,16 @@
                         } else {
                             statusBadge = `<span class="badge badge-closed"><iconify-icon icon="solar:forbidden-circle-bold" width="12"></iconify-icon> Closed</span>`;
                         }
+                        let weatherHtml = '';
+                        if (p.weatherData) {
+                            weatherHtml = `
+                                <span class="weather-info-pill">${p.weatherData.icon} ${p.weatherData.temperature}°C</span>
+                                <span class="weather-info-pill">🌊 ${p.weatherData.waves || 'N/A'}</span>
+                                <span class="weather-info-pill">💨 ${p.weatherData.windSpeed}</span>
+                            `;
+                        } else {
+                            weatherHtml = `<iconify-icon icon="solar:cloud-sun-2-bold" width="14"></iconify-icon> Weather: Unknown`;
+                        }
 
                         html += `
                             <div class="port-card" data-id="${p.id}">
@@ -646,15 +853,25 @@
                                     <div class="port-icon">
                                         <iconify-icon icon="solar:anchor-bold-duotone" width="20"></iconify-icon>
                                     </div>
-                                    <button class="menu-btn">
-                                        <iconify-icon icon="solar:menu-dots-bold" width="18"></iconify-icon>
-                                    </button>
+                                    <div class="relative-menu">
+                                        <button class="menu-btn" onclick="toggleMenu('${p.id}')">
+                                            <iconify-icon icon="solar:menu-dots-bold" width="18"></iconify-icon>
+                                        </button>
+                                        <div id="dropdown-${p.id}" class="dropdown-menu">
+                                            <button onclick="openEditModal('${p.id}', '${p.name.replace(/'/g, "\\'")}', '${p.type}', '${p.status}', ${p.lat}, ${p.lng}, '${p.location || ''}')" class="dropdown-item">
+                                                <iconify-icon icon="solar:pen-bold" width="14"></iconify-icon> Edit Port
+                                            </button>
+                                            <button onclick="togglePortStatus('${p.id}')" class="dropdown-item">
+                                                <iconify-icon icon="solar:refresh-circle-bold" width="14"></iconify-icon> Toggle Status
+                                            </button>
+                                            <button onclick="deletePort('${p.id}')" class="dropdown-item" style="color: #99123D;">
+                                                <iconify-icon icon="solar:trash-bin-trash-bold" width="14"></iconify-icon> Delete Port
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <h4 class="font-semibold text-base mb-1" style="color: #2D2F31;">${p.name}</h4>
-                                <div class="weather-text mb-4">
-                                    <iconify-icon icon="solar:cloud-sun-2-bold" width="14"></iconify-icon>
-                                    Weather: ${p.weather || 'Unknown'}
-                                </div>
+                                <div class="weather-text mb-4">${weatherHtml}</div>
                                 <div class="flex justify-between items-center pt-3 border-t border-[#87A2FF]">
                                     ${statusBadge}
                                     <button onclick="togglePortStatus('${p.id}')" class="update-btn">Update</button>
@@ -687,13 +904,16 @@
 
         // Function to toggle port status
         async function togglePortStatus(id) {
-            const button = event.target;
-            const card = button.closest('.port-card');
+            // Find badge regardless if it's via update button or dropdown menu
+            const card = document.querySelector(`.port-card[data-id="${id}"]`);
+            if(!card) return;
             const badge = card.querySelector('.badge');
-            const oldText = badge.innerText;
+            // Hide dropdown if it was opened from menu
+            const dropdown = document.getElementById('dropdown-'+id);
+            if(dropdown) dropdown.classList.remove('show');
             
-            // Disable button to prevent double-clicks
-            button.disabled = true;
+            const btn = event.currentTarget;
+            if (btn) btn.disabled = true;
             
             try {
                 const response = await fetch(`/api/ports/${id}/toggle-status`, {
