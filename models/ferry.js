@@ -11,10 +11,22 @@ class Ferry {
         this.logsCollection = db ? db.collection('logs') : null;
     }
 
-    async getAll(limit = 100) {
+    async getAll(limit = 100, filters = {}) {
         if (!this.collection) return [];
         try {
-            const snapshot = await this.collection.limit(limit).get();
+            let query = this.collection;
+
+            // Apply filters
+            if (filters.status) {
+                query = query.where('status', '==', filters.status);
+            }
+            if (filters.route) {
+                // For route, we'll do a simple equality check for now
+                // If the user wants a partial search, we'll need a searchName field like in Ports
+                query = query.where('route', '==', filters.route);
+            }
+
+            const snapshot = await query.limit(limit).get();
             const ferries = [];
 
             snapshot.forEach(doc => {

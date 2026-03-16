@@ -433,9 +433,36 @@
                             <iconify-icon icon="solar:magnifer-linear" class="absolute left-3 top-1/2 -translate-y-1/2" style="color: #87A2FF; font-size: 0.875rem;"></iconify-icon>
                             <input type="text" id="ferry-search" onkeyup="filterFerries()" placeholder="Search vessels..." class="search-input">
                         </div>
-                        <button class="btn-filter">
-                            <iconify-icon icon="solar:filter-bold" width="16"></iconify-icon>
-                        </button>
+                        <div class="relative">
+                            <button class="btn-filter" id="filter-btn" onclick="toggleFilterPanel()">
+                                <iconify-icon icon="solar:filter-bold" width="16"></iconify-icon>
+                            </button>
+                            <!-- Filter Panel -->
+                            <div id="filter-panel" class="hidden absolute top-12 left-0 w-64 bg-white border border-[#87A2FF] rounded-xl shadow-xl z-50 p-4">
+                                <h3 class="text-sm font-semibold mb-3">Filter Vessels</h3>
+                                <form action="/admin/ferries" method="GET">
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label class="text-xs font-medium text-gray-500 mb-1 block">Status</label>
+                                            <select name="status" class="w-full text-sm border border-[#87A2FF] rounded-lg px-3 py-2">
+                                                <option value="">All Statuses</option>
+                                                <option value="on_time" <%= query.status === 'on_time' ? 'selected' : '' %>>On Time</option>
+                                                <option value="delayed" <%= query.status === 'delayed' ? 'selected' : '' %>>Delayed</option>
+                                                <option value="suspended" <%= query.status === 'suspended' ? 'selected' : '' %>>Suspended</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-medium text-gray-500 mb-1 block">Route</label>
+                                            <input type="text" name="route" value="<%= query.route || '' %>" placeholder="Cebu - Manila" class="w-full text-sm border border-[#87A2FF] rounded-lg px-3 py-2">
+                                        </div>
+                                        <div class="flex gap-2 pt-2">
+                                            <a href="/admin/ferries" class="flex-1 text-center text-xs font-medium text-gray-500 hover:text-gray-700 py-2 border border-gray-200 rounded-lg">Clear</a>
+                                            <button type="submit" class="flex-1 bg-[#87A2FF] text-white text-xs font-medium py-2 rounded-lg hover:bg-[#BD77FF]">Apply</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     <button onclick="openAddModal()" class="btn-primary">
                         <iconify-icon icon="solar:add-circle-bold" width="16"></iconify-icon>
@@ -487,7 +514,7 @@
                                 </td>
                                 <td class="px-6 py-3" style="color: #65676B;"><%= f.eta %> min</td>
                                 <td class="px-6 py-3 text-right">
-                                    <button class="action-btn">
+                                    <button class="action-btn" data-ferry="<%= JSON.stringify(f) %>" onclick="openEditModal(JSON.parse(this.dataset.ferry))">
                                         <iconify-icon icon="solar:pen-bold" width="16"></iconify-icon>
                                     </button>
                                 </td>
@@ -580,6 +607,61 @@
         </div>
     </div>
 
+    <!-- Edit Ferry Modal -->
+    <div id="editFerryModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Ferry</h2>
+                <span class="modal-close" onclick="closeEditModal()">&times;</span>
+            </div>
+            <form method="POST" id="editFerryForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="edit_name" class="form-label">Vessel Name *</label>
+                        <input type="text" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_route" class="form-label">Route *</label>
+                        <input type="text" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_route" name="route" required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="mb-3">
+                            <label for="edit_speed" class="form-label">Speed (knots)</label>
+                            <input type="number" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_speed" name="speed_knots" min="1" step="1">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_eta" class="form-label">ETA (minutes)</label>
+                            <input type="number" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_eta" name="eta" min="0" step="1">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_status" class="form-label">Status</label>
+                        <select class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_status" name="status">
+                            <option value="on_time">On Time</option>
+                            <option value="delayed">Delayed</option>
+                            <option value="suspended">Suspended</option>
+                        </select>
+                    </div>
+                    <h5 class="mt-4 font-semibold text-sm">Origin Port (Point A)</h5>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="mb-3">
+                            <label for="edit_pointA_lat" class="text-xs">Latitude</label>
+                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_pointA_lat" name="lat">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_pointA_lng" class="text-xs">Longitude</label>
+                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_pointA_lng" name="lng">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeEditModal()" class="btn-filter px-4 py-2">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-4 right-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
         <div class="toast">
@@ -602,11 +684,43 @@
             document.getElementById('addFerryForm').reset();
         }
 
+        function openEditModal(ferry) {
+            const modal = document.getElementById('editFerryModal');
+            const form = document.getElementById('editFerryForm');
+            
+            form.action = `/admin/ferries/${ferry.id}/update`;
+            document.getElementById('edit_name').value = ferry.name;
+            document.getElementById('edit_route').value = ferry.route;
+            document.getElementById('edit_speed').value = ferry.speed_knots || 20;
+            document.getElementById('edit_eta').value = ferry.eta || 0;
+            document.getElementById('edit_status').value = ferry.status;
+            document.getElementById('edit_pointA_lat').value = ferry.pointA?.lat || ferry.current_lat || 0;
+            document.getElementById('edit_pointA_lng').value = ferry.pointA?.lng || ferry.current_lng || 0;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editFerryModal').style.display = 'none';
+        }
+
+        function toggleFilterPanel() {
+            const panel = document.getElementById('filter-panel');
+            panel.classList.toggle('hidden');
+        }
+
         // Close modal when clicking outside (optional)
         window.onclick = function(event) {
-            const modal = document.getElementById('addFerryModal');
-            if (event.target === modal) {
-                closeAddModal();
+            const addModal = document.getElementById('addFerryModal');
+            const editModal = document.getElementById('editFerryModal');
+            const filterPanel = document.getElementById('filter-panel');
+            const filterBtn = document.getElementById('filter-btn');
+
+            if (event.target === addModal) closeAddModal();
+            if (event.target === editModal) closeEditModal();
+            
+            if (!filterPanel.contains(event.target) && !filterBtn.contains(event.target)) {
+                filterPanel.classList.add('hidden');
             }
         }
 

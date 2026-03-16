@@ -84,6 +84,7 @@ router.post('/api/admin/logs/clear', isAuthenticated, logController.clearLogs);
 router.get('/api/ports/search', isAuthenticated, portController.searchPorts);
 router.get('/api/ports/load-more', isAuthenticated, portController.loadMorePorts);
 router.post('/api/ports/:id/toggle-status', isAuthenticated, portController.togglePortStatus);
+router.post('/api/ferries/:id/toggle-status', isAuthenticated, ferryController.toggleStatus);
 
 // Cargo API - Add these
 router.post('/api/cargo/:id/status', isAuthenticated, cargoController.updateStatus);

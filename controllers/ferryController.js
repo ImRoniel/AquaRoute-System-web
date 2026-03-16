@@ -40,13 +40,35 @@ const ferryController = {
     },
 
     getAllFerries: async (req, res) => {
-        const ferryModel = new Ferry(req.db);
+        const ferryModel = new Ferry();
         try {
-            const ferries = await ferryModel.getAllWithCurrentPositions();
+            const { status, route } = req.query;
+            const filters = {};
+            if (status) filters.status = status;
+            if (route) filters.route = route;
+
+            const ferries = await ferryModel.getAll(100, filters);
+            
+            // Process current positions
+            const ferriesWithPositions = [];
+            const { calculatePosition, calculateETA, calculateDistance } = require('../utils/ferryMovement');
+
+            for (const f of ferries) {
+                const currentPos = calculatePosition(
+                    f.pointA,
+                    f.pointB,
+                    f.speed_knots,
+                    f.last_updated || new Date(),
+                    f.status
+                );
+                const updatedETA = calculateETA(currentPos, f.pointB, f.speed_knots);
+                ferriesWithPositions.push({ ...f, current_lat: currentPos.lat, current_lng: currentPos.lng, eta: updatedETA || f.eta });
+            }
+
             res.render('admin/ferries', {
                 title: 'Ferry Management - AquaRoute Admin',
                 user: req.session.user,
-                ferries,
+                ferries: ferriesWithPositions,
                 currentPage: 'ferries',
                 query: req.query
             });
@@ -132,6 +154,28 @@ const ferryController = {
         } catch (error) {
             console.error('Error adding ferry:', error);
             res.redirect('/admin/ferries?error=' + encodeURIComponent('Failed to add ferry: ' + error.message));
+        }
+    },
+
+    toggleStatus: async (req, res) => {
+        const ferryModel = new Ferry();
+        const id = req.params.id;
+        try {
+            const ferry = await ferryModel.getById(id);
+            if (!ferry) return res.status(404).json({ success: false, error: 'Ferry not found' });
+
+            const statusWorkflow = ['on_time', 'delayed', 'suspended'];
+            const currentIndex = statusWorkflow.indexOf(ferry.status);
+            const nextStatus = statusWorkflow[(currentIndex + 1) % statusWorkflow.length];
+
+            await ferryModel.updateStatus(id, nextStatus);
+            
+            await logAudit(req.session.user.username, 'TOGGLE_FERRY_STATUS', `Toggled status for ferry ${id} to ${nextStatus}`);
+
+            res.json({ success: true, newStatus: nextStatus });
+        } catch (error) {
+            DEBUG.error('FERRIES', 'Error toggling status', error);
+            res.status(500).json({ success: false, error: error.message });
         }
     }
 };
