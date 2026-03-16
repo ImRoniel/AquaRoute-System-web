@@ -500,11 +500,11 @@
                                         <%= new Date(u.created_at).toLocaleDateString() %>
                                     </td>
                                     <td class="px-6 py-3 text-right">
-                                        <% if (u.username !== user.username) { %>
-                                        <button onclick="editUser(<%= u.id %>, '<%= u.username %>', '<%= u.name %>', '<%= u.role %>')" class="btn-icon" title="Edit">
+                                        <% if (u.id !== user.id && u.id !== user.uid) { %>
+                                        <button onclick="editUser('<%= u.id %>', '<%= u.username %>', '<%= u.name %>', '<%= u.role %>')" class="btn-icon" title="Edit">
                                             <iconify-icon icon="solar:pen-bold" width="16"></iconify-icon>
                                         </button>
-                                        <button onclick="deleteUser(<%= u.id %>, '<%= u.username %>')" class="btn-icon" title="Delete">
+                                        <button onclick="deleteUser('<%= u.id %>', '<%= u.username %>')" class="btn-icon" title="Delete">
                                             <iconify-icon icon="solar:trash-bin-trash-bold" width="16"></iconify-icon>
                                         </button>
                                         <% } else { %>
