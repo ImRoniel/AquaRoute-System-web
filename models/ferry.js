@@ -1,33 +1,54 @@
-// C:\xampp\htdocs\AquaRoute-System-web\models\ferry.js
 const { db, admin } = require('../config/firebase');
 const { calculatePosition, calculateETA, calculateDistance } = require('../utils/ferryMovement');
 
+// If Firestore isn't available, log an error but continue (will return empty lists)
 if (!db) {
-    try {
-        const firebase = require('../config/firebase');
-        db = firebase.db;
-    } catch (error) {
-        console.log(' Firebase not available, using mock data mode');
-        db = null;
-    }
+    console.error('❌ Firestore not initialized – all ferry operations will return empty results.');
 }
 
 class Ferry {
     constructor() {
-        this.collection = db.collection('ferries');
-        this.logsCollection = db.collection('logs');
+        this.collection = db ? db.collection('ferries') : null;
+        this.logsCollection = db ? db.collection('logs') : null;
     }
 
     /**
      * Get all ferries from Firebase
      */
     async getAll() {
+        if (!this.collection) {
+            console.warn('⚠️ Firestore not available – returning empty ferry list.');
+            return [];
+        }
         try {
             const snapshot = await this.collection.get();
             const ferries = [];
             
             snapshot.forEach(doc => {
                 const data = doc.data();
+                
+                // Safely parse created_at – could be Timestamp, string, or number
+                let createdAtDate;
+                if (data.created_at && typeof data.created_at.toDate === 'function') {
+                    createdAtDate = data.created_at.toDate();
+                } else if (data.created_at) {
+                    const parsed = new Date(data.created_at);
+                    createdAtDate = isNaN(parsed) ? new Date() : parsed;
+                } else {
+                    createdAtDate = new Date();
+                }
+
+                // Similarly for last_updated
+                let lastUpdatedDate;
+                if (data.last_updated && typeof data.last_updated.toDate === 'function') {
+                    lastUpdatedDate = data.last_updated.toDate();
+                } else if (data.last_updated) {
+                    const parsed = new Date(data.last_updated);
+                    lastUpdatedDate = isNaN(parsed) ? new Date() : parsed;
+                } else {
+                    lastUpdatedDate = new Date();
+                }
+
                 ferries.push({
                     id: doc.id,
                     name: data.name || 'Unknown Ferry',
@@ -46,8 +67,8 @@ class Ferry {
                     current_lat: data.current_lat || (data.pointA?.latitude || 0),
                     current_lng: data.current_lng || (data.pointA?.longitude || 0),
                     eta: data.eta || 0,
-                    created_at: data.created_at ? data.created_at.toDate() : new Date(),
-                    last_updated: data.last_updated ? data.last_updated.toDate() : new Date(),
+                    created_at: createdAtDate,
+                    last_updated: lastUpdatedDate,
                     // Keep raw timestamps if needed
                     created_at_timestamp: data.created_at,
                     last_updated_timestamp: data.last_updated
@@ -65,11 +86,22 @@ class Ferry {
      * Get a single ferry by ID
      */
     async getById(id) {
+        if (!this.collection) return null;
         try {
             const doc = await this.collection.doc(id).get();
             if (!doc.exists) return null;
             
             const data = doc.data();
+
+            // Parse dates safely
+            const createdAtDate = data.created_at && typeof data.created_at.toDate === 'function'
+                ? data.created_at.toDate()
+                : (data.created_at ? new Date(data.created_at) : new Date());
+
+            const lastUpdatedDate = data.last_updated && typeof data.last_updated.toDate === 'function'
+                ? data.last_updated.toDate()
+                : (data.last_updated ? new Date(data.last_updated) : new Date());
+
             return {
                 id: doc.id,
                 name: data.name || 'Unknown Ferry',
@@ -88,8 +120,8 @@ class Ferry {
                 current_lat: data.current_lat || (data.pointA?.latitude || 0),
                 current_lng: data.current_lng || (data.pointA?.longitude || 0),
                 eta: data.eta || 0,
-                created_at: data.created_at ? data.created_at.toDate() : new Date(),
-                last_updated: data.last_updated ? data.last_updated.toDate() : new Date()
+                created_at: createdAtDate,
+                last_updated: lastUpdatedDate
             };
         } catch (error) {
             console.error('❌ Error getting ferry by id:', error);
@@ -173,11 +205,14 @@ class Ferry {
                         ferry.pointB.lat, ferry.pointB.lng
                     ) : 0;
 
+                // Use calculated ETA only if it's a valid number, otherwise fall back to stored eta
+                const finalETA = (updatedETA && !isNaN(updatedETA)) ? updatedETA : ferry.eta;
+
                 ferriesWithPositions.push({
                     ...ferry,
                     current_lat: currentPos.lat,
                     current_lng: currentPos.lng,
-                    eta: updatedETA,
+                    eta: finalETA,
                     progress: currentPos.progress,
                     distance_remaining: currentPos.distanceRemaining,
                     total_distance: totalDistance
@@ -195,6 +230,7 @@ class Ferry {
      * Update ferry status
      */
     async updateStatus(id, newStatus) {
+        if (!this.collection) throw new Error('Firestore not available');
         try {
             const updateData = {
                 status: newStatus,
@@ -222,6 +258,7 @@ class Ferry {
      * Update ferry position (called periodically)
      */
     async updatePosition(id) {
+        if (!this.collection) return null;
         try {
             const ferry = await this.getById(id);
             if (!ferry) return null;
@@ -258,6 +295,7 @@ class Ferry {
      * Update multiple ferry fields
      */
     async update(id, data) {
+        if (!this.collection) throw new Error('Firestore not available');
         try {
             const updateData = {
                 ...data,
@@ -290,6 +328,7 @@ class Ferry {
      * Create a new ferry
      */
     async create(ferryData) {
+        if (!this.collection) throw new Error('Firestore not available');
         try {
             // Convert pointA and pointB to GeoPoints
             const pointA = new admin.firestore.GeoPoint(
@@ -341,6 +380,7 @@ class Ferry {
      * Delete a ferry
      */
     async delete(id) {
+        if (!this.collection) throw new Error('Firestore not available');
         try {
             const ferry = await this.getById(id);
             if (!ferry) return null;
@@ -414,6 +454,7 @@ class Ferry {
      * Get ferries by status
      */
     async getByStatus(status) {
+        if (!this.collection) return [];
         try {
             const snapshot = await this.collection
                 .where('status', '==', status)
@@ -433,8 +474,8 @@ class Ferry {
                         lat: data.pointB.latitude,
                         lng: data.pointB.longitude
                     } : null,
-                    created_at: data.created_at?.toDate(),
-                    last_updated: data.last_updated?.toDate()
+                    created_at: data.created_at?.toDate ? data.created_at.toDate() : new Date(data.created_at),
+                    last_updated: data.last_updated?.toDate ? data.last_updated.toDate() : new Date(data.last_updated)
                 });
             });
             
@@ -449,6 +490,7 @@ class Ferry {
      * Get ferries by source
      */
     async getBySource(source) {
+        if (!this.collection) return [];
         try {
             const snapshot = await this.collection
                 .where('source', '==', source)
@@ -482,6 +524,7 @@ class Ferry {
      * Add a log entry
      */
     async addLog(action, details, adminName) {
+        if (!this.logsCollection) return;
         try {
             await this.logsCollection.add({
                 admin: adminName,
@@ -498,6 +541,7 @@ class Ferry {
      * Get recent logs
      */
     async getLogs(limit = 20) {
+        if (!this.logsCollection) return [];
         try {
             const snapshot = await this.logsCollection
                 .orderBy('timestamp', 'desc')
@@ -512,8 +556,8 @@ class Ferry {
                     admin: data.admin || 'System',
                     action: data.action || 'Unknown',
                     details: data.details || '',
-                    timestamp: data.timestamp?.toDate() || new Date(),
-                    time: this.formatTimeAgo(data.timestamp?.toDate() || new Date())
+                    timestamp: data.timestamp?.toDate ? data.timestamp.toDate() : new Date(data.timestamp),
+                    time: this.formatTimeAgo(data.timestamp?.toDate ? data.timestamp.toDate() : new Date(data.timestamp))
                 });
             });
             
@@ -540,6 +584,7 @@ class Ferry {
      * Batch update all ferry positions (call this periodically)
      */
     async batchUpdatePositions() {
+        if (!this.collection) return { success: false, error: 'Firestore not available' };
         try {
             const ferries = await this.getAll();
             const batch = db.batch();
