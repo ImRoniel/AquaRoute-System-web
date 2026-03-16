@@ -1,6 +1,17 @@
 //C:\xampp\htdocs\AquaRoute-System-web\controllers\portController.js 
 const DEBUG = require('../config/debug');
 const Port = require('../models/port');
+const Log = require('../models/log');
+
+// Helper for audit logs – uses Log model
+const logAudit = async (adminName, action, details) => {
+    try {
+        const logModel = new Log();
+        await logModel.add(adminName, action, details);
+    } catch (err) {
+        console.error('Audit log failed:', err.message);
+    }
+};
 
 const portController = {
   // Render ports page with first 25 ports
@@ -86,7 +97,10 @@ const portController = {
       else if (port.status === 'limited') newStatus = 'closed';
       else newStatus = 'open';
       
+      
       const updated = await portModel.updateStatus(portId, newStatus);
+      
+      await logAudit(username, 'TOGGLE_PORT_STATUS', `Toggled status for port ${portId} to ${newStatus}`);
       
       DEBUG.success('PORTS API', `Port ${portId} status updated to ${newStatus}`);
       res.json({ success: true, port: updated, newStatus });
@@ -102,6 +116,9 @@ const portController = {
     try {
       const { name, lat, lng, type, status, source, location, weather } = req.body;
       await portModel.add({ name, lat: parseFloat(lat) || 0, lng: parseFloat(lng) || 0, type, status, source, location, weather });
+      
+      await logAudit(req.session.user.username, 'ADD_PORT', `Added port: ${name}`);
+      
       res.redirect('/admin/ports');
     } catch (error) {
       DEBUG.error('PORTS', 'Error adding port', error);
@@ -115,6 +132,9 @@ const portController = {
     try {
       const { name, lat, lng, type, status, source, location, weather } = req.body;
       await portModel.update(portId, { name, lat: parseFloat(lat) || 0, lng: parseFloat(lng) || 0, type, status, source, location, weather });
+      
+      await logAudit(req.session.user.username, 'UPDATE_PORT', `Updated port ID: ${portId}`);
+      
       res.redirect('/admin/ports');
     } catch (error) {
       DEBUG.error('PORTS', 'Error updating port', error);
@@ -127,6 +147,9 @@ const portController = {
     const portId = req.params.id;
     try {
       await portModel.delete(portId);
+      
+      await logAudit(req.session.user.username, 'DELETE_PORT', `Deleted port ID: ${portId}`);
+      
       res.redirect('/admin/ports');
     } catch (error) {
       DEBUG.error('PORTS', 'Error deleting port', error);

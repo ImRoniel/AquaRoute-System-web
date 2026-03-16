@@ -1,6 +1,17 @@
 // C:\xampp\htdocs\AquaRoute-System-web\controllers\userController.js
 const DEBUG = require('../config/debug');
 const bcrypt = require('bcrypt');
+const Log = require('../models/log');
+
+// Helper for audit logs – uses Log model
+const logAudit = async (adminName, action, details) => {
+    try {
+        const logModel = new Log();
+        await logModel.add(adminName, action, details);
+    } catch (err) {
+        console.error('Audit log failed:', err.message);
+    }
+};
 
 const userController = {
     getUsers: async (req, res) => {
@@ -44,6 +55,8 @@ const userController = {
                 [username, hashedPassword, name, role || 'admin', new Date().toISOString()]
             );
             
+            await logAudit(req.session.user.username, 'ADD_USER', `Added user: ${username}`);
+            
             res.redirect('/admin/users');
         } catch (error) {
             DEBUG.error('USER CONTROLLER', 'Error adding user', error);
@@ -69,6 +82,8 @@ const userController = {
                 );
             }
             
+            await logAudit(req.session.user.username, 'UPDATE_USER', `Updated user ID: ${id}`);
+            
             res.redirect('/admin/users');
         } catch (error) {
             DEBUG.error('USER CONTROLLER', 'Error updating user', error);
@@ -85,6 +100,8 @@ const userController = {
             }
             
             await req.db.run('DELETE FROM users WHERE id = ?', [id]);
+            
+            await logAudit(req.session.user.username, 'DELETE_USER', `Deleted user ID: ${id}`);
             
             res.redirect('/admin/users');
         } catch (error) {

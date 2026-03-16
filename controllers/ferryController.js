@@ -69,6 +69,9 @@ const ferryController = {
         try {
             const { name, route, lat, lng, status, eta } = req.body;
             await ferryModel.update(ferryId, { name, route, lat, lng, status, eta });
+            
+            await logAudit(req.session.user.username, 'UPDATE_FERRY', `Updated ferry ID: ${ferryId}`);
+            
             res.redirect('/admin/ferries');
         } catch (error) {
             DEBUG.error('FERRIES', 'Error updating ferry', error);
@@ -81,6 +84,9 @@ const ferryController = {
         const ferryId = req.params.id;
         try {
             await ferryModel.delete(ferryId);
+            
+            await logAudit(req.session.user.username, 'DELETE_FERRY', `Deleted ferry ID: ${ferryId}`);
+            
             res.redirect('/admin/ferries');
         } catch (error) {
             DEBUG.error('FERRIES', 'Error deleting ferry', error);

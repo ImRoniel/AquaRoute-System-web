@@ -2,6 +2,17 @@
 const DEBUG = require('../config/debug');
 const Cargo = require('../models/cargo');
 const Ferry = require('../models/ferry');
+const Log = require('../models/log');
+
+// Helper for audit logs – uses Log model
+const logAudit = async (adminName, action, details) => {
+    try {
+        const logModel = new Log();
+        await logModel.add(adminName, action, details);
+    } catch (err) {
+        console.error('Audit log failed:', err.message);
+    }
+};
 
 const cargoController = {
     // Get all cargo
@@ -129,7 +140,7 @@ const cargoController = {
             });
             
             // Log the action
-            await logAudit(req.db, req.session.user.username, 'ADD_CARGO', 
+            await logAudit(req.session.user.username, 'ADD_CARGO', 
                 `Added cargo: ${newCargo.reference} - ${description}`);
             
             res.redirect('/admin/cargo');
@@ -155,7 +166,7 @@ const cargoController = {
             });
             
             // Log the action
-            await logAudit(req.db, req.session.user.username, 'UPDATE_CARGO', 
+            await logAudit(req.session.user.username, 'UPDATE_CARGO', 
                 `Updated cargo ID: ${id}`);
             
             res.redirect('/admin/cargo');
@@ -175,7 +186,7 @@ const cargoController = {
             await cargoModel.delete(id);
             
             // Log the action
-            await logAudit(req.db, req.session.user.username, 'DELETE_CARGO', 
+            await logAudit(req.session.user.username, 'DELETE_CARGO', 
                 `Deleted cargo ID: ${id}`);
             
             res.redirect('/admin/cargo');
@@ -194,6 +205,10 @@ const cargoController = {
             const { status } = req.body;
             
             await cargoModel.updateStatus(id, status);
+            
+            // Log the action
+            await logAudit(req.session.user.username, 'UPDATE_CARGO_STATUS', 
+                `Updated status for cargo ${id} to ${status}`);
             
             res.json({ 
                 success: true, 
@@ -229,16 +244,7 @@ const cargoController = {
     }
 };
 
-// Helper function to log audit actions
-async function logAudit(db, admin, action, details) {
-    try {
-        await db.run(
-            'INSERT INTO audit_logs (admin, action, details, time) VALUES (?, ?, ?, ?)',
-            [admin, action, details, new Date().toISOString()]
-        );
-    } catch (error) {
-        DEBUG.error('AUDIT', 'Failed to log audit', error);
-    }
-}
+// getAllCargo, searchCargo, trackCargo, addCargo, updateCargo, deleteCargo, updateStatus, getStats
+
 
 module.exports = cargoController;
