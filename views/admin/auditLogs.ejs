@@ -559,11 +559,11 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-3 text-right text-xs" style="color: #87A2FF; font-family: monospace;">
-                                    <%= log.time ? new Date(log.time).toLocaleString() : 'Just now' %>
-                                    <% if (log.time) { %>
+                                    <%= log.timestamp ? log.timestamp.toLocaleString() : 'Just now' %>
+                                    <% if (log.timestamp) { %>
                                         <br>
                                         <span class="text-[10px]" style="color: #65676B;">
-                                            <%= formatTimeAgo(log.time) %>
+                                            <%= log.timeFormatted %>
                                         </span>
                                     <% } %>
                                 </td>

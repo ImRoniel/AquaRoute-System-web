@@ -1,11 +1,12 @@
 const DEBUG = require('../config/debug');
 const Ferry = require('../models/ferry');
+const { db } = require('../config/firebase'); // ✅ Firestore instance
 
-// Helper for audit logs (since it was missing)
-const logAudit = async (db, admin, action, details) => {
+// Helper for audit logs – uses Firestore directly
+const logAudit = async (adminName, action, details) => {
     try {
         await db.collection('logs').add({
-            admin,
+            admin: adminName,
             action,
             details,
             timestamp: new Date().toISOString()
@@ -50,7 +51,7 @@ const ferryController = {
                 user: req.session.user,
                 ferries,
                 currentPage: 'ferries',
-                query: req.query // pass query params for error/success messages
+                query: req.query
             });
         } catch (error) {
             DEBUG.error('FERRIES', 'Error loading ferries', error);
@@ -64,8 +65,6 @@ const ferryController = {
             });
         }
     },
-
-    // ✅ REMOVED the duplicate addFerry that used ferryModel.add
 
     updateFerry: async (req, res) => {
         const ferryModel = new Ferry(req.db);
@@ -100,7 +99,8 @@ const ferryController = {
                 title: 'Audit Logs - AquaRoute Admin',
                 user: req.session.user,
                 logs,
-                currentPage: 'logs'
+                currentPage: 'logs',
+                page: 1
             });
         } catch (error) {
             DEBUG.error('LOGS', 'Error loading logs', error);
@@ -108,7 +108,6 @@ const ferryController = {
         }
     },
 
-    // Optional – if you still want a separate page (not needed with modal)
     showAddForm: async (req, res) => {
         res.render('admin/add-ferry', {
             title: 'Add New Ferry - AquaRoute Admin',
@@ -123,7 +122,6 @@ const ferryController = {
         try {
             const { name, route, speed_knots, status, eta, pointA_lat, pointA_lng, pointB_lat, pointB_lng, source } = req.body;
 
-            // Basic validation
             if (!name || !route || !pointA_lat || !pointA_lng || !pointB_lat || !pointB_lng) {
                 return res.redirect('/admin/ferries?error=' + encodeURIComponent('Name, route, and coordinates are required.'));
             }
@@ -141,8 +139,7 @@ const ferryController = {
                 source: source || 'manual'
             });
 
-            // Log the action
-            await logAudit(req.db, req.session.user.username, 'ADD_FERRY', `Added ferry: ${name}`);
+            await logAudit(req.session.user.username, 'ADD_FERRY', `Added ferry: ${name}`);
 
             res.redirect('/admin/ferries?success=Ferry added successfully');
         } catch (error) {
