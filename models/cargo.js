@@ -185,11 +185,18 @@ class Cargo {
     async update(id, cargoData) {
         try {
             const updateData = {
+                description: cargoData.description,
+                weight: parseFloat(cargoData.weight) || 0,
                 ferryId: cargoData.ferryId || null,
                 status: cargoData.status,
                 searchName: `${(cargoData.reference || '').toLowerCase()} ${(cargoData.description || '').toLowerCase()}`,
                 updatedAt: new Date().toISOString()
             };
+
+            // Remove undefined fields
+            Object.keys(updateData).forEach(key => 
+                updateData[key] === undefined && delete updateData[key]
+            );
 
             if (!this.collection) {
                 return true;

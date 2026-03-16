@@ -24,13 +24,22 @@ const cargoController = {
             const { cargo, lastVisible } = await cargoModel.getAll();
             const ferries = await ferryModel.getAllWithCurrentPositions();
             
+            // Map ferry names to cargo for display
+            const cargoWithFerryNames = cargo.map(item => {
+                const ferry = ferries.find(f => f.id === item.ferryId);
+                return {
+                    ...item,
+                    ferryName: ferry ? ferry.name : 'Unassigned'
+                };
+            });
+            
             // Use optimized stats from model
             const stats = await cargoModel.getStats();
             
             res.render('admin/cargo', {
                 title: 'Cargo Tracking - AquaRoute Admin',
                 user: req.session.user,
-                cargo: cargo || [],
+                cargo: cargoWithFerryNames || [],
                 ferries: ferries || [],
                 stats: stats,
                 currentPage: 'cargo' 
@@ -60,6 +69,15 @@ const cargoController = {
             const cargo = await cargoModel.search(query);
             const ferries = await ferryModel.getAllWithCurrentPositions();
             
+            // Map ferry names to cargo for display
+            const cargoWithFerryNames = cargo.map(item => {
+                const ferry = ferries.find(f => f.id === item.ferryId);
+                return {
+                    ...item,
+                    ferryName: ferry ? ferry.name : 'Unassigned'
+                };
+            });
+            
             // For search results, we can calculate stats from the results since it's limited to 50 anyway
             const stats = {
                 total: cargo.length,
@@ -71,7 +89,7 @@ const cargoController = {
             res.render('admin/cargo', {
                 title: 'Search Results - AquaRoute Admin',
                 user: req.session.user,
-                cargo: cargo || [],
+                cargo: cargoWithFerryNames || [],
                 ferries: ferries || [],
                 stats: stats,
                 searchQuery: query,
@@ -101,6 +119,15 @@ const cargoController = {
                     error: 'Cargo not found',
                     user: req.session.user
                 });
+            }
+
+            // Fetch ferry details if assigned
+            if (cargo.ferryId) {
+                const ferryModel = new Ferry(req.db);
+                const ferry = await ferryModel.getById(cargo.ferryId);
+                if (ferry) {
+                    cargo.ferryName = ferry.name;
+                }
             }
             
             res.render('admin/track-cargo', {
@@ -153,11 +180,16 @@ const cargoController = {
             const { id } = req.params;
             const { description, weight, ferryId, status } = req.body;
             
+            // Get existing cargo to keep reference for searchName
+            const existingCargo = await cargoModel.getById(id);
+            const reference = existingCargo ? existingCargo.reference : '';
+
             await cargoModel.update(id, {
                 description,
                 weight,
                 ferryId: ferryId || null,
-                status
+                status,
+                reference
             });
             
             // Log the action
