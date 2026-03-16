@@ -21,16 +21,11 @@ const cargoController = {
         const ferryModel = new Ferry(req.db);
         
         try {
-            const cargo = await cargoModel.getAll();
+            const { cargo, lastVisible } = await cargoModel.getAll();
             const ferries = await ferryModel.getAllWithCurrentPositions();
             
-            // Calculate stats from cargo data
-            const stats = {
-                total: cargo.length,
-                inTransit: cargo.filter(c => c.status === 'in_transit').length,
-                pending: cargo.filter(c => c.status === 'pending').length,
-                delivered: cargo.filter(c => c.status === 'delivered').length
-            };
+            // Use optimized stats from model
+            const stats = await cargoModel.getStats();
             
             res.render('admin/cargo', {
                 title: 'Cargo Tracking - AquaRoute Admin',
@@ -65,7 +60,7 @@ const cargoController = {
             const cargo = await cargoModel.search(query);
             const ferries = await ferryModel.getAllWithCurrentPositions();
             
-            // Calculate stats from search results
+            // For search results, we can calculate stats from the results since it's limited to 50 anyway
             const stats = {
                 total: cargo.length,
                 inTransit: cargo.filter(c => c.status === 'in_transit').length,

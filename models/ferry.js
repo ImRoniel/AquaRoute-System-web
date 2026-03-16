@@ -11,10 +11,10 @@ class Ferry {
         this.logsCollection = db ? db.collection('logs') : null;
     }
 
-    async getAll() {
+    async getAll(limit = 100) {
         if (!this.collection) return [];
         try {
-            const snapshot = await this.collection.get();
+            const snapshot = await this.collection.limit(limit).get();
             const ferries = [];
 
             snapshot.forEach(doc => {
@@ -374,8 +374,18 @@ class Ferry {
 
     async getStats() {
         try {
-            const ferries = await this.getAll();
+            // Use count() aggregation instead of fetching all documents
+            const [totalSnap, onTimeSnap, delayedSnap, suspendedSnap, overpassSnap, manualSnap] = await Promise.all([
+                this.collection.count().get(),
+                this.collection.where('status', '==', 'on_time').count().get(),
+                this.collection.where('status', '==', 'delayed').count().get(),
+                this.collection.where('status', '==', 'suspended').count().get(),
+                this.collection.where('source', '==', 'overpass').count().get(),
+                this.collection.where('source', '==', 'manual').count().get()
+            ]);
 
+            const ferries = await this.getAll(100); // Fetch a sample for average speed and distance logic
+            
             const totalSpeed = ferries.reduce((sum, f) => sum + (f.speed_knots || 0), 0);
             const avgSpeed = ferries.length > 0 ? Math.round(totalSpeed / ferries.length) : 0;
 
@@ -390,16 +400,16 @@ class Ferry {
             });
 
             return {
-                total: ferries.length,
-                onTime: ferries.filter(f => f.status === 'on_time').length,
-                delayed: ferries.filter(f => f.status === 'delayed').length,
-                suspended: ferries.filter(f => f.status === 'suspended').length,
+                total: totalSnap.data().count,
+                onTime: onTimeSnap.data().count,
+                delayed: delayedSnap.data().count,
+                suspended: suspendedSnap.data().count,
                 averageSpeed: avgSpeed,
                 totalRouteDistance: Math.round(totalRouteDistance),
                 sourceBreakdown: {
-                    overpass: ferries.filter(f => f.source === 'overpass').length,
-                    manual: ferries.filter(f => f.source === 'manual').length,
-                    other: ferries.filter(f => !['overpass', 'manual'].includes(f.source)).length
+                    overpass: overpassSnap.data().count,
+                    manual: manualSnap.data().count,
+                    other: totalSnap.data().count - (overpassSnap.data().count + manualSnap.data().count)
                 }
             };
         } catch (error) {
@@ -421,6 +431,7 @@ class Ferry {
         try {
             const snapshot = await this.collection
                 .where('status', '==', status)
+                .limit(100)
                 .get();
 
             const ferries = [];
@@ -454,6 +465,7 @@ class Ferry {
         try {
             const snapshot = await this.collection
                 .where('source', '==', source)
+                .limit(100)
                 .get();
 
             const ferries = [];

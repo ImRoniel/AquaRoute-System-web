@@ -7,8 +7,8 @@ class Cargo {
         this.collection = db ? db.collection('cargo') : null;
     }
 
-    // Get all cargo with optional filters
-    async getAll(filters = {}) {
+    // Get all cargo with optional filters and pagination
+    async getAll(filters = {}, limit = 50, lastDocId = null) {
         try {
             if (!this.collection) {
                 return this.getMockData();
@@ -24,24 +24,38 @@ class Cargo {
                 query = query.where('ferryId', '==', filters.ferryId);
             }
 
-            const snapshot = await query.orderBy('createdAt', 'desc').get();
+            query = query.orderBy('createdAt', 'desc');
+
+            if (lastDocId) {
+                const lastDoc = await this.collection.doc(lastDocId).get();
+                if (lastDoc.exists) {
+                    query = query.startAfter(lastDoc);
+                }
+            }
+
+            const snapshot = await query.limit(limit).get();
             
             if (snapshot.empty) {
-                return [];
+                return { cargo: [], lastVisible: null };
             }
 
             const cargo = [];
+            let lastVisible = null;
             snapshot.forEach(doc => {
                 cargo.push({
                     id: doc.id,
                     ...doc.data()
                 });
+                lastVisible = doc;
             });
             
-            return cargo;
+            return {
+                cargo,
+                lastVisible
+            };
         } catch (error) {
             DEBUG.error('CARGO MODEL', 'Error getting cargo', error);
-            return this.getMockData(); // Fallback to mock data
+            return { cargo: this.getMockData(), lastVisible: null };
         }
     }
 
@@ -96,7 +110,7 @@ class Cargo {
         }
     }
 
-    // Search cargo
+    // Search cargo (indexed prefix search)
     async search(query) {
         try {
             if (!this.collection) {
@@ -107,20 +121,21 @@ class Cargo {
                 );
             }
 
-            // Firebase doesn't support text search natively
-            // This is a simple implementation - for production, consider Algolia or similar
-            const snapshot = await this.collection.get();
+            const searchTerm = query.toLowerCase();
+            
+            // Use indexed prefix query on searchName field
+            const snapshot = await this.collection
+                .where('searchName', '>=', searchTerm)
+                .where('searchName', '<=', searchTerm + '\uf8ff')
+                .limit(50)
+                .get();
             
             const results = [];
             snapshot.forEach(doc => {
-                const data = doc.data();
-                if (data.reference?.toLowerCase().includes(query.toLowerCase()) ||
-                    data.description?.toLowerCase().includes(query.toLowerCase())) {
-                    results.push({
-                        id: doc.id,
-                        ...data
-                    });
-                }
+                results.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
             });
             
             return results;
@@ -139,6 +154,7 @@ class Cargo {
                 weight: parseFloat(cargoData.weight) || 0,
                 ferryId: cargoData.ferryId || null,
                 status: cargoData.status || 'pending',
+                searchName: `${this.generateReference().toLowerCase()} ${cargoData.description.toLowerCase()}`,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
                 createdBy: cargoData.createdBy || 'system'
@@ -151,7 +167,10 @@ class Cargo {
                 };
             }
 
-            const docRef = await this.collection.add(newCargo);
+            const docRef = await this.collection.add({
+                ...newCargo,
+                reference: this.generateReference() // Re-generate to ensure uniqueness if needed or keep existing
+            });
             return {
                 id: docRef.id,
                 ...newCargo
@@ -166,10 +185,9 @@ class Cargo {
     async update(id, cargoData) {
         try {
             const updateData = {
-                description: cargoData.description,
-                weight: parseFloat(cargoData.weight) || 0,
                 ferryId: cargoData.ferryId || null,
                 status: cargoData.status,
+                searchName: `${(cargoData.reference || '').toLowerCase()} ${(cargoData.description || '').toLowerCase()}`,
                 updatedAt: new Date().toISOString()
             };
 
@@ -231,23 +249,18 @@ class Cargo {
                 };
             }
 
-            const snapshot = await this.collection.get();
-            const total = snapshot.size;
-            
-            let inTransit = 0, pending = 0, delivered = 0;
-            
-            snapshot.forEach(doc => {
-                const status = doc.data().status;
-                if (status === 'in_transit') inTransit++;
-                else if (status === 'pending') pending++;
-                else if (status === 'delivered') delivered++;
-            });
+            const [totalSnap, inTransitSnap, pendingSnap, deliveredSnap] = await Promise.all([
+                this.collection.count().get(),
+                this.collection.where('status', '==', 'in_transit').count().get(),
+                this.collection.where('status', '==', 'pending').count().get(),
+                this.collection.where('status', '==', 'delivered').count().get()
+            ]);
 
             return {
-                total,
-                inTransit,
-                pending,
-                delivered
+                total: totalSnap.data().count,
+                inTransit: inTransitSnap.data().count,
+                pending: pendingSnap.data().count,
+                delivered: deliveredSnap.data().count
             };
         } catch (error) {
             DEBUG.error('CARGO MODEL', 'Error getting stats', error);
