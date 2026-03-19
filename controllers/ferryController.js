@@ -89,8 +89,22 @@ const ferryController = {
         const ferryModel = new Ferry(req.db);
         const ferryId = req.params.id;
         try {
-            const { name, route, lat, lng, status, eta } = req.body;
-            await ferryModel.update(ferryId, { name, route, lat, lng, status, eta });
+            const { name, route, speed_knots, status, eta, pointA_lat, pointA_lng, pointB_lat, pointB_lng } = req.body;
+            
+            const updateProps = { name, route, status };
+            if (speed_knots !== undefined && speed_knots !== '') updateProps.speed_knots = parseInt(speed_knots);
+            if (eta !== undefined && eta !== '') updateProps.eta = parseInt(eta);
+
+            const { admin } = require('../config/firebase');
+
+            if (pointA_lat !== undefined && pointA_lat !== '' && pointA_lng !== undefined && pointA_lng !== '') {
+                updateProps.pointA = new admin.firestore.GeoPoint(parseFloat(pointA_lat), parseFloat(pointA_lng));
+            }
+            if (pointB_lat !== undefined && pointB_lat !== '' && pointB_lng !== undefined && pointB_lng !== '') {
+                updateProps.pointB = new admin.firestore.GeoPoint(parseFloat(pointB_lat), parseFloat(pointB_lng));
+            }
+
+            await ferryModel.update(ferryId, updateProps);
             
             await logAudit(req.session.user.username, 'UPDATE_FERRY', `Updated ferry ID: ${ferryId}`);
             

@@ -646,11 +646,22 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div class="mb-3">
                             <label for="edit_pointA_lat" class="text-xs">Latitude</label>
-                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_pointA_lat" name="lat">
+                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_pointA_lat" name="pointA_lat">
                         </div>
                         <div class="mb-3">
                             <label for="edit_pointA_lng" class="text-xs">Longitude</label>
-                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_pointA_lng" name="lng">
+                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_pointA_lng" name="pointA_lng">
+                        </div>
+                    </div>
+                    <h5 class="mt-4 font-semibold text-sm">Destination Port (Point B)</h5>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="mb-3">
+                            <label for="edit_pointB_lat" class="text-xs">Latitude</label>
+                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_pointB_lat" name="pointB_lat">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_pointB_lng" class="text-xs">Longitude</label>
+                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_pointB_lng" name="pointB_lng">
                         </div>
                     </div>
                 </div>
@@ -696,6 +707,8 @@
             document.getElementById('edit_status').value = ferry.status;
             document.getElementById('edit_pointA_lat').value = ferry.pointA?.lat || ferry.current_lat || 0;
             document.getElementById('edit_pointA_lng').value = ferry.pointA?.lng || ferry.current_lng || 0;
+            document.getElementById('edit_pointB_lat').value = ferry.pointB?.lat || 0;
+            document.getElementById('edit_pointB_lng').value = ferry.pointB?.lng || 0;
             
             modal.style.display = 'flex';
         }

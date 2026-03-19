@@ -59,18 +59,18 @@ class Ferry {
                     name: data.name || 'Unknown Ferry',
                     route: data.route || 'Unknown Route',
                     pointA: data.pointA ? {
-                        lat: data.pointA.latitude,
-                        lng: data.pointA.longitude
+                        lat: data.pointA.latitude !== undefined ? data.pointA.latitude : data.pointA.lat,
+                        lng: data.pointA.longitude !== undefined ? data.pointA.longitude : data.pointA.lng
                     } : null,
                     pointB: data.pointB ? {
-                        lat: data.pointB.latitude,
-                        lng: data.pointB.longitude
+                        lat: data.pointB.latitude !== undefined ? data.pointB.latitude : data.pointB.lat,
+                        lng: data.pointB.longitude !== undefined ? data.pointB.longitude : data.pointB.lng
                     } : null,
                     speed_knots: data.speed_knots || 0,
                     status: data.status || 'unknown',
                     source: data.source || 'unknown',
-                    current_lat: data.current_lat || (data.pointA?.latitude || 0),
-                    current_lng: data.current_lng || (data.pointA?.longitude || 0),
+                    current_lat: data.current_lat || data.pointA?.latitude || data.pointA?.lat || 0,
+                    current_lng: data.current_lng || data.pointA?.longitude || data.pointA?.lng || 0,
                     eta: data.eta || 0,
                     created_at: createdAtDate,
                     last_updated: lastUpdatedDate,
@@ -119,18 +119,18 @@ class Ferry {
                 name: data.name || 'Unknown Ferry',
                 route: data.route || 'Unknown Route',
                 pointA: data.pointA ? {
-                    lat: data.pointA.latitude,
-                    lng: data.pointA.longitude
+                    lat: data.pointA.latitude !== undefined ? data.pointA.latitude : data.pointA.lat,
+                    lng: data.pointA.longitude !== undefined ? data.pointA.longitude : data.pointA.lng
                 } : null,
                 pointB: data.pointB ? {
-                    lat: data.pointB.latitude,
-                    lng: data.pointB.longitude
+                    lat: data.pointB.latitude !== undefined ? data.pointB.latitude : data.pointB.lat,
+                    lng: data.pointB.longitude !== undefined ? data.pointB.longitude : data.pointB.lng
                 } : null,
                 speed_knots: data.speed_knots || 0,
                 status: data.status || 'unknown',
                 source: data.source || 'unknown',
-                current_lat: data.current_lat || (data.pointA?.latitude || 0),
-                current_lng: data.current_lng || (data.pointA?.longitude || 0),
+                current_lat: data.current_lat || data.pointA?.latitude || data.pointA?.lat || 0,
+                current_lng: data.current_lng || data.pointA?.longitude || data.pointA?.lng || 0,
                 eta: data.eta || 0,
                 created_at: createdAtDate,
                 last_updated: lastUpdatedDate
@@ -453,12 +453,12 @@ class Ferry {
                     id: doc.id,
                     ...data,
                     pointA: data.pointA ? {
-                        lat: data.pointA.latitude,
-                        lng: data.pointA.longitude
+                        lat: data.pointA.latitude !== undefined ? data.pointA.latitude : data.pointA.lat,
+                        lng: data.pointA.longitude !== undefined ? data.pointA.longitude : data.pointA.lng
                     } : null,
                     pointB: data.pointB ? {
-                        lat: data.pointB.latitude,
-                        lng: data.pointB.longitude
+                        lat: data.pointB.latitude !== undefined ? data.pointB.latitude : data.pointB.lat,
+                        lng: data.pointB.longitude !== undefined ? data.pointB.longitude : data.pointB.lng
                     } : null,
                     created_at: data.created_at?.toDate ? data.created_at.toDate() : new Date(data.created_at),
                     last_updated: data.last_updated?.toDate ? data.last_updated.toDate() : new Date(data.last_updated)
@@ -487,12 +487,12 @@ class Ferry {
                     id: doc.id,
                     ...data,
                     pointA: data.pointA ? {
-                        lat: data.pointA.latitude,
-                        lng: data.pointA.longitude
+                        lat: data.pointA.latitude !== undefined ? data.pointA.latitude : data.pointA.lat,
+                        lng: data.pointA.longitude !== undefined ? data.pointA.longitude : data.pointA.lng
                     } : null,
                     pointB: data.pointB ? {
-                        lat: data.pointB.latitude,
-                        lng: data.pointB.longitude
+                        lat: data.pointB.latitude !== undefined ? data.pointB.latitude : data.pointB.lat,
+                        lng: data.pointB.longitude !== undefined ? data.pointB.longitude : data.pointB.lng
                     } : null
                 });
             });
