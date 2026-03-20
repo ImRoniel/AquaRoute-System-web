@@ -471,8 +471,11 @@
                             </svg>
                         </div>
                     </div>
-                    <div class="text-sm" style="color: #65676B;">
-                        <span id="resultCount"><%= ports.length %></span> ports loaded
+                    <div class="text-sm flex items-center gap-4" style="color: #65676B;">
+                        <span><span id="resultCount"><%= ports.length %></span> ports loaded</span>
+                        <button onclick="openAddModal()" class="px-4 py-2 bg-[#99123D] text-white rounded-lg text-sm font-semibold hover:bg-opacity-90 flex items-center gap-2 shadow-sm transition-all hover:shadow-md">
+                            <iconify-icon icon="solar:add-circle-bold" width="16"></iconify-icon> Add Port
+                        </button>
                     </div>
                 </div>
 
@@ -566,6 +569,66 @@
         </div>
     </main>
 
+    <!-- Add Port Modal -->
+    <div id="addPortModal" class="modal">
+        <div class="modal-content">
+            <h3 class="text-lg font-semibold mb-4 text-[#2D2F31]">Add New Port</h3>
+            <form id="addPortForm" action="/admin/ports/add" method="POST">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-[#65676B] mb-1">Port Name</label>
+                        <input type="text" id="addName" name="name" required
+                            class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]"
+                            placeholder="e.g. Dagupan Ferry Terminal">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-[#65676B] mb-1">Location / Area</label>
+                        <input type="text" id="addLocation" name="location" 
+                            class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]"
+                            placeholder="e.g. Pangasinan">
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="flex-1">
+                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Status</label>
+                            <select id="addStatus" name="status" class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none">
+                                <option value="open">Open</option>
+                                <option value="limited">Limited</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Type</label>
+                            <select id="addType" name="type" class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none">
+                                <option value="ferry_terminal">Ferry Terminal</option>
+                                <option value="pier">Pier</option>
+                                <option value="dock">Dock</option>
+                                <option value="unknown">Unknown</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="flex-1">
+                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Latitude</label>
+                            <input type="number" step="any" id="addLat" name="lat" required
+                                class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]"
+                                placeholder="e.g. 16.0433">
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Longitude</label>
+                            <input type="number" step="any" id="addLng" name="lng" required
+                                class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]"
+                                placeholder="e.g. 120.3333">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" onclick="closeAddModal()" class="px-4 py-2 text-sm font-semibold text-[#65676B] bg-white border border-[#87A2FF] rounded-lg hover:bg-gray-50 transition-colors">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-[#99123D] rounded-lg hover:bg-opacity-90 shadow-[0_2px_10px_rgba(153,18,61,0.3)] transition-all cursor-pointer">Add Port</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Edit Port Modal -->
     <div id="editPortModal" class="modal">
         <div class="modal-content">
@@ -652,6 +715,15 @@
             });
             const d = document.getElementById('dropdown-' + id);
             d.classList.toggle('show');
+        }
+
+        function openAddModal() {
+            document.getElementById('addPortForm').reset();
+            document.getElementById('addPortModal').style.display = 'flex';
+        }
+
+        function closeAddModal() {
+            document.getElementById('addPortModal').style.display = 'none';
         }
 
         // Close dropdown when clicking outside

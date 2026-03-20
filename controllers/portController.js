@@ -114,8 +114,17 @@ const portController = {
   addPort: async (req, res) => {
     const portModel = new Port();
     try {
-      const { name, lat, lng, type, status, source, location, weather } = req.body;
-      await portModel.add({ name, lat: parseFloat(lat) || 0, lng: parseFloat(lng) || 0, type, status, source, location, weather });
+      const { name, lat, lng, type, status, location } = req.body;
+      const newPort = {
+        name,
+        lat: parseFloat(lat) || 0,
+        lng: parseFloat(lng) || 0,
+        type: type || 'unknown',
+        status: status || 'open',
+        source: 'Admin Panel',
+        location: location || ''
+      };
+      await portModel.add(newPort);
       
       await logAudit(req.session.user.username, 'ADD_PORT', `Added port: ${name}`);
       
