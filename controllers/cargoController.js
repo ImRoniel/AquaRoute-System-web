@@ -81,9 +81,9 @@ const cargoController = {
             // For search results, we can calculate stats from the results since it's limited to 50 anyway
             const stats = {
                 total: cargo.length,
-                inTransit: cargo.filter(c => c.status === 'in_transit').length,
-                pending: cargo.filter(c => c.status === 'pending').length,
-                delivered: cargo.filter(c => c.status === 'delivered').length
+                inTransit: cargo.filter(c => c.status === 'in_transit' || c.status === 'IN_TRANSIT').length,
+                pending: cargo.filter(c => c.status === 'pending' || c.status === 'PENDING').length,
+                delivered: cargo.filter(c => c.status === 'delivered' || c.status === 'DELIVERED').length
             };
             
             res.render('admin/cargo', {
@@ -153,11 +153,14 @@ const cargoController = {
         try {
             const { description, weight, ferryId, status } = req.body;
             
+            let sanitizedStatus = (status || 'PENDING').toString().toUpperCase();
+            console.log("Sanitized cargo status to:", sanitizedStatus);
+            
             const newCargo = await cargoModel.create({
                 description,
                 weight,
                 ferryId: ferryId || null,
-                status: status || 'pending',
+                status: sanitizedStatus,
                 createdBy: req.session.user.username
             });
             
@@ -180,6 +183,9 @@ const cargoController = {
             const { id } = req.params;
             const { description, weight, ferryId, status } = req.body;
             
+            let sanitizedStatus = status ? status.toString().toUpperCase() : undefined;
+            if (sanitizedStatus) console.log("Sanitized cargo status to:", sanitizedStatus);
+            
             // Get existing cargo to keep reference for searchName
             const existingCargo = await cargoModel.getById(id);
             const reference = existingCargo ? existingCargo.reference : '';
@@ -188,7 +194,7 @@ const cargoController = {
                 description,
                 weight,
                 ferryId: ferryId || null,
-                status,
+                status: sanitizedStatus,
                 reference
             });
             
@@ -231,7 +237,10 @@ const cargoController = {
             const { id } = req.params;
             const { status } = req.body;
             
-            await cargoModel.updateStatus(id, status);
+            let sanitizedStatus = status ? status.toString().toUpperCase() : 'PENDING';
+            console.log("Sanitized cargo status to:", sanitizedStatus);
+            
+            await cargoModel.updateStatus(id, sanitizedStatus);
             
             // Log the action
             await logAudit(req.session.user.username, 'UPDATE_CARGO_STATUS', 

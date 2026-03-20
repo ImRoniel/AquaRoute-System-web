@@ -250,17 +250,17 @@ class Cargo {
                 const mockData = this.getMockData();
                 return {
                     total: mockData.length,
-                    inTransit: mockData.filter(c => c.status === 'in_transit').length,
-                    pending: mockData.filter(c => c.status === 'pending').length,
-                    delivered: mockData.filter(c => c.status === 'delivered').length
+                    inTransit: mockData.filter(c => c.status === 'in_transit' || c.status === 'IN_TRANSIT').length,
+                    pending: mockData.filter(c => c.status === 'pending' || c.status === 'PENDING').length,
+                    delivered: mockData.filter(c => c.status === 'delivered' || c.status === 'DELIVERED').length
                 };
             }
 
             const [totalSnap, inTransitSnap, pendingSnap, deliveredSnap] = await Promise.all([
                 this.collection.count().get(),
-                this.collection.where('status', '==', 'in_transit').count().get(),
-                this.collection.where('status', '==', 'pending').count().get(),
-                this.collection.where('status', '==', 'delivered').count().get()
+                this.collection.where('status', 'in', ['in_transit', 'IN_TRANSIT']).count().get(),
+                this.collection.where('status', 'in', ['pending', 'PENDING']).count().get(),
+                this.collection.where('status', 'in', ['delivered', 'DELIVERED']).count().get()
             ]);
 
             return {
