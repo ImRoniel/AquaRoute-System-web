@@ -79,13 +79,12 @@ async function updateWeatherForPort(portId) {
     }
     const port = portDoc.data();
 
-    // Build OpenWeather URL using lat and lng
-    let url;
-    if (port.lat && port.lng) {
-      url = `https://api.openweathermap.org/data/2.5/weather?lat=${port.lat}&lon=${port.lng}&appid=${process.env.OPENWEATHER_API_KEY}&units=metric`;
-    } else {
-      url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(port.name)}&appid=${process.env.OPENWEATHER_API_KEY}&units=metric`;
+    // Build OpenWeather URL using lat and lng (coordinates only — name-based queries cause 404 errors)
+    if (!port.lat || !port.lng) {
+      console.warn(`⚠️ Skipping port "${port.name}" (${portId}): missing lat/lng coordinates.`);
+      return;
     }
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${port.lat}&lon=${port.lng}&appid=${process.env.OPENWEATHER_API_KEY}&units=metric`;
 
     const response = await axios.get(url);
     const weatherCondition = mapToWeatherCondition(response.data, port.name);

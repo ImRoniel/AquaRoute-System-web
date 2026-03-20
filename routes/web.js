@@ -96,6 +96,9 @@ router.post('/weather/refresh', async (req, res) => {
   if (!Array.isArray(portIds)) {
     return res.status(400).json({ error: 'portIds must be an array' });
   }
+  if (portIds.length > 50) {
+    return res.status(400).json({ error: 'Too many ports requested. Max limit is 50 to protect database quotas.' });
+  }
   const result = await refreshWeatherForPorts(portIds);
   res.json(result);
 });
