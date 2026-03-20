@@ -436,16 +436,12 @@
             }, 3000);
         }
 
-        // Auto-refresh data
-        setInterval(async () => {
-            try {
-                const response = await fetch('/api/ferries');
-                const ferries = await response.json();
-                console.log('Data updated:', ferries);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        }, 30000);
+        // QUOTA FIX: Removed dead setInterval that polled /api/ferries every 30s without
+        // updating the UI (only console.log). For live updates, listen to Socket.IO events
+        // emitted by portScheduler.js instead:
+        //   const socket = io();
+        //   socket.on('ports-updated', (data) => { /* update UI */ });
+        //   socket.on('ferries-updated', (data) => { /* update UI */ });
     </script>
 </body>
 </html>

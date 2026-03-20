@@ -63,36 +63,35 @@ class PortScheduler {
             clearInterval(this.checkInterval);
         }
 
-        // Check every minute
+        // QUOTA FIX: track last status so we only write on actual transitions
+        let lastStatus = this.getScheduledStatus();
+
+        // Check every 5 minutes instead of every 1 minute
         this.checkInterval = setInterval(async () => {
             try {
                 const currentStatus = this.getScheduledStatus();
-                
-                // Check if any port needs updating
-                const ports = await this.portModel.getAllPorts();
-                const portsToUpdate = ports.filter(p => p.status !== currentStatus);
-                
-                if (portsToUpdate.length > 0) {
-                    DEBUG.log('PORT SCHEDULER', `Found ${portsToUpdate.length} ports need status update`);
-                    
-                    // Update all ports
-                    const result = await this.updateAllPorts();
-                    
-                    // Emit to all connected clients
-                    if (io && result.success) {
-                        io.emit('ports-updated', {
-                            status: result.status,
-                            timestamp: new Date().toISOString(),
-                            message: `Ports are now ${result.status} for ${this.isRushHour() ? 'rush hour' : 'night time'}`
-                        });
-                    }
+
+                // QUOTA FIX: skip entirely if status hasn't changed — prevents writes every minute
+                if (currentStatus === lastStatus) return;
+
+                lastStatus = currentStatus;
+                DEBUG.log('PORT SCHEDULER', `Status transitioning to: ${currentStatus}`);
+
+                const result = await this.updateAllPorts();
+
+                if (io && result.success) {
+                    io.emit('ports-updated', {
+                        status: result.status,
+                        timestamp: new Date().toISOString(),
+                        message: `Ports are now ${result.status} for ${this.isRushHour() ? 'rush hour' : 'night time'}`
+                    });
                 }
             } catch (error) {
                 DEBUG.error('PORT SCHEDULER', 'Error in scheduler loop', error);
             }
-        }, 60000); // Check every minute
+        }, 5 * 60 * 1000); // QUOTA FIX: was 60000 (every 1 min) — now every 5 minutes
 
-        DEBUG.log('PORT SCHEDULER', 'Scheduler started - checking every minute');
+        DEBUG.log('PORT SCHEDULER', 'Scheduler started - checking every 5 minutes, writes only on status transition');
     }
 
     // Stop the scheduler
