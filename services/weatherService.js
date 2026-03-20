@@ -101,6 +101,28 @@ async function updateWeatherForPort(portId) {
 // Wrapped with rate limiter
 const updateWeatherForPortLimited = limiter.wrap(updateWeatherForPort);
 
+/**
+ * Directly fetches weather using supplied coordinates — no Firestore ports lookup.
+ * Saves result under weather/<locationId> (upsert with merge:true + updatedAt timestamp).
+ */
+async function updateWeatherByCoords(locationId, lat, lon, locationName) {
+  try {
+    if (!lat || !lon) {
+      console.warn(`⚠️ Skipping updateWeatherByCoords for "${locationName}" (${locationId}): missing coordinates.`);
+      return;
+    }
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.OPENWEATHER_API_KEY}&units=metric`;
+    const response = await axios.get(url);
+    const weatherCondition = mapToWeatherCondition(response.data, locationName || locationId);
+    // Upsert — safe for any document ID (ports, ferries, etc.)
+    await db.collection('weather').doc(locationId).set(weatherCondition, { merge: true });
+    console.log(`✅ Updated weather by coords for "${locationName}" (${locationId})`);
+  } catch (error) {
+    console.error(`OpenWeather error for ${locationId}:`, error.response?.data || error.message);
+  }
+}
+const updateWeatherByCordsLimited = limiter.wrap(updateWeatherByCoords);
+
 // Public function: given an array of port IDs, queue updates for stale ones
 async function refreshWeatherForPorts(portIds) {
   const now = Date.now();
@@ -128,4 +150,4 @@ async function refreshWeatherForPorts(portIds) {
   return { queued: stalePorts.length };
 }
 
-module.exports = { refreshWeatherForPorts };
+module.exports = { refreshWeatherForPorts, updateWeatherByCoords };

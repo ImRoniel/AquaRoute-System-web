@@ -9,7 +9,7 @@ const portController = require('../controllers/portController');
 const cargoController = require('../controllers/cargoController'); // Add this
 const userController = require('../controllers/userController');
 const logController = require('../controllers/logController');
-const { refreshWeatherForPorts } = require('../services/weatherService');
+const { refreshWeatherForPorts, updateWeatherByCoords } = require('../services/weatherService');
 const { refreshFerriesFromOverpass } = require('../services/ferryService');
 
 // Import middleware
@@ -101,6 +101,21 @@ router.post('/weather/refresh', async (req, res) => {
   }
   const result = await refreshWeatherForPorts(portIds);
   res.json(result);
+});
+
+// Weather by coordinates API (works for any entity: ports, ferries, etc.)
+router.post('/weather/refresh-by-coords', async (req, res) => {
+  const { locationId, lat, lon, name } = req.body;
+  if (!locationId || lat == null || lon == null) {
+    return res.status(400).json({ error: 'locationId, lat, and lon are required' });
+  }
+  try {
+    await updateWeatherByCoords(locationId, parseFloat(lat), parseFloat(lon), name || locationId);
+    res.json({ success: true, locationId });
+  } catch (error) {
+    console.error('Weather refresh-by-coords error:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Ferry refresh API
