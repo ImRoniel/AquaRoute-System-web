@@ -4,239 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %> - AquaRoute Admin</title>
-    
-    <!-- Tailwind CSS -->
+
+    <!-- AquaRoute Maritime Theme -->
+    <link rel="stylesheet" href="/css/admin-theme.css">
+
+    <!-- Tailwind (utilities only — layout) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Iconify -->
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #FFD7C4;
-            color: #2D2F31;
+    <script>
+        tailwind.config = {
+            corePlugins: { preflight: false },
+            theme: { extend: { colors: { primary: '#0A4D8C' } } }
         }
-
-        /* Minimal scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #BD77FF; border-radius: 2px; }
-
-        /* Sidebar - minimal */
-        .sidebar {
-            background-color: #FFF4B5;
-            border-right: 1px solid #87A2FF;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.625rem 1rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #65676B;
-            transition: all 0.15s ease;
-        }
-
-        .nav-item:hover {
-            background-color: #FEC1A0;
-            color: #2D2F31;
-        }
-
-        .nav-item.active {
-            background-color: #87A2FF;
-            color: white;
-        }
-
-        /* Stats cards - minimal */
-        .stat-card {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 12px;
-            padding: 1.25rem;
-        }
-
-        .stat-label {
-            color: #65676B;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-        }
-
-        .stat-value {
-            color: #2D2F31;
-            font-size: 1.75rem;
-            font-weight: 600;
-            line-height: 1.2;
-        }
-
-        /* Table - minimal */
-        .table-container {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .table-header {
-            background-color: #C4D7FF;
-            padding: 0.75rem 1.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #65676B;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-        }
-
-        .table-row {
-            border-bottom: 1px solid #87A2FF;
-        }
-
-        .table-row td {
-            padding: 1rem 1.5rem;
-            font-size: 0.875rem;
-        }
-
-        /* Status badges - minimal */
-        .badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            display: inline-block;
-        }
-
-        .badge-on-time {
-            background-color: #62AE7D;
-            color: white;
-        }
-
-        .badge-delayed {
-            background-color: #FEC1A0;
-            color: #2D2F31;
-            border: 1px solid #99123D;
-        }
-
-        .badge-suspended {
-            background-color: #99123D;
-            color: white;
-        }
-
-        /* Activity feed - minimal */
-        .activity-item {
-            display: flex;
-            gap: 0.75rem;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #87A2FF;
-        }
-
-        .activity-dot {
-            width: 2rem;
-            height: 2rem;
-            border-radius: 8px;
-            background-color: #C4D7FF;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #99123D;
-        }
-
-        .activity-action {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #2D2F31;
-        }
-
-        .activity-time {
-            font-size: 0.75rem;
-            color: #65676B;
-        }
-
-        /* User profile - minimal */
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            border-top: 1px solid #87A2FF;
-        }
-
-        .user-avatar {
-            width: 2.25rem;
-            height: 2.25rem;
-            border-radius: 9999px;
-            border: 2px solid #99123D;
-        }
-
-        /* Header - minimal */
-        .header {
-            background-color: rgba(255, 244, 181, 0.8);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid #87A2FF;
-        }
-
-        .search-input {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 30px;
-            padding: 0.5rem 1rem 0.5rem 2.5rem;
-            font-size: 0.875rem;
-            width: 16rem;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #BD77FF;
-        }
-
-        .notification-btn {
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 9999px;
-            border: 1px solid #87A2FF;
-            background-color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #65676B;
-            position: relative;
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.75rem;
-            width: 0.375rem;
-            height: 0.375rem;
-            background-color: #99123D;
-            border-radius: 50%;
-        }
-    </style>
+    </script>
 </head>
-<body class="h-screen flex overflow-hidden">
+<body>
+<div class="app-shell fade-in">
 
-    <!-- Sidebar -->
-    <aside class="w-64 sidebar hidden lg:flex flex-col">
-        <!-- Brand -->
-        <div class="h-16 flex items-center px-6 border-b border-[#87A2FF]">
-            <div class="flex items-center gap-2">
-                <div class="w-6 h-6 rounded flex items-center justify-center" style="background-color: #87A2FF;">
-                    <iconify-icon icon="solar:wheel-angle-bold" width="14" style="color: white;"></iconify-icon>
-                </div>
-                <span class="font-semibold text-base" style="color: #99123D;">AquaRoute</span>
+    <!-- ── Sidebar ──────────────────────────────────────── -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <iconify-icon icon="solar:wheel-angle-bold" width="16" style="color:#fff"></iconify-icon>
             </div>
+            <span class="brand-name">AquaRoute</span>
         </div>
 
-        <!-- Nav -->
-        <nav class="flex-1 px-3 py-4 space-y-0.5">
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">Main</span>
             <a href="/admin/dashboard" class="nav-item <%= currentPage === 'dashboard' ? 'active' : '' %>">
                 <iconify-icon icon="solar:widget-5-bold-duotone" width="18"></iconify-icon>
                 Dashboard
@@ -253,6 +56,8 @@
                 <iconify-icon icon="solar:box-bold-duotone" width="18"></iconify-icon>
                 Cargo Tracking
             </a>
+
+            <span class="nav-section-label" style="margin-top:8px;">System</span>
             <a href="/admin/logs" class="nav-item <%= currentPage === 'logs' ? 'active' : '' %>">
                 <iconify-icon icon="solar:clipboard-list-bold-duotone" width="18"></iconify-icon>
                 Audit Logs
@@ -263,185 +68,175 @@
             </a>
         </nav>
 
-        <!-- User -->
-        <div class="user-profile">
-            <img src="https://ui-avatars.com/api/?name=<%= user.name.replace(' ', '+') %>&background=99123D&color=fff" class="user-avatar">
-            <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold truncate"><%= user.name %></p>
-                <p class="text-xs" style="color: #65676B;"><%= user.role || 'Admin' %></p>
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <img src="https://ui-avatars.com/api/?name=<%= user.name.replace(' ', '+') %>&background=0A4D8C&color=fff" alt="avatar">
+                <div class="flex-1 truncate">
+                    <div class="user-name truncate"><%= user.name %></div>
+                    <div class="user-role"><%= user.role || 'Admin' %></div>
+                </div>
+                <a href="/logout" class="logout-btn">
+                    <iconify-icon icon="solar:logout-2-bold" width="16"></iconify-icon>
+                </a>
             </div>
-            <a href="/logout" style="color: #99123D;">
-                <iconify-icon icon="solar:logout-2-bold" width="18"></iconify-icon>
-            </a>
         </div>
     </aside>
 
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col min-w-0">
-        
-        <!-- Header -->
-        <header class="h-16 header flex items-center justify-between px-6">
-            <div class="flex items-center gap-4 lg:hidden">
-                <button style="color: #87A2FF;"><iconify-icon icon="solar:hamburger-menu-bold" width="20"></iconify-icon></button>
-                <span class="font-semibold" style="color: #99123D;">AquaRoute</span>
-            </div>
-            
-            <div>
-                <h1 class="text-lg font-semibold" style="color: #2D2F31;">Dashboard</h1>
-                <p class="text-xs" style="color: #65676B;">Welcome back, <%= user.name %></p>
-            </div>
+    <!-- ── Main Content ──────────────────────────────────── -->
+    <div class="main-content">
 
-            <div class="flex items-center gap-3">
-                <div class="relative hidden md:block">
-                    <iconify-icon icon="solar:magnifer-linear" class="absolute left-3 top-1/2 -translate-y-1/2" style="color: #87A2FF; font-size: 0.875rem;"></iconify-icon>
-                    <input type="text" placeholder="Search" class="search-input">
+        <!-- Header -->
+        <header class="top-header">
+            <div class="page-title">
+                <h1>Dashboard</h1>
+                <p>Welcome back, <%= user.name %></p>
+            </div>
+            <div class="header-actions">
+                <div class="search-wrap">
+                    <iconify-icon icon="solar:magnifer-linear" class="search-icon"></iconify-icon>
+                    <input type="text" class="search-input" placeholder="Search…">
                 </div>
-                <button class="notification-btn">
-                    <iconify-icon icon="solar:bell-bold" width="18"></iconify-icon>
-                    <span class="notification-badge"></span>
+                <button class="icon-btn" title="Notifications">
+                    <iconify-icon icon="solar:bell-bold" width="17"></iconify-icon>
                 </button>
             </div>
         </header>
 
         <!-- Content -->
-        <div class="flex-1 overflow-auto p-6">
-            <div class="space-y-6">
-                <!-- Stats Grid - 5 cards for total user, total fleet, on time, delayed, suspended -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                    <div class="stat-card">
-                        <div class="stat-label">Total Users</div>
-                        <div class="stat-value"><%= stats.totalUsers || 156 %></div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-label">Total Fleet</div>
-                        <div class="stat-value"><%= stats.onTime     %></div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-label">On Time</div>
-                        <div class="stat-value" style="color: #62AE7D;"><%= stats.onTime  %></div>
-                    </div>
+        <div class="page-content">
 
-                    <div class="stat-card">
-                        <div class="stat-label">Delayed</div>
-                        <div class="stat-value" style="color: #FEC1A0;"><%= stats.delayed  %></div>
-                    </div>
+            <!-- Stat Cards -->
+            <div class="stat-grid mb-6" style="grid-template-columns: repeat(5, 1fr);">
 
-                    <div class="stat-card">
-                        <div class="stat-label">Suspended</div>
-                        <div class="stat-value" style="color: #99123D;"><%= stats.suspended  %></div>
-                    </div>
+                <div class="stat-card primary slide-up">
+                    <div class="stat-icon"><iconify-icon icon="solar:users-group-rounded-bold" width="20"></iconify-icon></div>
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-value"><%= stats.totalUsers || 0 %></div>
                 </div>
 
-                <!-- Two Column Layout -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    
-                    <!-- Fleet Status Table -->
-                    <div class="lg:col-span-2 table-container">
-                        <div class="table-header flex justify-between items-center">
-                            <span>Live Fleet Status</span>
-                            <a href="/admin/ferries" style="color: #99123D; font-weight: 600;">View all</a>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full">
-                                <thead>
-                                    <tr class="table-row" style="background-color: #C4D7FF20;">
-                                        <th class="px-6 py-2 text-left text-xs font-semibold" style="color: #65676B;">Vessel</th>
-                                        <th class="px-6 py-2 text-left text-xs font-semibold" style="color: #65676B;">Route</th>
-                                        <th class="px-6 py-2 text-left text-xs font-semibold" style="color: #65676B;">Status</th>
-                                        <th class="px-6 py-2 text-left text-xs font-semibold" style="color: #65676B;">ETA</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% ferries.forEach(f => { %>
-                                    <tr class="table-row">
-                                        <td class="px-6 py-3 font-medium"><%= f.name %></td>
-                                        <td class="px-6 py-3" style="color: #65676B;"><%= f.route %></td>
-                                        <td class="px-6 py-3">
-                                            <% if (f.status === 'on_time') { %>
+                <div class="stat-card info slide-up">
+                    <div class="stat-icon"><iconify-icon icon="solar:ship-bold-duotone" width="20"></iconify-icon></div>
+                    <div class="stat-label">Total Fleet</div>
+                    <div class="stat-value"><%= stats.totalFleet || 0 %></div>
+                </div>
+
+                <div class="stat-card success slide-up">
+                    <div class="stat-icon"><iconify-icon icon="solar:check-circle-bold-duotone" width="20"></iconify-icon></div>
+                    <div class="stat-label">On Time</div>
+                    <div class="stat-value success"><%= stats.onTime || 0 %></div>
+                </div>
+
+                <div class="stat-card warning slide-up">
+                    <div class="stat-icon"><iconify-icon icon="solar:clock-circle-bold-duotone" width="20"></iconify-icon></div>
+                    <div class="stat-label">Delayed</div>
+                    <div class="stat-value warning"><%= stats.delayed || 0 %></div>
+                </div>
+
+                <div class="stat-card danger slide-up">
+                    <div class="stat-icon"><iconify-icon icon="solar:danger-circle-bold-duotone" width="20"></iconify-icon></div>
+                    <div class="stat-label">Suspended</div>
+                    <div class="stat-value danger"><%= stats.suspended || 0 %></div>
+                </div>
+            </div>
+
+            <!-- Two-column grid -->
+            <div style="display:grid; grid-template-columns: 1fr 340px; gap:20px;">
+
+                <!-- Fleet Status Table -->
+                <div class="panel slide-up">
+                    <div class="panel-header">
+                        <span class="panel-title">
+                            <iconify-icon icon="solar:map-bold-duotone"></iconify-icon>
+                            Live Fleet Status
+                        </span>
+                        <a href="/admin/ferries" class="panel-action">View all →</a>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Vessel</th>
+                                    <th>Route</th>
+                                    <th>Status</th>
+                                    <th>ETA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% ferries.forEach(f => { %>
+                                <tr>
+                                    <td style="font-weight:600;"><%= f.name %></td>
+                                    <td class="secondary"><%= f.route %></td>
+                                    <td>
+                                        <% if (f.status === 'on_time' || f.status === 'active') { %>
                                             <span class="badge badge-on-time">On Time</span>
-                                            <% } else if (f.status === 'delayed') { %>
+                                        <% } else if (f.status === 'delayed') { %>
                                             <span class="badge badge-delayed">Delayed</span>
-                                            <% } else { %>
-                                            <span class="badge badge-suspended">Suspended</span>
-                                            <% } %>
-                                        </td>
-                                        <td class="px-6 py-3" style="color: #65676B;"><%= f.eta %> min</td>
-                                    </tr>
-                                    <% }) %>
-                                </tbody>
-                            </table>
-                        </div>
+                                        <% } else if (f.status === 'docked' || f.status === 'arrived') { %>
+                                            <span class="badge badge-docked">Docked</span>
+                                        <% } else { %>
+                                            <span class="badge badge-suspended"><%= f.status || 'Suspended' %></span>
+                                        <% } %>
+                                    </td>
+                                    <td class="secondary"><%= f.eta %> min</td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
                     </div>
+                </div>
 
-                    <!-- Recent Activity -->
-                    <div class="table-container p-4">
-                        <h3 class="font-semibold mb-3" style="color: #2D2F31;">Recent Activity</h3>
-                        <div class="space-y-1">
-                            <% logs.forEach(log => { %>
-                            <div class="activity-item">
-                                <div class="activity-dot">
-                                    <iconify-icon icon="solar:<%= 
-                                        log.action.includes('Delayed') ? 'clock-circle-bold' : 
-                                        log.action.includes('Update') ? 'check-circle-bold' : 
-                                        'add-circle-bold'
-                                    %>" width="14"></iconify-icon>
-                                </div>
-                                <div>
-                                    <p class="activity-action"><%= log.action %></p>
-                                    <p class="activity-time"><%= log.time %></p>
-                                </div>
+                <!-- Recent Activity -->
+                <div class="panel slide-up">
+                    <div class="panel-header">
+                        <span class="panel-title">
+                            <iconify-icon icon="solar:clock-square-bold-duotone"></iconify-icon>
+                            Recent Activity
+                        </span>
+                    </div>
+                    <div class="activity-list">
+                        <% logs.forEach(log => { %>
+                        <div class="activity-item">
+                            <div class="activity-dot">
+                                <iconify-icon icon="solar:<%=
+                                    log.action.includes('Delayed')  ? 'clock-circle-bold' :
+                                    log.action.includes('Update')   ? 'check-circle-bold' :
+                                    'add-circle-bold'
+                                %>" width="14"></iconify-icon>
                             </div>
-                            <% }) %>
+                            <div class="activity-text">
+                                <div class="action"><%= log.action %></div>
+                                <div class="time"><%= log.time %></div>
+                            </div>
                         </div>
+                        <% }) %>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </div><!-- /page-content -->
+    </div><!-- /main-content -->
+</div><!-- /app-shell -->
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-        <div class="bg-white border border-[#87A2FF] rounded-lg shadow-lg p-3 flex items-center gap-2 min-w-[200px]">
-            <div id="toast-icon" style="color: #62AE7D;">
-                <iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>
-            </div>
-            <p id="toast-message" class="text-sm" style="color: #2D2F31;">Success</p>
-        </div>
-    </div>
+<!-- Toast -->
+<div id="toast" class="toast">
+    <iconify-icon id="toast-icon" width="18"></iconify-icon>
+    <span id="toast-message" class="toast-message">Success</span>
+</div>
 
-    <script>
-        function showToast(msg, type) {
-            const toast = document.getElementById('toast');
-            const icon = document.getElementById('toast-icon');
-            const message = document.getElementById('toast-message');
-            
-            message.innerText = msg;
-            
-            if(type === 'success') {
-                icon.innerHTML = '<iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>';
-                icon.style.color = '#62AE7D';
-            } else if(type === 'error') {
-                icon.innerHTML = '<iconify-icon icon="solar:danger-circle-bold" width="18"></iconify-icon>';
-                icon.style.color = '#99123D';
-            } else {
-                icon.innerHTML = '<iconify-icon icon="solar:info-circle-bold" width="18"></iconify-icon>';
-                icon.style.color = '#BD77FF';
-            }
-
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        // QUOTA FIX: Removed dead setInterval that polled /api/ferries every 30s without
-        // updating the UI (only console.log). For live updates, listen to Socket.IO events
-        // emitted by portScheduler.js instead:
-        //   const socket = io();
-        //   socket.on('ports-updated', (data) => { /* update UI */ });
-        //   socket.on('ferries-updated', (data) => { /* update UI */ });
-    </script>
+<script>
+    function showToast(msg, type = 'info') {
+        const toast = document.getElementById('toast');
+        const icon  = document.getElementById('toast-icon');
+        const text  = document.getElementById('toast-message');
+        text.innerText = msg;
+        toast.className = 'toast ' + type;
+        if (type === 'success') icon.setAttribute('icon', 'solar:check-circle-bold');
+        else if (type === 'error') icon.setAttribute('icon', 'solar:danger-circle-bold');
+        else icon.setAttribute('icon', 'solar:info-circle-bold');
+        icon.className = 'toast-icon ' + type;
+        setTimeout(() => toast.classList.remove('show'), 50);
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+</script>
 </body>
 </html>

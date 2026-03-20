@@ -5,718 +5,393 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %> - AquaRoute Admin</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
+
+    <!-- AquaRoute Maritime Theme -->
+    <link rel="stylesheet" href="/css/admin-theme.css">
+
     <!-- Iconify -->
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #FFD7C4;
-            color: #2D2F31;
-        }
-
-        /* Minimal scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #BD77FF; border-radius: 2px; }
-
-        /* Sidebar - minimal */
-        .sidebar {
-            background-color: #FFF4B5;
-            border-right: 1px solid #87A2FF;
-        }
-
-        .nav-item {
-            display: flex;
+        /* Page-specific overrides */
+        .modal-overlay-bg {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(2px);
+            z-index: 50;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.625rem 1rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #65676B;
-            transition: all 0.15s ease;
+            justify-content: center;
+            padding: 20px;
         }
-
-        .nav-item:hover {
-            background-color: #FEC1A0;
-            color: #2D2F31;
-        }
-
-        .nav-item.active {
-            background-color: #87A2FF;
-            color: white;
-        }
-
-        /* Stats cards - minimal */
-        .stat-card {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 12px;
-            padding: 1.25rem;
-        }
-
-        .stat-label {
-            color: #65676B;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-        }
-
-        .stat-value {
-            color: #2D2F31;
-            font-size: 1.75rem;
-            font-weight: 600;
-            line-height: 1.2;
-        }
-
-        /* Table - minimal */
-        .table-container {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .table-header {
-            background-color: #C4D7FF;
-            padding: 0.75rem 1.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #65676B;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-        }
-
-        .table-row {
-            border-bottom: 1px solid #87A2FF;
-        }
-
-        .table-row td {
-            padding: 1rem 1.5rem;
-            font-size: 0.875rem;
-        }
-
-        .table-row th {
-            padding: 0.75rem 1.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #65676B;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-            background-color: #C4D7FF20;
-        }
-
-        /* Status badges - minimal */
-        .badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            display: inline-block;
-        }
-
-        .badge-in-transit {
-            background-color: #BD77FF;
-            color: white;
-        }
-
-        .badge-pending {
-            background-color: #FEC1A0;
-            color: #2D2F31;
-            border: 1px solid #99123D;
-        }
-
-        .badge-delivered {
-            background-color: #62AE7D;
-            color: white;
-        }
-
-        /* Action buttons */
-        .action-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            border: 1px solid transparent;
-        }
-
-        .btn-primary {
-            background-color: #87A2FF;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #99123D;
-        }
-
-        .btn-outline {
-            background-color: white;
-            color: #65676B;
-            border: 1px solid #87A2FF;
-        }
-
-        .btn-outline:hover {
-            background-color: #FEC1A0;
-        }
-
+        .modal-overlay-bg.active { display: flex; }
         .btn-icon {
-            padding: 0.375rem;
+            padding: 6px;
             border-radius: 6px;
             background: transparent;
-            color: #65676B;
+            border: none;
+            color: var(--color-text-medium);
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.15s;
         }
+        .btn-icon:hover { background: var(--color-primary-light); color: var(--color-primary); }
+        .btn-icon.danger:hover { background: var(--color-error-bg); color: var(--color-error); }
 
-        .btn-icon:hover {
-            background-color: #FEC1A0;
-            color: #99123D;
+        .empty-state {
+            padding: 48px 24px;
+            text-align: center;
+            color: var(--color-text-light);
         }
+        .empty-state iconify-icon { color: var(--color-border); margin-bottom: 12px; }
 
-        /* Search input */
-        .search-container {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 30px;
-            padding: 0.5rem 1rem 0.5rem 2.5rem;
-            font-size: 0.875rem;
-            width: 100%;
+        .search-bar-wrap {
             position: relative;
+            max-width: 380px;
         }
-
-        .search-icon {
+        .search-bar-wrap .search-icon-abs {
             position: absolute;
-            left: 0.75rem;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: #87A2FF;
-            font-size: 0.875rem;
+            color: var(--color-text-light);
+            pointer-events: none;
         }
-
-        .search-input {
+        .search-bar-wrap input {
             width: 100%;
-            border: none;
+            background: var(--color-surface);
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-pill);
+            padding: 9px 14px 9px 36px;
+            font-size: 13px;
             outline: none;
-            background: transparent;
+            font-family: var(--font-sans);
+            color: var(--color-text-dark);
+            transition: all 0.2s;
         }
-
-        /* User profile - minimal */
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            border-top: 1px solid #87A2FF;
-        }
-
-        .user-avatar {
-            width: 2.25rem;
-            height: 2.25rem;
-            border-radius: 9999px;
-            border: 2px solid #99123D;
-        }
-
-        /* Header - minimal */
-        .header {
-            background-color: rgba(255, 244, 181, 0.8);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid #87A2FF;
-        }
-
-        .notification-btn {
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 9999px;
-            border: 1px solid #87A2FF;
-            background-color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #65676B;
-            position: relative;
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.75rem;
-            width: 0.375rem;
-            height: 0.375rem;
-            background-color: #99123D;
-            border-radius: 50%;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background-color: white;
-            border: 2px solid #87A2FF;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            background-color: #C4D7FF;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid #87A2FF;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h3 {
-            font-weight: 600;
-            color: #2D2F31;
-        }
-
-        .modal-close {
-            cursor: pointer;
-            color: #65676B;
-        }
-
-        .modal-close:hover {
-            color: #99123D;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .modal-footer {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid #87A2FF;
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 0.25rem;
-            color: #2D2F31;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #87A2FF;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            outline: none;
-            background-color: white;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            border-color: #99123D;
-        }
-
-        /* Empty state */
-        .empty-state {
-            padding: 3rem;
-            text-align: center;
-            color: #65676B;
-        }
-
-        .empty-state iconify-icon {
-            margin-bottom: 1rem;
-            color: #87A2FF;
-        }
-
-        .empty-state p {
-            margin-top: 0.5rem;
-        }
-
-        .empty-state .text-xs {
-            color: #65676B;
+        .search-bar-wrap input:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(10,77,140,0.08);
         }
     </style>
 </head>
-<body class="h-screen flex overflow-hidden">
+<body>
+<div class="app-shell fade-in">
 
-    <!-- Sidebar -->
-    <aside class="w-64 sidebar hidden lg:flex flex-col">
-        <!-- Brand -->
-        <div class="h-16 flex items-center px-6 border-b border-[#87A2FF]">
-            <div class="flex items-center gap-2">
-                <div class="w-6 h-6 rounded flex items-center justify-center" style="background-color: #87A2FF;">
-                    <iconify-icon icon="solar:ship-bold" width="14" style="color: white;"></iconify-icon>
-                </div>
-                <span class="font-semibold text-base" style="color: #99123D;">AquaRoute</span>
+    <!-- ── Sidebar ──────────────────────────────────────── -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <iconify-icon icon="solar:wheel-angle-bold" width="16" style="color:#fff"></iconify-icon>
             </div>
+            <span class="brand-name">AquaRoute</span>
         </div>
 
-        <!-- Nav -->
-        <nav class="flex-1 px-3 py-4 space-y-0.5">
-            <a href="/admin/dashboard" class="nav-item">
-                <iconify-icon icon="solar:widget-5-bold-duotone" width="18"></iconify-icon>
-                Dashboard
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">Main</span>
+            <a href="/admin/dashboard" class="nav-item <%= currentPage === 'dashboard' ? 'active' : '' %>">
+                <iconify-icon icon="solar:widget-5-bold-duotone" width="18"></iconify-icon> Dashboard
             </a>
-            <a href="/admin/ferries" class="nav-item">
-                <iconify-icon icon="solar:ship-bold-duotone" width="18"></iconify-icon>
-                Ferry Management
+            <a href="/admin/ferries" class="nav-item <%= currentPage === 'ferries' ? 'active' : '' %>">
+                <iconify-icon icon="solar:ship-bold-duotone" width="18"></iconify-icon> Ferry Management
             </a>
-            <a href="/admin/ports" class="nav-item">
-                <iconify-icon icon="solar:anchor-circle-bold-duotone" width="18"></iconify-icon>
-                Port Management
+            <a href="/admin/ports" class="nav-item <%= currentPage === 'ports' ? 'active' : '' %>">
+                <iconify-icon icon="solar:anchor-circle-bold-duotone" width="18"></iconify-icon> Port Management
             </a>
-            <a href="/admin/cargo" class="nav-item active">
-                <iconify-icon icon="solar:box-bold-duotone" width="18"></iconify-icon>
-                Cargo Tracking
+            <a href="/admin/cargo" class="nav-item <%= currentPage === 'cargo' ? 'active' : '' %>">
+                <iconify-icon icon="solar:box-bold-duotone" width="18"></iconify-icon> Cargo Tracking
             </a>
-            <a href="/admin/logs" class="nav-item">
-                <iconify-icon icon="solar:clipboard-list-bold-duotone" width="18"></iconify-icon>
-                Audit Logs
+            <span class="nav-section-label" style="margin-top:8px;">System</span>
+            <a href="/admin/logs" class="nav-item <%= currentPage === 'logs' ? 'active' : '' %>">
+                <iconify-icon icon="solar:clipboard-list-bold-duotone" width="18"></iconify-icon> Audit Logs
             </a>
-            <a href="/admin/users" class="nav-item">
-                <iconify-icon icon="solar:users-group-rounded-bold" width="18"></iconify-icon>
-                Users
+            <a href="/admin/users" class="nav-item <%= currentPage === 'users' ? 'active' : '' %>">
+                <iconify-icon icon="solar:users-group-rounded-bold" width="18"></iconify-icon> Users
             </a>
         </nav>
 
-        <!-- User -->
-        <div class="user-profile">
-            <img src="https://ui-avatars.com/api/?name=<%= user ? user.name.replace(' ', '+') : 'Admin' %>&background=99123D&color=fff" class="user-avatar">
-            <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold truncate"><%= user ? user.name : 'Admin User' %></p>
-                <p class="text-xs" style="color: #65676B;"><%= user ? (user.role || 'Admin') : 'Administrator' %></p>
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <img src="https://ui-avatars.com/api/?name=<%= user ? user.name.replace(' ', '+') : 'Admin' %>&background=0A4D8C&color=fff" alt="avatar">
+                <div class="flex-1 truncate">
+                    <div class="user-name truncate"><%= user ? user.name : 'Admin User' %></div>
+                    <div class="user-role"><%= user ? (user.role || 'Admin') : 'Administrator' %></div>
+                </div>
+                <a href="/logout" class="logout-btn">
+                    <iconify-icon icon="solar:logout-2-bold" width="16"></iconify-icon>
+                </a>
             </div>
-            <a href="/logout" style="color: #99123D;">
-                <iconify-icon icon="solar:logout-2-bold" width="18"></iconify-icon>
-            </a>
         </div>
     </aside>
 
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col min-w-0">
-        
-        <!-- Header -->
-        <header class="h-16 header flex items-center justify-between px-6">
-            <div class="flex items-center gap-4 lg:hidden">
-                <button style="color: #87A2FF;"><iconify-icon icon="solar:hamburger-menu-bold" width="20"></iconify-icon></button>
-                <span class="font-semibold" style="color: #99123D;">AquaRoute</span>
-            </div>
-            
-            <div>
-                <h1 class="text-lg font-semibold" style="color: #2D2F31;">Cargo Tracking</h1>
-                <p class="text-xs" style="color: #65676B;">Track shipments by reference number</p>
-            </div>
+    <!-- ── Main Content ──────────────────────────────────── -->
+    <div class="main-content">
 
-            <div class="flex items-center gap-3">
-                <button onclick="openAddModal()" class="action-btn btn-primary">
+        <!-- Header -->
+        <header class="top-header">
+            <div class="page-title">
+                <h1>Cargo Tracking</h1>
+                <p>Manage and monitor all shipments</p>
+            </div>
+            <div class="header-actions">
+                <button onclick="openAddModal()" class="btn btn-primary">
                     <iconify-icon icon="solar:add-circle-bold" width="16"></iconify-icon>
                     Add Cargo
                 </button>
-                <button class="notification-btn">
-                    <iconify-icon icon="solar:bell-bold" width="18"></iconify-icon>
-                    <span class="notification-badge"></span>
+                <button class="icon-btn" title="Notifications">
+                    <iconify-icon icon="solar:bell-bold" width="17"></iconify-icon>
                 </button>
             </div>
         </header>
 
         <!-- Content -->
-        <div class="flex-1 overflow-auto p-6">
-            <div class="space-y-6">
-                
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div class="stat-card">
-                        <div class="stat-label">Total Shipments</div>
-                        <div class="stat-value"><%= stats ? stats.total : (cargo ? cargo.length : 0) %></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">In Transit</div>
-                        <div class="stat-value" style="color: #BD77FF;"><%= stats ? stats.inTransit : 0 %></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Pending</div>
-                        <div class="stat-value" style="color: #FEC1A0;"><%= stats ? stats.pending : 0 %></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Delivered</div>
-                        <div class="stat-value" style="color: #62AE7D;"><%= stats ? stats.delivered : 0 %></div>
+        <div class="page-content">
+
+            <!-- Stat Cards -->
+            <div class="stat-grid mb-6" style="grid-template-columns: repeat(4, 1fr);">
+                <div class="stat-card primary slide-up">
+                    <div class="stat-icon"><iconify-icon icon="solar:box-bold-duotone" width="20"></iconify-icon></div>
+                    <div class="stat-label">Total Shipments</div>
+                    <div class="stat-value"><%= stats ? stats.total : (cargo ? cargo.length : 0) %></div>
+                </div>
+                <div class="stat-card info slide-up">
+                    <div class="stat-icon"><iconify-icon icon="solar:delivery-bold-duotone" width="20"></iconify-icon></div>
+                    <div class="stat-label">In Transit</div>
+                    <div class="stat-value" style="color:var(--color-accent)"><%= stats ? stats.inTransit : 0 %></div>
+                </div>
+                <div class="stat-card warning slide-up">
+                    <div class="stat-icon"><iconify-icon icon="solar:clock-circle-bold-duotone" width="20"></iconify-icon></div>
+                    <div class="stat-label">Pending</div>
+                    <div class="stat-value warning"><%= stats ? stats.pending : 0 %></div>
+                </div>
+                <div class="stat-card success slide-up">
+                    <div class="stat-icon"><iconify-icon icon="solar:check-circle-bold-duotone" width="20"></iconify-icon></div>
+                    <div class="stat-label">Delivered</div>
+                    <div class="stat-value success"><%= stats ? stats.delivered : 0 %></div>
+                </div>
+            </div>
+
+            <!-- Search + Table -->
+            <div class="panel slide-up">
+                <div class="panel-header">
+                    <span class="panel-title">
+                        <iconify-icon icon="solar:box-bold-duotone"></iconify-icon>
+                        Active Shipments
+                        <span style="color:var(--color-text-light);font-weight:400;font-size:12px;">(<%= cargo ? cargo.length : 0 %> records)</span>
+                    </span>
+                    <div class="search-bar-wrap">
+                        <iconify-icon icon="solar:magnifer-linear" class="search-icon-abs"></iconify-icon>
+                        <form action="/admin/cargo/search" method="GET">
+                            <input type="text" name="query"
+                                   placeholder="Search by reference or description…"
+                                   value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
+                        </form>
                     </div>
                 </div>
 
-                <!-- Search Bar -->
-                <div class="relative max-w-md">
-                    <iconify-icon icon="solar:magnifer-linear" class="search-icon"></iconify-icon>
-                    <form action="/admin/cargo/search" method="GET">
-                        <input type="text" name="query" placeholder="Search by reference or description..." 
-                               value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>" 
-                               class="search-container pl-10">
-                    </form>
-                </div>
-
-                <!-- Cargo Table -->
-                <div class="table-container">
-                    <div class="table-header flex justify-between items-center">
-                        <span>Active Shipments</span>
-                        <span class="text-xs" style="color: #65676B;"><%= cargo ? cargo.length : 0 %> records</span>
-                    </div>
-                    
-                    <% if (cargo && cargo.length > 0) { %>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead>
-                                <tr>
-                                    <th class="text-left">Reference #</th>
-                                    <th class="text-left">Description</th>
-                                    <th class="text-left">Weight</th>
-                                    <th class="text-left">Assigned Ferry</th>
-                                    <th class="text-left">Status</th>
-                                    <th class="text-left">Created</th>
-                                    <th class="text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% cargo.forEach(function(item) { %>
-                                <tr class="table-row">
-                                    <td class="px-6 py-3 font-mono text-sm font-medium">
-                                        <a href="/admin/cargo/track/<%= item.reference %>" style="color: #99123D;">
-                                            <%= item.reference %>
-                                        </a>
-                                    </td>
-                                    <td class="px-6 py-3"><%= item.description %></td>
-                                    <td class="px-6 py-3"><%= item.weight %> kg</td>
-                                    <td class="px-6 py-3"><%= item.ferryName || 'Unassigned' %></td>
-                                    <td class="px-6 py-3">
-                                        <% if (item.status === 'in_transit') { %>
+                <% if (cargo && cargo.length > 0) { %>
+                <div style="overflow-x:auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Reference #</th>
+                                <th>Description</th>
+                                <th>Weight</th>
+                                <th>Assigned Ferry</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th style="text-align:right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% cargo.forEach(function(item) { %>
+                            <tr>
+                                <td class="mono">
+                                    <a href="/admin/cargo/track/<%= item.reference %>" style="color:var(--color-primary);font-weight:600;">
+                                        <%= item.reference %>
+                                    </a>
+                                </td>
+                                <td><%= item.description %></td>
+                                <td class="secondary"><%= item.weight %> kg</td>
+                                <td><%= item.ferryName || '—' %></td>
+                                <td>
+                                    <% const s = (item.status||'').toLowerCase(); %>
+                                    <% if (s === 'in_transit' || s === 'in transit') { %>
                                         <span class="badge badge-in-transit">In Transit</span>
-                                        <% } else if (item.status === 'pending') { %>
-                                        <span class="badge badge-pending">Pending</span>
-                                        <% } else if (item.status === 'delivered') { %>
-                                        <span class="badge badge-delivered">Delivered</span>
-                                        <% } else { %>
+                                    <% } else if (s === 'pending' || s === 'processing') { %>
                                         <span class="badge badge-pending"><%= item.status %></span>
-                                        <% } %>
-                                    </td>
-                                    <td class="px-6 py-3" style="color: #65676B;">
-                                        <%= new Date(item.createdAt).toLocaleDateString() %>
-                                    </td>
-                                    <td class="px-6 py-3 text-right">
-                                        <button 
-                                            onclick="editCargo(this)" 
+                                    <% } else if (s === 'delivered') { %>
+                                        <span class="badge badge-delivered">Delivered</span>
+                                    <% } else if (s === 'delayed') { %>
+                                        <span class="badge badge-delayed">Delayed</span>
+                                    <% } else { %>
+                                        <span class="badge badge-neutral"><%= item.status %></span>
+                                    <% } %>
+                                </td>
+                                <td class="secondary"><%= new Date(item.createdAt).toLocaleDateString() %></td>
+                                <td style="text-align:right;">
+                                    <button onclick="editCargo(this)"
                                             data-id="<%= item.id %>"
                                             data-description="<%= item.description ? item.description.replace(/"/g, '&quot;') : '' %>"
                                             data-weight="<%= item.weight || 0 %>"
                                             data-ferryid="<%= item.ferryId || '' %>"
                                             data-status="<%= item.status || 'pending' %>"
-                                            class="btn-icon" 
-                                            title="Edit">
-                                            <iconify-icon icon="solar:pen-bold" width="16"></iconify-icon>
-                                        </button>
-                                        <button 
-                                            onclick="deleteCargo('<%= item.id %>', '<%= item.reference %>')" 
-                                            class="btn-icon" 
-                                            title="Delete">
-                                            <iconify-icon icon="solar:trash-bin-trash-bold" width="16"></iconify-icon>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <% }); %>
-                            </tbody>
-                        </table>
-                    </div>
-                    <% } else { %>
-                    <div class="empty-state">
-                        <iconify-icon icon="solar:box-bold" width="48"></iconify-icon>
-                        <p class="font-medium">No cargo shipments found</p>
-                        <p class="text-xs mt-1">Click "Add Cargo" to create a new shipment</p>
-                    </div>
-                    <% } %>
+                                            class="btn-icon" title="Edit">
+                                        <iconify-icon icon="solar:pen-bold" width="16"></iconify-icon>
+                                    </button>
+                                    <button onclick="deleteCargo('<%= item.id %>', '<%= item.reference %>')"
+                                            class="btn-icon danger" title="Delete">
+                                        <iconify-icon icon="solar:trash-bin-trash-bold" width="16"></iconify-icon>
+                                    </button>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } else { %>
+                <div class="empty-state">
+                    <iconify-icon icon="solar:box-bold" width="48"></iconify-icon>
+                    <p style="font-weight:600;color:var(--color-text-medium);margin-top:8px;">No cargo shipments found</p>
+                    <p style="font-size:12px;margin-top:4px;">Click "Add Cargo" to create a new shipment</p>
+                </div>
+                <% } %>
+            </div>
+        </div><!-- /page-content -->
+    </div><!-- /main-content -->
+</div><!-- /app-shell -->
+
+<!-- Add/Edit Modal -->
+<div id="cargoModal" class="modal-overlay-bg">
+    <div class="modal">
+        <form id="cargoForm" method="POST">
+            <div class="modal-header">
+                <span class="modal-title">
+                    <iconify-icon icon="solar:box-bold-duotone"></iconify-icon>
+                    <span id="modalTitle">Add New Cargo</span>
+                </span>
+                <button type="button" onclick="closeModal()" class="modal-close">
+                    <iconify-icon icon="solar:close-circle-bold" width="18"></iconify-icon>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="cargoId" name="id">
+
+                <div class="form-group">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="2" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="weight">Weight (kg)</label>
+                    <input class="form-control" type="number" id="weight" name="weight" step="0.1" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="ferryId">Assign to Ferry</label>
+                    <select class="form-control" id="ferryId" name="ferryId">
+                        <option value="">— Unassigned —</option>
+                        <% if (ferries) { %>
+                            <% ferries.forEach(function(f) { %>
+                            <option value="<%= f.id %>"><%= f.name %> — <%= f.route %></option>
+                            <% }); %>
+                        <% } %>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="status">Status</label>
+                    <select class="form-control" id="status" name="status" required>
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="in_transit">In Transit</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="delayed">Delayed</option>
+                    </select>
                 </div>
             </div>
-        </div>
-    </main>
-
-    <!-- Add/Edit Modal -->
-    <div id="cargoModal" class="modal">
-        <div class="modal-content">
-            <form id="cargoForm" method="POST">
-                <div class="modal-header">
-                    <h3 id="modalTitle">Add New Cargo</h3>
-                    <span onclick="closeModal()" class="modal-close">
-                        <iconify-icon icon="solar:close-circle-bold" width="20"></iconify-icon>
-                    </span>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="cargoId" name="id">
-                    
-                    <div class="form-group">
-                        <label for="description">Description</label>
-                        <textarea id="description" name="description" rows="2" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="weight">Weight (kg)</label>
-                        <input type="number" id="weight" name="weight" step="0.1" min="0" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="ferryId">Assign to Ferry</label>
-                        <select id="ferryId" name="ferryId">
-                            <option value="">-- Unassigned --</option>
-                            <% if (ferries) { %>
-                                <% ferries.forEach(function(f) { %>
-                                <option value="<%= f.id %>"><%= f.name %> - <%= f.route %></option>
-                                <% }); %>
-                            <% } %>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="status">Status</label>
-                        <select id="status" name="status" required>
-                            <option value="pending">Pending</option>
-                            <option value="in_transit">In Transit</option>
-                            <option value="delivered">Delivered</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" onclick="closeModal()" class="action-btn btn-outline">Cancel</button>
-                    <button type="submit" class="action-btn btn-primary">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-        <div class="bg-white border border-[#87A2FF] rounded-lg shadow-lg p-3 flex items-center gap-2 min-w-[200px]">
-            <div id="toast-icon" style="color: #62AE7D;">
-                <iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>
+            <div class="modal-footer">
+                <button type="button" onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Cargo</button>
             </div>
-            <p id="toast-message" class="text-sm" style="color: #2D2F31;">Success</p>
-        </div>
+        </form>
     </div>
+</div>
 
-    <script>
-        // Modal functions
-        function openAddModal() {
-            document.getElementById('modalTitle').textContent = 'Add New Cargo';
-            document.getElementById('cargoForm').action = '/admin/cargo/add';
-            document.getElementById('cargoId').value = '';
-            document.getElementById('description').value = '';
-            document.getElementById('weight').value = '';
-            document.getElementById('ferryId').value = '';
-            document.getElementById('status').value = 'pending';
-            document.getElementById('cargoModal').classList.add('active');
+<!-- Toast -->
+<div id="toast" class="toast">
+    <iconify-icon id="toast-icon" width="18"></iconify-icon>
+    <span id="toast-message" class="toast-message">Success</span>
+</div>
+
+<script>
+    function openAddModal() {
+        document.getElementById('modalTitle').textContent = 'Add New Cargo';
+        document.getElementById('cargoForm').action = '/admin/cargo/add';
+        document.getElementById('cargoId').value = '';
+        document.getElementById('description').value = '';
+        document.getElementById('weight').value = '';
+        document.getElementById('ferryId').value = '';
+        document.getElementById('status').value = 'pending';
+        document.getElementById('cargoModal').classList.add('active');
+    }
+
+    function editCargo(button) {
+        var id         = button.getAttribute('data-id');
+        var description = button.getAttribute('data-description');
+        var weight     = button.getAttribute('data-weight');
+        var ferryId    = button.getAttribute('data-ferryid');
+        var status     = button.getAttribute('data-status');
+
+        document.getElementById('modalTitle').textContent = 'Edit Cargo';
+        document.getElementById('cargoForm').action = '/admin/cargo/' + id + '/update';
+        document.getElementById('cargoId').value = id;
+        document.getElementById('description').value = description;
+        document.getElementById('weight').value = weight;
+        document.getElementById('ferryId').value = ferryId || '';
+        document.getElementById('status').value = status || 'pending';
+        document.getElementById('cargoModal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('cargoModal').classList.remove('active');
+    }
+
+    function deleteCargo(id, reference) {
+        if (confirm('Delete cargo ' + reference + '? This action cannot be undone.')) {
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/cargo/' + id + '/delete';
+            document.body.appendChild(form);
+            form.submit();
         }
+    }
 
-        function editCargo(button) {
-            var id = button.getAttribute('data-id');
-            var description = button.getAttribute('data-description');
-            var weight = button.getAttribute('data-weight');
-            var ferryId = button.getAttribute('data-ferryid');
-            var status = button.getAttribute('data-status');
-            
-            document.getElementById('modalTitle').textContent = 'Edit Cargo';
-            document.getElementById('cargoForm').action = '/admin/cargo/' + id + '/update';
-            document.getElementById('cargoId').value = id;
-            document.getElementById('description').value = description;
-            document.getElementById('weight').value = weight;
-            document.getElementById('ferryId').value = ferryId || '';
-            document.getElementById('status').value = status || 'pending';
-            document.getElementById('cargoModal').classList.add('active');
-        }
+    function showToast(msg, type) {
+        const toast = document.getElementById('toast');
+        const icon  = document.getElementById('toast-icon');
+        const text  = document.getElementById('toast-message');
+        text.innerText = msg;
+        toast.className = 'toast ' + (type||'info');
+        icon.className  = 'toast-icon ' + (type||'info');
+        if (type === 'success') icon.setAttribute('icon', 'solar:check-circle-bold');
+        else if (type === 'error') icon.setAttribute('icon', 'solar:danger-circle-bold');
+        else icon.setAttribute('icon', 'solar:info-circle-bold');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3500);
+    }
 
-        function closeModal() {
-            document.getElementById('cargoModal').classList.remove('active');
-        }
+    <% if (typeof message !== 'undefined' && message) { %>
+        window.onload = function() { showToast('<%= message %>', 'success'); };
+    <% } %>
 
-        function deleteCargo(id, reference) {
-            if (confirm('Are you sure you want to delete cargo ' + reference + '?')) {
-                var form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/admin/cargo/' + id + '/delete';
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
-
-        // Toast function
-        function showToast(msg, type) {
-            var toast = document.getElementById('toast');
-            var icon = document.getElementById('toast-icon');
-            var message = document.getElementById('toast-message');
-            
-            message.innerText = msg;
-            
-            if(type === 'success') {
-                icon.innerHTML = '<iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>';
-                icon.style.color = '#62AE7D';
-            } else if(type === 'error') {
-                icon.innerHTML = '<iconify-icon icon="solar:danger-circle-bold" width="18"></iconify-icon>';
-                icon.style.color = '#99123D';
-            } else {
-                icon.innerHTML = '<iconify-icon icon="solar:info-circle-bold" width="18"></iconify-icon>';
-                icon.style.color = '#BD77FF';
-            }
-
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(function() {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        // Show toast if there's a message from server
-        <% if (typeof message !== 'undefined' && message) { %>
-            window.onload = function() {
-                showToast('<%= message %>', 'success');
-            };
-        <% } %>
-
-        // Close modal on escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
-    </script>
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+    });
+</script>
 </body>
 </html>

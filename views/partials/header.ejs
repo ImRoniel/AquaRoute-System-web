@@ -1,19 +1,57 @@
-<header class="fixed top-0 w-full z-50 glass transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/20">
-                <img src="/aqua_route_logo.svg" alt="Logo" class="w-6 h-6 object-contain" />
-            </div>
-            <span class="font-display font-bold text-xl text-primary tracking-tight">AquaRoute</span>
+<header style="
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    height: 68px;
+    background: rgba(255,255,255,0.90);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid #CFD8DC;
+    box-shadow: 0 1px 6px rgba(0,51,102,0.06);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px;
+    transition: all 0.3s ease;
+">
+    <!-- Brand -->
+    <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+        <div style="
+            width:38px;height:38px;border-radius:10px;
+            background:linear-gradient(135deg,#0A4D8C,#00ACC1);
+            display:flex;align-items:center;justify-content:center;
+            box-shadow:0 4px 10px rgba(10,77,140,0.25);
+        ">
+            <iconify-icon icon="solar:wheel-angle-bold" width="18" style="color:#fff;"></iconify-icon>
         </div>
-        <div class="flex items-center gap-4">
-            <a href="/login" class="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-200 text-slate-600 font-medium hover:border-primary hover:text-primary transition-all text-sm group">
-                <iconify-icon icon="solar:user-circle-bold" class="text-slate-400 group-hover:text-primary transition-colors"></iconify-icon>
-                Admin Login
-            </a>
-            <button class="px-5 py-2.5 rounded-full bg-primary text-white font-medium hover:bg-blue-800 transition-all text-sm shadow-lg shadow-blue-900/20">
-                Get App
-            </button>
-        </div>
+        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;font-weight:700;color:#0A4D8C;letter-spacing:-0.02em;">AquaRoute</span>
+    </a>
+
+    <!-- Nav Actions -->
+    <div style="display:flex;align-items:center;gap:10px;">
+        <a href="/login" style="
+            display:flex;align-items:center;gap:6px;
+            padding:8px 18px;
+            border-radius:9999px;
+            border:1.5px solid #CFD8DC;
+            background:#fff;
+            color:#546E7A;
+            font-size:13px;font-weight:600;
+            text-decoration:none;
+            transition:all 0.2s;
+        "
+        onmouseover="this.style.borderColor='#0A4D8C';this.style.color='#0A4D8C';"
+        onmouseout="this.style.borderColor='#CFD8DC';this.style.color='#546E7A';">
+            <iconify-icon icon="solar:user-circle-bold" width="15"></iconify-icon>
+            Admin Login
+        </a>
+        <button style="
+            padding:8px 18px;
+            border-radius:9999px;
+            background:linear-gradient(135deg,#0A4D8C,#00ACC1);
+            color:#fff;
+            font-size:13px;font-weight:600;border:none;cursor:pointer;
+            box-shadow:0 4px 12px rgba(10,77,140,0.28);
+            transition:all 0.2s;
+        "
+        onmouseover="this.style.opacity='0.9';" onmouseout="this.style.opacity='1';">
+            Get App
+        </button>
     </div>
 </header>

@@ -4,1055 +4,696 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %> - AquaRoute</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
+
+    <!-- AquaRoute Maritime Theme -->
+    <link rel="stylesheet" href="/css/admin-theme.css">
+
     <!-- Iconify -->
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    
+
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #FFD7C4;
-            color: #2D2F31;
-        }
-
-        /* Minimal scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #BD77FF; border-radius: 2px; }
-
-        /* Sidebar */
-        .sidebar {
-            background-color: #FFF4B5;
-            border-right: 1px solid #87A2FF;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.625rem 1rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #65676B;
-            transition: all 0.15s ease;
-        }
-
-        .nav-item:hover {
-            background-color: #FEC1A0;
-            color: #2D2F31;
-        }
-
-        .nav-item.active {
-            background-color: #87A2FF;
-            color: white;
-        }
-
-        /* User profile */
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            border-top: 1px solid #87A2FF;
-        }
-
-        .user-avatar {
-            width: 2.25rem;
-            height: 2.25rem;
-            border-radius: 9999px;
-            border: 2px solid #99123D;
-        }
-
-        /* Header */
-        .header {
-            background-color: rgba(255, 244, 181, 0.8);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid #87A2FF;
-        }
-
-        /* Search input */
-        .search-input {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 30px;
-            padding: 0.5rem 1rem 0.5rem 2.5rem;
-            font-size: 0.875rem;
-            width: 20rem;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #BD77FF;
-        }
-
-        .search-loading {
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            display: none;
-        }
-
-        /* Port Cards */
-        .port-card {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 16px;
-            padding: 1.5rem;
-            transition: all 0.15s ease;
-        }
-
-        .port-card:hover {
-            border-color: #BD77FF;
-        }
-
-        .port-icon {
-            width: 3rem;
-            height: 3rem;
-            border-radius: 12px;
-            background-color: #C4D7FF;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #99123D;
-        }
-
-        /* Status badges */
-        .badge {
-            padding: 0.375rem 0.75rem;
-            border-radius: 30px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.375rem;
-        }
-
-        .badge-open {
-            background-color: #62AE7D;
-            color: white;
-        }
-
-        .badge-limited {
-            background-color: #FEC1A0;
-            color: #2D2F31;
-            border: 1px solid #99123D;
-        }
-
-        .badge-closed {
-            background-color: #99123D;
-            color: white;
-        }
-
-        /* Update button */
-        .update-btn {
-            background-color: #C4D7FF;
-            color: #65676B;
-            padding: 0.375rem 1rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border: 1px solid #87A2FF;
-            transition: all 0.15s ease;
-        }
-
-        .update-btn:hover {
-            background-color: #FEC1A0;
-            border-color: #99123D;
-            color: #2D2F31;
-        }
-
-        /* Menu button */
-        .menu-btn {
-            color: #65676B;
-            padding: 0.25rem;
-            border-radius: 6px;
-            transition: all 0.15s ease;
-        }
-
-        .menu-btn:hover {
-            color: #99123D;
-            background-color: #FEC1A0;
-        }
-
-        /* Notification button */
-        .notification-btn {
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 9999px;
-            border: 1px solid #87A2FF;
-            background-color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #65676B;
-            position: relative;
-            transition: all 0.15s ease;
-        }
-
-        .notification-btn:hover {
-            background-color: #FEC1A0;
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.75rem;
-            width: 0.375rem;
-            height: 0.375rem;
-            background-color: #99123D;
-            border-radius: 50%;
-        }
-
-        /* Weather text */
-        .weather-text {
-            color: #65676B;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .weather-text span {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .weather-info-pill {
-            background-color: #F8FAFC;
-            padding: 2px 6px;
-            border-radius: 4px;
-            border: 1px solid #E2E8F0;
-        }
-
-        /* Dropdown Menu */
-        .dropdown-menu {
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: white;
-            border: 1px solid #87A2FF;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            min-width: 140px;
-            z-index: 50;
-            display: none;
-            flex-direction: column;
-            padding: 0.25rem 0;
-        }
-
-        .dropdown-menu.show {
-            display: flex;
-        }
-
-        .dropdown-item {
-            padding: 0.5rem 1rem;
-            font-size: 0.75rem;
-            color: #2D2F31;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.15s ease;
-            text-align: left;
-            width: 100%;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .dropdown-item:hover {
-            background-color: #FEC1A0;
-            color: #99123D;
-        }
-
-        .relative-menu { position: relative; }
-
-        /* Modal styling */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(2px);
-        }
-        .modal-content {
-            background: white;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 500px;
-            padding: 2rem;
-            border: 1px solid #87A2FF;
-        }
-
-        /* Toast */
-        .toast {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            min-width: 250px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Loading overlay */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(3px);
-        }
-
-        .loading-spinner {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 50%;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 1px solid #87A2FF;
-        }
-
-        .no-results {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 3rem;
-            color: #65676B;
-            background: white;
-            border: 1px solid #87A2FF;
-            border-radius: 16px;
-            display: none;
-        }
-
-        .initial-ports {
+        /* ---- Port Grid ---- */
+        .ports-grid {
             display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 1.25rem;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        @media (min-width: 640px)  { .ports-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .ports-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        /* ---- Port Card ---- */
+        .port-card {
+            background: var(--color-surface);
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            transition: all 0.18s ease;
+            position: relative;
+        }
+        .port-card:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+        .port-icon {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            background: var(--color-primary-light);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--color-primary);
         }
 
-        @media (min-width: 768px) {
-            .initial-ports {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        /* ---- Status Badges (port-specific) ---- */
+        .port-badge {
+            padding: 4px 12px;
+            border-radius: var(--radius-pill);
+            font-size: 12px; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 5px;
+        }
+        .port-badge-open    { background: var(--color-success-bg); color: var(--color-success); }
+        .port-badge-limited { background: var(--color-warning-bg); color: var(--color-warning); }
+        .port-badge-closed  { background: var(--color-error-bg);   color: var(--color-error); }
+
+        /* ---- Update Button ---- */
+        .update-btn {
+            padding: 5px 14px;
+            border-radius: var(--radius-pill);
+            font-size: 12px; font-weight: 600;
+            border: 1.5px solid var(--color-border);
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            cursor: pointer; transition: all 0.15s;
+        }
+        .update-btn:hover {
+            background: var(--color-primary);
+            color: #fff; border-color: var(--color-primary);
+        }
+        .update-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+        /* ---- Dropdown Menu ---- */
+        .relative-menu { position: relative; }
+        .menu-btn {
+            padding: 4px 6px; border-radius: 6px; border: none;
+            background: transparent; color: var(--color-text-light);
+            cursor: pointer; transition: all 0.15s;
+        }
+        .menu-btn:hover { background: var(--color-primary-light); color: var(--color-primary); }
+        .dropdown-menu {
+            position: absolute; right: 0; top: 100%;
+            background: var(--color-surface);
+            border: 1.5px solid var(--color-border);
+            border-radius: 10px;
+            box-shadow: var(--shadow-lg);
+            min-width: 148px; z-index: 100;
+            display: none; flex-direction: column; padding: 4px 0;
+        }
+        .dropdown-menu.show { display: flex; }
+        .dropdown-item {
+            padding: 8px 14px; font-size: 13px;
+            color: var(--color-text-dark);
+            display: flex; align-items: center; gap: 8px;
+            transition: all 0.12s; border: none; background: none;
+            cursor: pointer; width: 100%; text-align: left;
+        }
+        .dropdown-item:hover { background: var(--color-primary-light); color: var(--color-primary); }
+        .dropdown-item.danger { color: var(--color-error); }
+        .dropdown-item.danger:hover { background: var(--color-error-bg); }
+
+        /* ---- Weather Pill ---- */
+        .weather-text {
+            font-size: 12px; color: var(--color-text-light);
+            display: flex; align-items: center; flex-wrap: wrap; gap: 5px;
+        }
+        .weather-pill {
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 4px; padding: 2px 7px;
+            font-size: 11px;
         }
 
-        @media (min-width: 1024px) {
-            .initial-ports {
-                grid-template-columns: repeat(3, 1fr);
-            }
+        /* ---- Search Bar ---- */
+        .port-search-wrap { position: relative; }
+        .port-search-wrap .si { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--color-text-light); pointer-events: none; }
+        .port-search-wrap input {
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-pill);
+            padding: 9px 14px 9px 36px;
+            font-size: 13px; outline: none;
+            font-family: var(--font-sans); color: var(--color-text-dark);
+            background: var(--color-surface);
+            width: 300px; transition: all 0.2s;
+        }
+        .port-search-wrap input:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(10,77,140,0.08); }
+        .search-spinner { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); display: none; }
+
+        /* ---- Modal overlay ---- */
+        .modal-overlay-bg {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45); backdrop-filter: blur(2px);
+            z-index: 200; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-overlay-bg.active { display: flex; }
+
+        /* ---- Loading overlay ---- */
+        .loading-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(255,255,255,0.65); backdrop-filter: blur(3px);
+            z-index: 300; justify-content: center; align-items: center;
+        }
+        .loading-overlay.active { display: flex; }
+        .spinner-ring {
+            width: 48px; height: 48px; border-radius: 50%;
+            border: 4px solid var(--color-border);
+            border-top-color: var(--color-primary);
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ---- No Results ---- */
+        .no-results {
+            grid-column: 1/-1;
+            padding: 48px; text-align: center;
+            color: var(--color-text-light);
+            background: var(--color-surface);
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            display: none;
         }
     </style>
 </head>
-<body class="h-screen flex overflow-hidden">
+<body>
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner-ring"></div>
+</div>
 
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="loading-spinner">
-            <svg class="animate-spin h-8 w-8" style="color: #99123D;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-        </div>
-    </div>
+<div class="app-shell fade-in">
 
     <!-- Sidebar -->
-    <aside class="w-64 sidebar hidden lg:flex flex-col">
-        <!-- Brand -->
-        <div class="h-16 flex items-center px-6 border-b border-[#87A2FF]">
-            <div class="flex items-center gap-2">
-                <div class="w-6 h-6 rounded flex items-center justify-center" style="background-color: #87A2FF;">
-                    <iconify-icon icon="solar:wheel-angle-bold" width="14" style="color: white;"></iconify-icon>
-                </div>
-                <span class="font-semibold text-base" style="color: #99123D;">AquaRoute</span>
-            </div>
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon"><iconify-icon icon="solar:wheel-angle-bold" width="16" style="color:#fff"></iconify-icon></div>
+            <span class="brand-name">AquaRoute</span>
         </div>
-
-        <!-- Nav -->
-        <nav class="flex-1 px-3 py-4 space-y-0.5">
-            <a href="/admin/dashboard" class="nav-item <%= currentPage === 'dashboard' ? 'active' : '' %>">
-                <iconify-icon icon="solar:widget-5-bold-duotone" width="18"></iconify-icon>
-                Dashboard
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">Main</span>
+            <a href="/admin/dashboard" class="nav-item <%= currentPage==='dashboard'?'active':'' %>">
+                <iconify-icon icon="solar:widget-5-bold-duotone" width="18"></iconify-icon> Dashboard
             </a>
-            <a href="/admin/ferries" class="nav-item <%= currentPage === 'ferries' ? 'active' : '' %>">
-                <iconify-icon icon="solar:ship-bold-duotone" width="18"></iconify-icon>
-                Ferry Management
+            <a href="/admin/ferries" class="nav-item <%= currentPage==='ferries'?'active':'' %>">
+                <iconify-icon icon="solar:ship-bold-duotone" width="18"></iconify-icon> Ferry Management
             </a>
-            <a href="/admin/ports" class="nav-item <%= currentPage === 'ports' ? 'active' : '' %>">
-                <iconify-icon icon="solar:anchor-circle-bold-duotone" width="18"></iconify-icon>
-                Port Management
+            <a href="/admin/ports" class="nav-item <%= currentPage==='ports'?'active':'' %>">
+                <iconify-icon icon="solar:anchor-circle-bold-duotone" width="18"></iconify-icon> Port Management
             </a>
-            <a href="/admin/cargo" class="nav-item <%= currentPage === 'cargo' ? 'active' : '' %>">
-                <iconify-icon icon="solar:box-bold-duotone" width="18"></iconify-icon>
-                Cargo Tracking
+            <a href="/admin/cargo" class="nav-item <%= currentPage==='cargo'?'active':'' %>">
+                <iconify-icon icon="solar:box-bold-duotone" width="18"></iconify-icon> Cargo Tracking
             </a>
-            <a href="/admin/logs" class="nav-item <%= currentPage === 'logs' ? 'active' : '' %>">
-                <iconify-icon icon="solar:clipboard-list-bold-duotone" width="18"></iconify-icon>
-                Audit Logs
+            <span class="nav-section-label" style="margin-top:8px;">System</span>
+            <a href="/admin/logs" class="nav-item <%= currentPage==='logs'?'active':'' %>">
+                <iconify-icon icon="solar:clipboard-list-bold-duotone" width="18"></iconify-icon> Audit Logs
             </a>
-            <a href="/admin/users" class="nav-item <%= currentPage === 'users' ? 'active' : '' %>">
-                <iconify-icon icon="solar:users-group-rounded-bold" width="18"></iconify-icon>
-                Users
+            <a href="/admin/users" class="nav-item <%= currentPage==='users'?'active':'' %>">
+                <iconify-icon icon="solar:users-group-rounded-bold" width="18"></iconify-icon> Users
             </a>
         </nav>
-
-        <!-- User -->
-        <div class="user-profile">
-            <img src="https://ui-avatars.com/api/?name=<%= user.name.replace(' ', '+') %>&background=99123D&color=fff" class="user-avatar">
-            <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold truncate"><%= user.name %></p>
-                <p class="text-xs" style="color: #65676B;"><%= user.role || 'Admin' %></p>
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <img src="https://ui-avatars.com/api/?name=<%= user.name.replace(' ','+') %>&background=0A4D8C&color=fff" alt="avatar">
+                <div class="flex-1 truncate">
+                    <div class="user-name truncate"><%= user.name %></div>
+                    <div class="user-role"><%= user.role || 'Admin' %></div>
+                </div>
+                <a href="/logout" class="logout-btn"><iconify-icon icon="solar:logout-2-bold" width="16"></iconify-icon></a>
             </div>
-            <a href="/logout" style="color: #99123D;">
-                <iconify-icon icon="solar:logout-2-bold" width="18"></iconify-icon>
-            </a>
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col min-w-0">
-        
-        <!-- Header -->
-        <header class="h-16 header flex items-center justify-between px-6">
-            <div class="flex items-center gap-4 lg:hidden">
-                <button style="color: #87A2FF;"><iconify-icon icon="solar:hamburger-menu-bold" width="20"></iconify-icon></button>
-                <span class="font-semibold" style="color: #99123D;">AquaRoute</span>
+    <div class="main-content">
+        <header class="top-header">
+            <div class="page-title">
+                <h1>Port Management</h1>
+                <p>Control port operations and advisories</p>
             </div>
-            
-            <div>
-                <h1 class="text-lg font-semibold" style="color: #2D2F31;">Port Management</h1>
-                <p class="text-xs" style="color: #65676B;">Control port operations and advisories</p>
-            </div>
-
-            <div class="flex items-center gap-3">
-                <button class="notification-btn">
-                    <iconify-icon icon="solar:bell-bold" width="18"></iconify-icon>
-                    <span class="notification-badge"></span>
+            <div class="header-actions">
+                <button onclick="openAddModal()" class="btn btn-primary">
+                    <iconify-icon icon="solar:add-circle-bold" width="16"></iconify-icon>
+                    Add Port
                 </button>
+                <button class="icon-btn"><iconify-icon icon="solar:bell-bold" width="17"></iconify-icon></button>
             </div>
         </header>
 
-        <!-- Content -->
-        <div class="flex-1 overflow-auto p-6">
-            <div class="space-y-5 fade-in">
-                <!-- Search Bar -->
-                <div class="flex justify-between items-center">
-                    <div class="relative">
-                        <iconify-icon icon="solar:magnifer-linear" class="absolute left-3 top-1/2 -translate-y-1/2" style="color: #87A2FF; font-size: 0.875rem;"></iconify-icon>
-                        <input type="text" 
-                               id="port-search" 
-                               onkeyup="debounceSearch()" 
-                               placeholder="Search all ports (e.g., Dagupan, Manila, etc.)..." 
-                               class="search-input"
-                               autocomplete="off">
-                        <div id="searchLoading" class="search-loading">
-                            <svg class="animate-spin h-4 w-4" style="color: #99123D;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="text-sm flex items-center gap-4" style="color: #65676B;">
-                        <span><span id="resultCount"><%= ports.length %></span> ports loaded</span>
-                        <button onclick="openAddModal()" class="px-4 py-2 bg-[#99123D] text-white rounded-lg text-sm font-semibold hover:bg-opacity-90 flex items-center gap-2 shadow-sm transition-all hover:shadow-md">
-                            <iconify-icon icon="solar:add-circle-bold" width="16"></iconify-icon> Add Port
-                        </button>
+        <div class="page-content">
+
+            <!-- Toolbar -->
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+                <div class="port-search-wrap">
+                    <iconify-icon icon="solar:magnifer-linear" class="si"></iconify-icon>
+                    <input type="text" id="port-search" onkeyup="debounceSearch()"
+                           placeholder="Search all ports (e.g., Dagupan, Manila)…"
+                           autocomplete="off">
+                    <div id="searchLoading" class="search-spinner">
+                        <div style="width:16px;height:16px;border-radius:50%;border:2px solid var(--color-border);border-top-color:var(--color-primary);animation:spin 0.8s linear infinite;"></div>
                     </div>
                 </div>
+                <span style="font-size:13px;color:var(--color-text-light);">
+                    <span id="resultCount"><%= ports.length %></span> ports loaded
+                </span>
+            </div>
 
-                <!-- Ports Grid - Initially shows the 25 paginated ports -->
-                <div class="initial-ports" id="ports-grid">
-                    <% ports.forEach(p => { %>
-                    <div class="port-card" data-id="<%= p.id %>">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="port-icon">
-                                <iconify-icon icon="solar:anchor-bold-duotone" width="20"></iconify-icon>
-                            </div>
-                            <div class="relative-menu">
-                                <button class="menu-btn" onclick="toggleMenu('<%= p.id %>')">
-                                    <iconify-icon icon="solar:menu-dots-bold" width="18"></iconify-icon>
+            <!-- Ports Grid: initial paginated view -->
+            <div class="ports-grid" id="ports-grid">
+                <% ports.forEach(p => { %>
+                <div class="port-card" data-id="<%= p.id %>">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+                        <div class="port-icon">
+                            <iconify-icon icon="solar:anchor-bold-duotone" width="20"></iconify-icon>
+                        </div>
+                        <div class="relative-menu">
+                            <button class="menu-btn" onclick="toggleMenu('<%= p.id %>')">
+                                <iconify-icon icon="solar:menu-dots-bold" width="18"></iconify-icon>
+                            </button>
+                            <div id="dropdown-<%= p.id %>" class="dropdown-menu">
+                                <button onclick="openEditModal('<%= p.id %>', '<%= p.name ? p.name.replace(/'/g, `\\'`) : "" %>', '<%= p.type %>', '<%= p.status %>', <%= p.lat || 0 %>, <%= p.lng || 0 %>, '<%= p.location ? p.location.replace(/'/g, `\\'`) : "" %>')" class="dropdown-item">
+                                    <iconify-icon icon="solar:pen-bold" width="14"></iconify-icon> Edit Port
                                 </button>
-                                <div id="dropdown-<%= p.id %>" class="dropdown-menu">
-                                    <button onclick="openEditModal('<%= p.id %>', '<%= p.name ? p.name.replace(/'/g, `\\'`) : "" %>', '<%= p.type %>', '<%= p.status %>', <%= p.lat || 0 %>, <%= p.lng || 0 %>, '<%= p.location ? p.location.replace(/'/g, `\\'`) : "" %>')" class="dropdown-item">
-                                        <iconify-icon icon="solar:pen-bold" width="14"></iconify-icon>
-                                        Edit Port
-                                    </button>
-                                    <button onclick="togglePortStatus('<%= p.id %>')" class="dropdown-item">
-                                        <iconify-icon icon="solar:refresh-circle-bold" width="14"></iconify-icon>
-                                        Toggle Status
-                                    </button>
-                                    <button onclick="deletePort('<%= p.id %>')" class="dropdown-item" style="color: #99123D;">
-                                        <iconify-icon icon="solar:trash-bin-trash-bold" width="14"></iconify-icon>
-                                        Delete Port
-                                    </button>
-                                </div>
+                                <button onclick="togglePortStatus('<%= p.id %>')" class="dropdown-item">
+                                    <iconify-icon icon="solar:refresh-circle-bold" width="14"></iconify-icon> Toggle Status
+                                </button>
+                                <button onclick="deletePort('<%= p.id %>')" class="dropdown-item danger">
+                                    <iconify-icon icon="solar:trash-bin-trash-bold" width="14"></iconify-icon> Delete Port
+                                </button>
                             </div>
                         </div>
-                        
-                        <h4 class="font-semibold text-base mb-1" style="color: #2D2F31;"><%= p.name %></h4>
-                        
-                        <div class="weather-text mb-4">
-                            <% if (p.weatherData) { %>
-                                <span class="weather-info-pill"><%= p.weatherData.icon %> <%= p.weatherData.temperature %>°C</span>
-                                <span class="weather-info-pill">🌊 <%= p.weatherData.waves || 'N/A' %></span>
-                                <span class="weather-info-pill">💨 <%= p.weatherData.windSpeed %></span>
-                            <% } else { %>
-                                <iconify-icon icon="solar:cloud-sun-2-bold" width="14"></iconify-icon>
-                                Weather: Unknown
-                            <% } %>
-                        </div>
-                        
-                        <div class="flex justify-between items-center pt-3 border-t border-[#87A2FF]">
-                            <% if (p.status === 'open') { %>
-                            <span class="badge badge-open">
-                                <iconify-icon icon="solar:check-circle-bold" width="12"></iconify-icon>
-                                Open
+                    </div>
+
+                    <h4 style="font-weight:600;font-size:15px;margin-bottom:6px;color:var(--color-text-dark);"><%= p.name %></h4>
+
+                    <div class="weather-text" style="margin-bottom:14px;">
+                        <% if (p.weatherData) { %>
+                            <span class="weather-pill"><%= p.weatherData.icon %> <%= p.weatherData.temperature %>°C</span>
+                            <span class="weather-pill">🌊 <%= p.weatherData.waves || 'N/A' %></span>
+                            <span class="weather-pill">💨 <%= p.weatherData.windSpeed %></span>
+                        <% } else { %>
+                            <iconify-icon icon="solar:cloud-sun-2-bold" width="14"></iconify-icon>
+                            Weather: Unknown
+                        <% } %>
+                    </div>
+
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1.5px solid var(--color-border);">
+                        <% if (p.status === 'open') { %>
+                            <span class="port-badge port-badge-open">
+                                <iconify-icon icon="solar:check-circle-bold" width="12"></iconify-icon> Open
                             </span>
-                            <% } else if (p.status === 'limited') { %>
-                            <span class="badge badge-limited">
-                                <iconify-icon icon="solar:danger-triangle-bold" width="12"></iconify-icon>
-                                Limited
+                        <% } else if (p.status === 'limited') { %>
+                            <span class="port-badge port-badge-limited">
+                                <iconify-icon icon="solar:danger-triangle-bold" width="12"></iconify-icon> Limited
                             </span>
-                            <% } else { %>
-                            <span class="badge badge-closed">
-                                <iconify-icon icon="solar:forbidden-circle-bold" width="12"></iconify-icon>
-                                Closed
+                        <% } else { %>
+                            <span class="port-badge port-badge-closed">
+                                <iconify-icon icon="solar:forbidden-circle-bold" width="12"></iconify-icon> Closed
                             </span>
-                            <% } %>
-                            
-                            <button onclick="togglePortStatus('<%= p.id %>')" class="update-btn">
-                                Update
+                        <% } %>
+                        <button onclick="togglePortStatus('<%= p.id %>')" class="update-btn">Update</button>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+
+            <!-- Search Results Grid (hidden by default) -->
+            <div class="ports-grid" id="search-results-grid" style="display:none;"></div>
+
+            <!-- No Results -->
+            <div id="noResults" class="no-results">
+                <iconify-icon icon="solar:map-point-wave-bold-duotone" width="48" style="color:var(--color-primary);opacity:.4;margin-bottom:10px;"></iconify-icon>
+                <p style="font-weight:600;color:var(--color-text-medium);">No ports found</p>
+                <p style="font-size:12px;margin-top:4px;">Try searching with a different name or location.</p>
+            </div>
+
+            <!-- Load More -->
+            <% if (lastVisible) { %>
+            <div style="text-align:center;margin-top:20px;" id="loadMoreContainer">
+                <button onclick="loadMorePorts()" class="btn btn-secondary" style="padding:10px 28px;">
+                    <iconify-icon icon="solar:refresh-bold" width="14"></iconify-icon>
+                    Load More Ports
+                </button>
+            </div>
+            <% } %>
+
+        </div><!-- /page-content -->
+    </div><!-- /main-content -->
+</div><!-- /app-shell -->
+
+<!-- ===================== ADD PORT MODAL ===================== -->
+<div id="addPortModal" class="modal-overlay-bg">
+    <div class="modal" style="max-width:500px;">
+        <div class="modal-header">
+            <span class="modal-title"><iconify-icon icon="solar:anchor-bold-duotone"></iconify-icon> Add New Port</span>
+            <button type="button" onclick="closeAddModal()" class="modal-close">
+                <iconify-icon icon="solar:close-circle-bold" width="18"></iconify-icon>
+            </button>
+        </div>
+        <form id="addPortForm" action="/admin/ports/add" method="POST">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="addName">Port Name *</label>
+                    <input type="text" class="form-control" id="addName" name="name" required placeholder="e.g. Dagupan Ferry Terminal">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="addLocation">Location / Area</label>
+                    <input type="text" class="form-control" id="addLocation" name="location" placeholder="e.g. Pangasinan">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="addStatus">Status</label>
+                        <select class="form-control" id="addStatus" name="status">
+                            <option value="open">Open</option>
+                            <option value="limited">Limited</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="addType">Type</label>
+                        <select class="form-control" id="addType" name="type">
+                            <option value="ferry_terminal">Ferry Terminal</option>
+                            <option value="pier">Pier</option>
+                            <option value="dock">Dock</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="addLat">Latitude *</label>
+                        <input type="number" step="any" class="form-control" id="addLat" name="lat" required placeholder="e.g. 16.0433">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="addLng">Longitude *</label>
+                        <input type="number" step="any" class="form-control" id="addLng" name="lng" required placeholder="e.g. 120.3333">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="closeAddModal()" class="btn btn-secondary">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add Port</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ===================== EDIT PORT MODAL ===================== -->
+<div id="editPortModal" class="modal-overlay-bg">
+    <div class="modal" style="max-width:500px;">
+        <div class="modal-header">
+            <span class="modal-title"><iconify-icon icon="solar:pen-bold"></iconify-icon> Edit Port</span>
+            <button type="button" onclick="closeEditModal()" class="modal-close">
+                <iconify-icon icon="solar:close-circle-bold" width="18"></iconify-icon>
+            </button>
+        </div>
+        <form id="editPortForm" method="POST">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="editName">Port Name *</label>
+                    <input type="text" class="form-control" id="editName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="editLocation">Location / Area</label>
+                    <input type="text" class="form-control" id="editLocation" name="location">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="editStatus">Status</label>
+                        <select class="form-control" id="editStatus" name="status">
+                            <option value="open">Open</option>
+                            <option value="limited">Limited</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editType">Type</label>
+                        <select class="form-control" id="editType" name="type">
+                            <option value="ferry_terminal">Ferry Terminal</option>
+                            <option value="pier">Pier</option>
+                            <option value="dock">Dock</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="editLat">Latitude *</label>
+                        <input type="number" step="any" class="form-control" id="editLat" name="lat" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editLng">Longitude *</label>
+                        <input type="number" step="any" class="form-control" id="editLng" name="lng" required>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="closeEditModal()" class="btn btn-secondary">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast">
+    <iconify-icon id="toast-icon" width="18"></iconify-icon>
+    <span id="toast-message" class="toast-message">Success</span>
+</div>
+
+<script>
+    // ---- State ----
+    let lastVisibleId = '<%= lastVisible ? lastVisible : "" %>';
+    let searchTimeout;
+
+    // ---- Search ----
+    function debounceSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(performSearch, 500);
+    }
+
+    async function performSearch() {
+        const query = document.getElementById('port-search').value.trim();
+        if (!query) { window.location.reload(); return; }
+        document.getElementById('searchLoading').style.display = 'block';
+        try {
+            const r = await fetch(`/api/ports/search?q=${encodeURIComponent(query)}`);
+            const data = await r.json();
+            renderPorts(data, 'search-results-grid');
+        } catch(e) {
+            showToast('Error searching ports', 'error');
+        } finally {
+            document.getElementById('searchLoading').style.display = 'none';
+        }
+    }
+
+    // ---- Render port cards dynamically ----
+    function renderPorts(ports, containerId) {
+        const initial   = document.getElementById('ports-grid');
+        const results   = document.getElementById('search-results-grid');
+        const noResults = document.getElementById('noResults');
+        const lmc       = document.getElementById('loadMoreContainer');
+        const rc        = document.getElementById('resultCount');
+
+        if (ports.length === 0) {
+            initial.style.display = 'none'; results.style.display = 'none';
+            noResults.style.display = 'block'; if(lmc) lmc.style.display = 'none';
+            rc.innerText = '0'; return;
+        }
+        noResults.style.display = 'none';
+        if (containerId === 'search-results-grid') {
+            initial.style.display = 'none';
+            results.style.display = 'grid';
+            if(lmc) lmc.style.display = 'none';
+            rc.innerText = ports.length;
+        }
+
+        const container = document.getElementById(containerId);
+        let html = '';
+        ports.forEach(p => {
+            let badge = '';
+            if(p.status==='open')    badge = `<span class="port-badge port-badge-open"><iconify-icon icon="solar:check-circle-bold" width="12"></iconify-icon> Open</span>`;
+            else if(p.status==='limited') badge = `<span class="port-badge port-badge-limited"><iconify-icon icon="solar:danger-triangle-bold" width="12"></iconify-icon> Limited</span>`;
+            else badge = `<span class="port-badge port-badge-closed"><iconify-icon icon="solar:forbidden-circle-bold" width="12"></iconify-icon> Closed</span>`;
+
+            let weather = '';
+            if(p.weatherData) {
+                weather = `<span class="weather-pill">${p.weatherData.icon} ${p.weatherData.temperature}°C</span>
+                           <span class="weather-pill">🌊 ${p.weatherData.waves||'N/A'}</span>
+                           <span class="weather-pill">💨 ${p.weatherData.windSpeed}</span>`;
+            } else {
+                weather = `<iconify-icon icon="solar:cloud-sun-2-bold" width="14"></iconify-icon> Weather: Unknown`;
+            }
+
+            html += `
+            <div class="port-card" data-id="${p.id}">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+                    <div class="port-icon"><iconify-icon icon="solar:anchor-bold-duotone" width="20"></iconify-icon></div>
+                    <div class="relative-menu">
+                        <button class="menu-btn" onclick="toggleMenu('${p.id}')"><iconify-icon icon="solar:menu-dots-bold" width="18"></iconify-icon></button>
+                        <div id="dropdown-${p.id}" class="dropdown-menu">
+                            <button onclick="openEditModal('${p.id}','${p.name.replace(/'/g,"\\'")}','${p.type}','${p.status}',${p.lat},${p.lng},'${p.location||''}')" class="dropdown-item">
+                                <iconify-icon icon="solar:pen-bold" width="14"></iconify-icon> Edit Port
+                            </button>
+                            <button onclick="togglePortStatus('${p.id}')" class="dropdown-item">
+                                <iconify-icon icon="solar:refresh-circle-bold" width="14"></iconify-icon> Toggle Status
+                            </button>
+                            <button onclick="deletePort('${p.id}')" class="dropdown-item danger">
+                                <iconify-icon icon="solar:trash-bin-trash-bold" width="14"></iconify-icon> Delete Port
                             </button>
                         </div>
                     </div>
-                    <% }) %>
                 </div>
-
-                <!-- Search Results Grid (hidden by default, shows when searching) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="search-results-grid" style="display: none;"></div>
-
-                <!-- No Results Message -->
-                <div id="noResults" class="no-results">
-                    <iconify-icon icon="solar:map-point-wave-bold-duotone" width="48" style="color: #87A2FF; margin-bottom: 1rem;"></iconify-icon>
-                    <h3 class="text-lg font-semibold mb-2" style="color: #2D2F31;">No ports found</h3>
-                    <p>Try searching with a different name or location.</p>
+                <h4 style="font-weight:600;font-size:15px;margin-bottom:6px;color:var(--color-text-dark);">${p.name}</h4>
+                <div class="weather-text" style="margin-bottom:14px;">${weather}</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1.5px solid var(--color-border);">
+                    ${badge}
+                    <button onclick="togglePortStatus('${p.id}')" class="update-btn">Update</button>
                 </div>
-
-                <!-- Load More Button (only shown when not searching) -->
-                <% if (lastVisible) { %>
-                <div class="text-center" id="loadMoreContainer">
-                    <button onclick="loadMorePorts()" class="update-btn px-6 py-2">
-                        Load More Ports
-                    </button>
-                </div>
-                <% } %>
-            </div>
-        </div>
-    </main>
-
-    <!-- Add Port Modal -->
-    <div id="addPortModal" class="modal">
-        <div class="modal-content">
-            <h3 class="text-lg font-semibold mb-4 text-[#2D2F31]">Add New Port</h3>
-            <form id="addPortForm" action="/admin/ports/add" method="POST">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-[#65676B] mb-1">Port Name</label>
-                        <input type="text" id="addName" name="name" required
-                            class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]"
-                            placeholder="e.g. Dagupan Ferry Terminal">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-[#65676B] mb-1">Location / Area</label>
-                        <input type="text" id="addLocation" name="location" 
-                            class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]"
-                            placeholder="e.g. Pangasinan">
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="flex-1">
-                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Status</label>
-                            <select id="addStatus" name="status" class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none">
-                                <option value="open">Open</option>
-                                <option value="limited">Limited</option>
-                                <option value="closed">Closed</option>
-                            </select>
-                        </div>
-                        <div class="flex-1">
-                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Type</label>
-                            <select id="addType" name="type" class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none">
-                                <option value="ferry_terminal">Ferry Terminal</option>
-                                <option value="pier">Pier</option>
-                                <option value="dock">Dock</option>
-                                <option value="unknown">Unknown</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="flex-1">
-                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Latitude</label>
-                            <input type="number" step="any" id="addLat" name="lat" required
-                                class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]"
-                                placeholder="e.g. 16.0433">
-                        </div>
-                        <div class="flex-1">
-                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Longitude</label>
-                            <input type="number" step="any" id="addLng" name="lng" required
-                                class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]"
-                                placeholder="e.g. 120.3333">
-                        </div>
-                    </div>
-                </div>
-                <div class="flex justify-end gap-3 mt-6">
-                    <button type="button" onclick="closeAddModal()" class="px-4 py-2 text-sm font-semibold text-[#65676B] bg-white border border-[#87A2FF] rounded-lg hover:bg-gray-50 transition-colors">Cancel</button>
-                    <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-[#99123D] rounded-lg hover:bg-opacity-90 shadow-[0_2px_10px_rgba(153,18,61,0.3)] transition-all cursor-pointer">Add Port</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Edit Port Modal -->
-    <div id="editPortModal" class="modal">
-        <div class="modal-content">
-            <h3 class="text-lg font-semibold mb-4 text-[#2D2F31]">Edit Port</h3>
-            <form id="editPortForm" method="POST">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-[#65676B] mb-1">Port Name</label>
-                        <input type="text" id="editName" name="name" required
-                            class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-[#65676B] mb-1">Location / Area</label>
-                        <input type="text" id="editLocation" name="location" 
-                            class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]">
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="flex-1">
-                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Status</label>
-                            <select id="editStatus" name="status" class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none">
-                                <option value="open">Open</option>
-                                <option value="limited">Limited</option>
-                                <option value="closed">Closed</option>
-                            </select>
-                        </div>
-                        <div class="flex-1">
-                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Type</label>
-                            <select id="editType" name="type" class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none">
-                                <option value="ferry_terminal">Ferry Terminal</option>
-                                <option value="pier">Pier</option>
-                                <option value="dock">Dock</option>
-                                <option value="unknown">Unknown</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="flex-1">
-                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Latitude</label>
-                            <input type="number" step="any" id="editLat" name="lat" required
-                                class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]">
-                        </div>
-                        <div class="flex-1">
-                            <label class="block text-xs font-semibold text-[#65676B] mb-1">Longitude</label>
-                            <input type="number" step="any" id="editLng" name="lng" required
-                                class="w-full text-sm p-2 border border-[#87A2FF] rounded-lg outline-none focus:ring-1 focus:ring-[#87A2FF]">
-                        </div>
-                    </div>
-                </div>
-                <div class="flex justify-end gap-3 mt-6">
-                    <button type="button" onclick="closeEditModal()" class="px-4 py-2 text-sm font-semibold text-[#65676B] bg-white border border-[#87A2FF] rounded-lg hover:bg-gray-50">Cancel</button>
-                    <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-[#87A2FF] rounded-lg hover:bg-opacity-90">Save Changes</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-        <div class="toast">
-            <div id="toast-icon" style="color: #62AE7D;">
-                <iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>
-            </div>
-            <p id="toast-message" class="text-sm" style="color: #2D2F31;">Success</p>
-        </div>
-    </div>
-
-    <script>
-        // Store the lastVisible for pagination
-        let lastVisibleId = '<%= lastVisible ? lastVisible : "" %>';
-        
-        // Debounce function to prevent too many API calls
-        let searchTimeout;
-        function debounceSearch() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                performSearch();
-            }, 500); // Wait 500ms after user stops typing
-        }
-
-        function toggleMenu(id) {
-            // close any open menus
-            document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                if(menu.id !== 'dropdown-' + id) menu.classList.remove('show');
-            });
-            const d = document.getElementById('dropdown-' + id);
-            d.classList.toggle('show');
-        }
-
-        function openAddModal() {
-            document.getElementById('addPortForm').reset();
-            document.getElementById('addPortModal').style.display = 'flex';
-        }
-
-        function closeAddModal() {
-            document.getElementById('addPortModal').style.display = 'none';
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.relative-menu')) {
-                document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
-            }
+            </div>`;
         });
+        container.innerHTML = html;
+    }
 
-        // Modal Functions
-        function openEditModal(id, name, type, status, lat, lng, location) {
-            const form = document.getElementById('editPortForm');
-            form.action = `/admin/ports/${id}/update`;
-            
-            document.getElementById('editName').value = name;
-            document.getElementById('editLocation').value = location && location !== 'undefined' ? location : '';
-            document.getElementById('editStatus').value = status;
-            document.getElementById('editType').value = type;
-            document.getElementById('editLat').value = lat;
-            document.getElementById('editLng').value = lng;
-
-            document.getElementById('editPortModal').style.display = 'flex';
-            toggleMenu(id); // close menu
-        }
-
-        function closeEditModal() {
-            document.getElementById('editPortModal').style.display = 'none';
-        }
-
-        async function deletePort(id) {
-            if(confirm('Are you sure you want to delete this port?')) {
-                try {
-                    const res = await fetch(`/admin/ports/${id}/delete`, { method: 'POST' });
-                    if(res.redirected || res.ok) {
-                        showToast('Port deleted', 'success');
-                        setTimeout(() => window.location.reload(), 1000);
-                    } else {
-                        showToast('Error deleting port', 'error');
-                    }
-                } catch(e) {
-                    showToast('Failed to delete port', 'error');
-                }
-            }
-        }
-
-        // Function to render port cards
-        function renderPorts(ports, containerId = 'search-results-grid') {
-            const container = document.getElementById(containerId);
-            const initialGrid = document.getElementById('ports-grid');
-            const searchResultsGrid = document.getElementById('search-results-grid');
-            const noResults = document.getElementById('noResults');
-            const loadMoreContainer = document.getElementById('loadMoreContainer');
-            const resultCount = document.getElementById('resultCount');
-            
-            if (ports.length === 0) {
-                initialGrid.style.display = 'none';
-                searchResultsGrid.style.display = 'none';
-                noResults.style.display = 'block';
-                if (loadMoreContainer) loadMoreContainer.style.display = 'none';
-                resultCount.innerText = '0';
-                return;
-            }
-
-            if (containerId === 'search-results-grid') {
-                initialGrid.style.display = 'none';
-                searchResultsGrid.style.display = 'grid';
-                if (loadMoreContainer) loadMoreContainer.style.display = 'none';
-                noResults.style.display = 'none';
-                resultCount.innerText = ports.length;
-            }
-            
-            let html = '';
-            ports.forEach(p => {
-                let statusBadge = '';
-                if (p.status === 'open') {
-                    statusBadge = `<span class="badge badge-open"><iconify-icon icon="solar:check-circle-bold" width="12"></iconify-icon>Open</span>`;
-                } else if (p.status === 'limited') {
-                    statusBadge = `<span class="badge badge-limited"><iconify-icon icon="solar:danger-triangle-bold" width="12"></iconify-icon>Limited</span>`;
-                } else {
-                    statusBadge = `<span class="badge badge-closed"><iconify-icon icon="solar:forbidden-circle-bold" width="12"></iconify-icon>Closed</span>`;
-                }
-
-                let weatherHtml = '';
-                if (p.weatherData) {
-                    weatherHtml = `
-                        <span class="weather-info-pill">${p.weatherData.icon} ${p.weatherData.temperature}°C</span>
-                        <span class="weather-info-pill">🌊 ${p.weatherData.waves || 'N/A'}</span>
-                        <span class="weather-info-pill">💨 ${p.weatherData.windSpeed}</span>
-                    `;
-                } else {
-                    weatherHtml = `<iconify-icon icon="solar:cloud-sun-2-bold" width="14"></iconify-icon> Weather: Unknown`;
-                }
-
-                html += `
+    // ---- Load More Ports ----
+    async function loadMorePorts() {
+        if (!lastVisibleId) return;
+        const overlay = document.getElementById('loadingOverlay');
+        overlay.classList.add('active');
+        try {
+            const r = await fetch(`/api/ports/load-more?lastId=${lastVisibleId}`);
+            const data = await r.json();
+            if (data.ports && data.ports.length > 0) {
+                const grid = document.getElementById('ports-grid');
+                const temp = document.createElement('div');
+                temp.innerHTML = grid.innerHTML; // existing
+                data.ports.forEach(p => {
+                    let badge = '';
+                    if(p.status==='open') badge=`<span class="port-badge port-badge-open"><iconify-icon icon="solar:check-circle-bold" width="12"></iconify-icon> Open</span>`;
+                    else if(p.status==='limited') badge=`<span class="port-badge port-badge-limited"><iconify-icon icon="solar:danger-triangle-bold" width="12"></iconify-icon> Limited</span>`;
+                    else badge=`<span class="port-badge port-badge-closed"><iconify-icon icon="solar:forbidden-circle-bold" width="12"></iconify-icon> Closed</span>`;
+                    let wh = p.weatherData
+                        ? `<span class="weather-pill">${p.weatherData.icon} ${p.weatherData.temperature}°C</span><span class="weather-pill">🌊 ${p.weatherData.waves||'N/A'}</span><span class="weather-pill">💨 ${p.weatherData.windSpeed}</span>`
+                        : `<iconify-icon icon="solar:cloud-sun-2-bold" width="14"></iconify-icon> Weather: Unknown`;
+                    grid.innerHTML += `
                     <div class="port-card" data-id="${p.id}">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="port-icon">
-                                <iconify-icon icon="solar:anchor-bold-duotone" width="20"></iconify-icon>
-                            </div>
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+                            <div class="port-icon"><iconify-icon icon="solar:anchor-bold-duotone" width="20"></iconify-icon></div>
                             <div class="relative-menu">
-                                <button class="menu-btn" onclick="toggleMenu('${p.id}')">
-                                    <iconify-icon icon="solar:menu-dots-bold" width="18"></iconify-icon>
-                                </button>
+                                <button class="menu-btn" onclick="toggleMenu('${p.id}')"><iconify-icon icon="solar:menu-dots-bold" width="18"></iconify-icon></button>
                                 <div id="dropdown-${p.id}" class="dropdown-menu">
-                                    <button onclick="openEditModal('${p.id}', '${p.name.replace(/'/g, "\\'")}', '${p.type}', '${p.status}', ${p.lat}, ${p.lng}, '${p.location || ''}')" class="dropdown-item">
-                                        <iconify-icon icon="solar:pen-bold" width="14"></iconify-icon> Edit Port
-                                    </button>
-                                    <button onclick="togglePortStatus('${p.id}')" class="dropdown-item">
-                                        <iconify-icon icon="solar:refresh-circle-bold" width="14"></iconify-icon> Toggle Status
-                                    </button>
-                                    <button onclick="deletePort('${p.id}')" class="dropdown-item" style="color: #99123D;">
-                                        <iconify-icon icon="solar:trash-bin-trash-bold" width="14"></iconify-icon> Delete Port
-                                    </button>
+                                    <button onclick="openEditModal('${p.id}','${p.name.replace(/'/g,"\\'")}','${p.type}','${p.status}',${p.lat},${p.lng},'${p.location||''}')" class="dropdown-item"><iconify-icon icon="solar:pen-bold" width="14"></iconify-icon> Edit Port</button>
+                                    <button onclick="togglePortStatus('${p.id}')" class="dropdown-item"><iconify-icon icon="solar:refresh-circle-bold" width="14"></iconify-icon> Toggle Status</button>
+                                    <button onclick="deletePort('${p.id}')" class="dropdown-item danger"><iconify-icon icon="solar:trash-bin-trash-bold" width="14"></iconify-icon> Delete Port</button>
                                 </div>
                             </div>
                         </div>
-                        <h4 class="font-semibold text-base mb-1" style="color: #2D2F31;">${p.name}</h4>
-                        <div class="weather-text mb-4">${weatherHtml}</div>
-                        <div class="flex justify-between items-center pt-3 border-t border-[#87A2FF]">
-                            ${statusBadge}
-                            <button onclick="togglePortStatus('${p.id}')" class="update-btn">Update</button>
+                        <h4 style="font-weight:600;font-size:15px;margin-bottom:6px;color:var(--color-text-dark);">${p.name}</h4>
+                        <div class="weather-text" style="margin-bottom:14px;">${wh}</div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1.5px solid var(--color-border);">
+                            ${badge}<button onclick="togglePortStatus('${p.id}')" class="update-btn">Update</button>
                         </div>
                     </div>`;
-            });
-            container.innerHTML = html;
-        }
-
-        // Function to perform search
-        async function performSearch() {
-            const searchInput = document.getElementById('port-search');
-            const searchLoading = document.getElementById('searchLoading');
-            const query = searchInput.value.trim();
-            
-            // If search is empty, reload the initial paginated view
-            if (!query) {
-                window.location.reload();
-                return;
-            }
-            
-            // Show loading indicator
-            searchLoading.style.display = 'block';
-            
-            try {
-                const response = await fetch(`/api/ports/search?q=${encodeURIComponent(query)}`);
-                const data = await response.json();
-                
-                // Render search results
-                renderPorts(data, 'search-results-grid');
-                
-            } catch (error) {
-                console.error('Search error:', error);
-                showToast('Error searching ports', 'error');
-            } finally {
-                // Hide loading indicator
-                searchLoading.style.display = 'none';
-            }
-        }
-
-        // Function to load more ports (pagination)
-        async function loadMorePorts() {
-            if (!lastVisibleId) return;
-            
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            loadingOverlay.style.display = 'flex';
-            
-            try {
-                const response = await fetch(`/api/ports/load-more?lastId=${lastVisibleId}`);
-                const data = await response.json();
-                
-                if (data.ports && data.ports.length > 0) {
-                    // Append new ports to the grid
-                    const grid = document.getElementById('ports-grid');
-                    let html = grid.innerHTML;
-                    
-                    data.ports.forEach(p => {
-                        let statusBadge = '';
-                        
-                        if (p.status === 'open') {
-                            statusBadge = `<span class="badge badge-open"><iconify-icon icon="solar:check-circle-bold" width="12"></iconify-icon> Open</span>`;
-                        } else if (p.status === 'limited') {
-                            statusBadge = `<span class="badge badge-limited"><iconify-icon icon="solar:danger-triangle-bold" width="12"></iconify-icon> Limited</span>`;
-                        } else {
-                            statusBadge = `<span class="badge badge-closed"><iconify-icon icon="solar:forbidden-circle-bold" width="12"></iconify-icon> Closed</span>`;
-                        }
-                        let weatherHtml = '';
-                        if (p.weatherData) {
-                            weatherHtml = `
-                                <span class="weather-info-pill">${p.weatherData.icon} ${p.weatherData.temperature}°C</span>
-                                <span class="weather-info-pill">🌊 ${p.weatherData.waves || 'N/A'}</span>
-                                <span class="weather-info-pill">💨 ${p.weatherData.windSpeed}</span>
-                            `;
-                        } else {
-                            weatherHtml = `<iconify-icon icon="solar:cloud-sun-2-bold" width="14"></iconify-icon> Weather: Unknown`;
-                        }
-
-                        html += `
-                            <div class="port-card" data-id="${p.id}">
-                                <div class="flex justify-between items-start mb-4">
-                                    <div class="port-icon">
-                                        <iconify-icon icon="solar:anchor-bold-duotone" width="20"></iconify-icon>
-                                    </div>
-                                    <div class="relative-menu">
-                                        <button class="menu-btn" onclick="toggleMenu('${p.id}')">
-                                            <iconify-icon icon="solar:menu-dots-bold" width="18"></iconify-icon>
-                                        </button>
-                                        <div id="dropdown-${p.id}" class="dropdown-menu">
-                                            <button onclick="openEditModal('${p.id}', '${p.name.replace(/'/g, "\\'")}', '${p.type}', '${p.status}', ${p.lat}, ${p.lng}, '${p.location || ''}')" class="dropdown-item">
-                                                <iconify-icon icon="solar:pen-bold" width="14"></iconify-icon> Edit Port
-                                            </button>
-                                            <button onclick="togglePortStatus('${p.id}')" class="dropdown-item">
-                                                <iconify-icon icon="solar:refresh-circle-bold" width="14"></iconify-icon> Toggle Status
-                                            </button>
-                                            <button onclick="deletePort('${p.id}')" class="dropdown-item" style="color: #99123D;">
-                                                <iconify-icon icon="solar:trash-bin-trash-bold" width="14"></iconify-icon> Delete Port
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <h4 class="font-semibold text-base mb-1" style="color: #2D2F31;">${p.name}</h4>
-                                <div class="weather-text mb-4">${weatherHtml}</div>
-                                <div class="flex justify-between items-center pt-3 border-t border-[#87A2FF]">
-                                    ${statusBadge}
-                                    <button onclick="togglePortStatus('${p.id}')" class="update-btn">Update</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    
-                    grid.innerHTML = html;
-                    
-                    // Update lastVisible for next load
-                    if (data.lastVisible) {
-                        lastVisibleId = data.lastVisible.id;
-                    } else {
-                        // No more ports to load
-                        document.getElementById('loadMoreContainer').style.display = 'none';
-                    }
-                    
-                    // Update result count
-                    document.getElementById('resultCount').innerText = 
-                        parseInt(document.getElementById('resultCount').innerText) + data.ports.length;
-                }
-            } catch (error) {
-                console.error('Error loading more ports:', error);
-                showToast('Error loading more ports', 'error');
-            } finally {
-                loadingOverlay.style.display = 'none';
-            }
-        }
-
-        // Function to toggle port status
-        async function togglePortStatus(id) {
-            // Find badge regardless if it's via update button or dropdown menu
-            const card = document.querySelector(`.port-card[data-id="${id}"]`);
-            if(!card) return;
-            const badge = card.querySelector('.badge');
-            // Hide dropdown if it was opened from menu
-            const dropdown = document.getElementById('dropdown-'+id);
-            if(dropdown) dropdown.classList.remove('show');
-            
-            const btn = event.currentTarget;
-            if (btn) btn.disabled = true;
-            
-            try {
-                const response = await fetch(`/api/ports/${id}/toggle-status`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
                 });
-                
-                if (response.ok) {
-                    const data = await response.json(); // assume returns new status
-                    // Update badge directly
-                    badge.className = `badge badge-${data.status}`;
-                    badge.innerHTML = getStatusIcon(data.status) + ' ' + data.status.charAt(0).toUpperCase() + data.status.slice(1);
-                    showToast('Port status updated', 'success');
+                if (data.lastVisible) {
+                    lastVisibleId = data.lastVisible.id;
                 } else {
-                    showToast('Error updating port status', 'error');
-                    // revert badge? optional
+                    document.getElementById('loadMoreContainer').style.display = 'none';
                 }
-            } catch (error) {
-                showToast('Error updating port status', 'error');
-            } finally {
-                button.disabled = false;
+                const rc = document.getElementById('resultCount');
+                rc.innerText = parseInt(rc.innerText) + data.ports.length;
             }
+        } catch(e) {
+            showToast('Error loading more ports', 'error');
+        } finally {
+            overlay.classList.remove('active');
         }
+    }
 
-        // Helper to return icon based on status
-        function getStatusIcon(status) {
-            if (status === 'open') return '<iconify-icon icon="solar:check-circle-bold" width="12"></iconify-icon>';
-            if (status === 'limited') return '<iconify-icon icon="solar:danger-triangle-bold" width="12"></iconify-icon>';
-            return '<iconify-icon icon="solar:forbidden-circle-bold" width="12"></iconify-icon>';
-        }
-
-        // Toast notification function
-        function showToast(msg, type = 'success') {
-            const toast = document.getElementById('toast');
-            const icon = document.getElementById('toast-icon');
-            const message = document.getElementById('toast-message');
-            
-            message.innerText = msg;
-            
-            if(type === 'success') {
-                icon.innerHTML = '<iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>';
-                icon.style.color = '#62AE7D';
-            } else if(type === 'error') {
-                icon.innerHTML = '<iconify-icon icon="solar:danger-circle-bold" width="18"></iconify-icon>';
-                icon.style.color = '#99123D';
+    // ---- Toggle Port Status ----
+    async function togglePortStatus(id) {
+        const card = document.querySelector(`.port-card[data-id="${id}"]`);
+        if (!card) return;
+        const badge = card.querySelector('.port-badge');
+        const dd = document.getElementById('dropdown-'+id);
+        if (dd) dd.classList.remove('show');
+        const btn = event.currentTarget;
+        if (btn) btn.disabled = true;
+        try {
+            const r = await fetch(`/api/ports/${id}/toggle-status`, { method: 'POST', headers: {'Content-Type':'application/json'} });
+            if (r.ok) {
+                const data = await r.json();
+                const s = data.status;
+                badge.className = `port-badge port-badge-${s}`;
+                badge.innerHTML = getStatusIcon(s) + ' ' + s.charAt(0).toUpperCase() + s.slice(1);
+                showToast('Port status updated', 'success');
             } else {
-                icon.innerHTML = '<iconify-icon icon="solar:info-circle-bold" width="18"></iconify-icon>';
-                icon.style.color = '#BD77FF';
+                showToast('Error updating port status', 'error');
             }
-
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
+        } catch(e) {
+            showToast('Error updating port status', 'error');
+        } finally {
+            if (btn) btn.disabled = false;
         }
+    }
 
-        // Clear search when clicking outside
-        document.addEventListener('click', function(e) {
-            const searchInput = document.getElementById('port-search');
-            const searchResults = document.getElementById('search-results-grid');
-            const initialGrid = document.getElementById('ports-grid');
-            
-            // If clicking outside search and search is empty, reload normal view
-            if (!searchInput.contains(e.target) && searchInput.value.trim() === '' && searchResults.style.display === 'grid') {
-                window.location.reload();
-            }
-        });
-    </script>
+    function getStatusIcon(s) {
+        if (s==='open')    return '<iconify-icon icon="solar:check-circle-bold" width="12"></iconify-icon>';
+        if (s==='limited') return '<iconify-icon icon="solar:danger-triangle-bold" width="12"></iconify-icon>';
+        return '<iconify-icon icon="solar:forbidden-circle-bold" width="12"></iconify-icon>';
+    }
+
+    // ---- Delete Port ----
+    async function deletePort(id) {
+        if (!confirm('Delete this port? This cannot be undone.')) return;
+        try {
+            const r = await fetch(`/admin/ports/${id}/delete`, { method: 'POST' });
+            if (r.redirected || r.ok) {
+                showToast('Port deleted', 'success');
+                setTimeout(() => window.location.reload(), 1000);
+            } else { showToast('Error deleting port', 'error'); }
+        } catch(e) { showToast('Failed to delete port', 'error'); }
+    }
+
+    // ---- Dropdown toggle ----
+    function toggleMenu(id) {
+        document.querySelectorAll('.dropdown-menu').forEach(m => { if(m.id!=='dropdown-'+id) m.classList.remove('show'); });
+        document.getElementById('dropdown-'+id).classList.toggle('show');
+    }
+    document.addEventListener('click', e => {
+        if (!e.target.closest('.relative-menu')) {
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+        }
+    });
+
+    // ---- Add Modal ----
+    function openAddModal() {
+        document.getElementById('addPortForm').reset();
+        document.getElementById('addPortModal').classList.add('active');
+    }
+    function closeAddModal() { document.getElementById('addPortModal').classList.remove('active'); }
+
+    // ---- Edit Modal ----
+    function openEditModal(id, name, type, status, lat, lng, location) {
+        const form = document.getElementById('editPortForm');
+        form.action = `/admin/ports/${id}/update`;
+        document.getElementById('editName').value     = name;
+        document.getElementById('editLocation').value = (location && location!=='undefined') ? location : '';
+        document.getElementById('editStatus').value   = status;
+        document.getElementById('editType').value     = type;
+        document.getElementById('editLat').value      = lat;
+        document.getElementById('editLng').value      = lng;
+        document.getElementById('editPortModal').classList.add('active');
+        toggleMenu(id);
+    }
+    function closeEditModal() { document.getElementById('editPortModal').classList.remove('active'); }
+
+    // Close modals on overlay click
+    document.getElementById('addPortModal').addEventListener('click', e => { if(e.target===e.currentTarget) closeAddModal(); });
+    document.getElementById('editPortModal').addEventListener('click', e => { if(e.target===e.currentTarget) closeEditModal(); });
+    document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeAddModal(); closeEditModal(); }});
+
+    // ---- Toast ----
+    function showToast(msg, type) {
+        const t  = document.getElementById('toast');
+        const ic = document.getElementById('toast-icon');
+        document.getElementById('toast-message').innerText = msg;
+        t.className  = 'toast ' + (type||'info');
+        ic.className = 'toast-icon ' + (type||'info');
+        if(type==='success') ic.setAttribute('icon','solar:check-circle-bold');
+        else if(type==='error') ic.setAttribute('icon','solar:danger-circle-bold');
+        else ic.setAttribute('icon','solar:info-circle-bold');
+        t.classList.add('show');
+        setTimeout(()=>t.classList.remove('show'), 3500);
+    }
+</script>
 </body>
 </html>

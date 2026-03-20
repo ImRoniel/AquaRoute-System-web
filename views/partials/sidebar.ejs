@@ -1,44 +1,127 @@
-<aside class="w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col z-20 shadow-sm">
+<aside style="
+    width: 240px;
+    flex-shrink: 0;
+    background: linear-gradient(180deg, #073B6B 0%, #0A4D8C 100%);
+    display: flex; flex-direction: column;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+    position: relative; z-index: 20;
+">
     <!-- Brand -->
-    <div class="h-20 flex items-center px-8 border-b border-slate-50">
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center">
-                <iconify-icon icon="solar:wheel-angle-bold" width="18"></iconify-icon>
+    <div style="
+        height:64px;display:flex;align-items:center;padding:0 20px;
+        border-bottom:1px solid rgba(255,255,255,0.08);
+    ">
+        <div style="display:flex;align-items:center;gap:10px;">
+            <div style="
+                width:32px;height:32px;border-radius:8px;
+                background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);
+                display:flex;align-items:center;justify-content:center;
+            ">
+                <iconify-icon icon="solar:wheel-angle-bold" width="16" style="color:#fff;"></iconify-icon>
             </div>
-            <span class="font-display font-bold text-lg text-slate-800 tracking-tight">AquaRoute</span>
+            <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:700;color:#fff;letter-spacing:-0.01em;">AquaRoute</span>
         </div>
     </div>
 
     <!-- Nav -->
-    <nav class="flex-1 px-4 py-6 space-y-1">
-        <a href="/admin/dashboard" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl <%= currentPage === 'dashboard' ? 'text-primary bg-blue-50' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' %> transition-all nav-item">
-            <iconify-icon icon="solar:widget-5-bold-duotone" width="20"></iconify-icon>
+    <nav style="flex:1;padding:16px 12px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;">
+        <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:0.08em;text-transform:uppercase;padding:12px 12px 4px;">Main</span>
+
+        <a href="/admin/dashboard" style="
+            display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;
+            font-size:13px;font-weight:500;text-decoration:none;transition:all 0.15s;
+            <%= currentPage==='dashboard' ? 'background:rgba(255,255,255,0.15);color:#fff;box-shadow:inset 3px 0 0 #00ACC1;font-weight:600;' : 'color:#B2C8E0;' %>
+        "
+        <% if(currentPage!=='dashboard'){ %>
+        onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#fff';"
+        onmouseout="this.style.background='transparent';this.style.color='#B2C8E0';"
+        <% } %>>
+            <iconify-icon icon="solar:widget-5-bold-duotone" width="18" style="opacity:<%= currentPage==='dashboard'?'1':'0.7' %>;"></iconify-icon>
             Dashboard
         </a>
-        <a href="/admin/ferries" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl <%= currentPage === 'ferries' ? 'text-primary bg-blue-50' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' %> transition-all nav-item">
-            <iconify-icon icon="solar:ship-bold-duotone" width="20"></iconify-icon>
+
+        <a href="/admin/ferries" style="
+            display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;
+            font-size:13px;font-weight:500;text-decoration:none;transition:all 0.15s;
+            <%= currentPage==='ferries' ? 'background:rgba(255,255,255,0.15);color:#fff;box-shadow:inset 3px 0 0 #00ACC1;font-weight:600;' : 'color:#B2C8E0;' %>
+        "
+        <% if(currentPage!=='ferries'){ %>
+        onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#fff';"
+        onmouseout="this.style.background='transparent';this.style.color='#B2C8E0';"
+        <% } %>>
+            <iconify-icon icon="solar:ship-bold-duotone" width="18" style="opacity:<%= currentPage==='ferries'?'1':'0.7' %>;"></iconify-icon>
             Ferry Management
         </a>
-        <a href="/admin/ports" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl <%= currentPage === 'ports' ? 'text-primary bg-blue-50' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' %> transition-all nav-item">
-            <iconify-icon icon="solar:anchor-circle-bold-duotone" width="20"></iconify-icon>
+
+        <a href="/admin/ports" style="
+            display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;
+            font-size:13px;font-weight:500;text-decoration:none;transition:all 0.15s;
+            <%= currentPage==='ports' ? 'background:rgba(255,255,255,0.15);color:#fff;box-shadow:inset 3px 0 0 #00ACC1;font-weight:600;' : 'color:#B2C8E0;' %>
+        "
+        <% if(currentPage!=='ports'){ %>
+        onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#fff';"
+        onmouseout="this.style.background='transparent';this.style.color='#B2C8E0';"
+        <% } %>>
+            <iconify-icon icon="solar:anchor-circle-bold-duotone" width="18" style="opacity:<%= currentPage==='ports'?'1':'0.7' %>;"></iconify-icon>
             Port Management
         </a>
-        <a href="/admin/logs" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl <%= currentPage === 'logs' ? 'text-primary bg-blue-50' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50' %> transition-all nav-item">
-            <iconify-icon icon="solar:clipboard-list-bold-duotone" width="20"></iconify-icon>
+
+        <a href="/admin/cargo" style="
+            display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;
+            font-size:13px;font-weight:500;text-decoration:none;transition:all 0.15s;
+            <%= currentPage==='cargo' ? 'background:rgba(255,255,255,0.15);color:#fff;box-shadow:inset 3px 0 0 #00ACC1;font-weight:600;' : 'color:#B2C8E0;' %>
+        "
+        <% if(currentPage!=='cargo'){ %>
+        onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#fff';"
+        onmouseout="this.style.background='transparent';this.style.color='#B2C8E0';"
+        <% } %>>
+            <iconify-icon icon="solar:box-bold-duotone" width="18" style="opacity:<%= currentPage==='cargo'?'1':'0.7' %>;"></iconify-icon>
+            Cargo Tracking
+        </a>
+
+        <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:0.08em;text-transform:uppercase;padding:12px 12px 4px;margin-top:8px;">System</span>
+
+        <a href="/admin/logs" style="
+            display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;
+            font-size:13px;font-weight:500;text-decoration:none;transition:all 0.15s;
+            <%= currentPage==='logs' ? 'background:rgba(255,255,255,0.15);color:#fff;box-shadow:inset 3px 0 0 #00ACC1;font-weight:600;' : 'color:#B2C8E0;' %>
+        "
+        <% if(currentPage!=='logs'){ %>
+        onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#fff';"
+        onmouseout="this.style.background='transparent';this.style.color='#B2C8E0';"
+        <% } %>>
+            <iconify-icon icon="solar:clipboard-list-bold-duotone" width="18" style="opacity:<%= currentPage==='logs'?'1':'0.7' %>;"></iconify-icon>
             Audit Logs
+        </a>
+
+        <a href="/admin/users" style="
+            display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;
+            font-size:13px;font-weight:500;text-decoration:none;transition:all 0.15s;
+            <%= currentPage==='users' ? 'background:rgba(255,255,255,0.15);color:#fff;box-shadow:inset 3px 0 0 #00ACC1;font-weight:600;' : 'color:#B2C8E0;' %>
+        "
+        <% if(currentPage!=='users'){ %>
+        onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#fff';"
+        onmouseout="this.style.background='transparent';this.style.color='#B2C8E0';"
+        <% } %>>
+            <iconify-icon icon="solar:users-group-rounded-bold" width="18" style="opacity:<%= currentPage==='users'?'1':'0.7' %>;"></iconify-icon>
+            Users
         </a>
     </nav>
 
-    <!-- User -->
-    <div class="p-4 border-t border-slate-100">
-        <div class="flex items-center gap-3 px-4 py-2">
-            <img src="https://ui-avatars.com/api/?name=<%= user.name.replace(' ', '+') %>&background=0A4D8C&color=fff" class="w-9 h-9 rounded-full border-2 border-slate-100">
-            <div class="flex-1 min-w-0">
-                <p class="text-sm font-bold text-slate-800 truncate"><%= user.name %></p>
-                <p class="text-xs text-slate-500 truncate capitalize"><%= user.role %></p>
+    <!-- User Profile -->
+    <div style="padding:12px;border-top:1px solid rgba(255,255,255,0.08);">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;">
+            <img src="https://ui-avatars.com/api/?name=<%= user.name.replace(' ', '+') %>&background=0A4D8C&color=fff"
+                 style="width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,0.25);">
+            <div style="flex:1;min-width:0;">
+                <div style="font-size:12px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><%= user.name %></div>
+                <div style="font-size:11px;color:#B2C8E0;text-transform:capitalize;"><%= user.role || 'Admin' %></div>
             </div>
-            <a href="/logout" class="text-slate-400 hover:text-red-500 transition-colors">
-                <iconify-icon icon="solar:logout-2-bold" width="20"></iconify-icon>
+            <a href="/logout" style="
+                color:rgba(255,255,255,0.35);transition:color 0.15s;text-decoration:none;flex-shrink:0;
+            "
+            onmouseover="this.style.color='#EF5350';" onmouseout="this.style.color='rgba(255,255,255,0.35)';">
+                <iconify-icon icon="solar:logout-2-bold" width="18"></iconify-icon>
             </a>
         </div>
     </div>

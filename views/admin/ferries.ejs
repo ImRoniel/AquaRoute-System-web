@@ -4,517 +4,248 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %> - AquaRoute</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
+
+    <!-- AquaRoute Maritime Theme -->
+    <link rel="stylesheet" href="/css/admin-theme.css">
+
     <!-- Iconify -->
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #FFD7C4;
-            color: #2D2F31;
-        }
-
-        /* Minimal scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #BD77FF; border-radius: 2px; }
-
-        /* Sidebar */
-        .sidebar {
-            background-color: #FFF4B5;
-            border-right: 1px solid #87A2FF;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.625rem 1rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #65676B;
-            transition: all 0.15s ease;
-        }
-
-        .nav-item:hover {
-            background-color: #FEC1A0;
-            color: #2D2F31;
-        }
-
-        .nav-item.active {
-            background-color: #87A2FF;
-            color: white;
-        }
-
-        /* User profile */
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            border-top: 1px solid #87A2FF;
-        }
-
-        .user-avatar {
-            width: 2.25rem;
-            height: 2.25rem;
-            border-radius: 9999px;
-            border: 2px solid #99123D;
-        }
-
-        /* Header */
-        .header {
-            background-color: rgba(255, 244, 181, 0.8);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid #87A2FF;
-        }
-
-        /* Status badges */
-        .badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.375rem;
-        }
-
-        .badge-on-time {
-            background-color: #62AE7D;
-            color: white;
-        }
-
-        .badge-delayed {
-            background-color: #FEC1A0;
-            color: #2D2F31;
-            border: 1px solid #99123D;
-        }
-
-        .badge-suspended {
-            background-color: #99123D;
-            color: white;
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background-color: currentColor;
-            opacity: 0.8;
-        }
-
-        /* Table */
-        .table-container {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .table-header {
-            background-color: #C4D7FF;
-            padding: 0.75rem 1.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #65676B;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-        }
-
-        .table-row {
-            border-bottom: 1px solid #87A2FF;
-        }
-
-        .table-row td {
-            padding: 1rem 1.5rem;
-            font-size: 0.875rem;
-        }
-
-        .table-row:hover {
-            background-color: #FEC1A020;
-        }
-
-        /* Search input */
-        .search-input {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 30px;
-            padding: 0.5rem 1rem 0.5rem 2.5rem;
-            font-size: 0.875rem;
-            width: 16rem;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #BD77FF;
-        }
-
-        /* Buttons */
-        .btn-primary {
-            background-color: #87A2FF;
-            color: white;
-            padding: 0.5rem 1.25rem;
-            border-radius: 30px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            border: 1px solid #87A2FF;
-            transition: all 0.15s ease;
-        }
-
-        .btn-primary:hover {
-            background-color: #BD77FF;
-            border-color: #BD77FF;
-        }
-
-        .btn-filter {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 30px;
-            padding: 0.5rem;
-            color: #65676B;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.15s ease;
-        }
-
-        .btn-filter:hover {
-            background-color: #FEC1A0;
-            border-color: #99123D;
-            color: #2D2F31;
-        }
-
-        /* Pagination */
-        .page-btn {
-            width: 2rem;
-            height: 2rem;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.875rem;
-            color: #65676B;
-            transition: all 0.15s ease;
-        }
-
-        .page-btn:hover {
-            background-color: #FEC1A0;
-            color: #2D2F31;
-        }
-
-        .page-btn.active {
-            background-color: #87A2FF;
-            color: white;
-        }
-
-        /* Action button */
-        .action-btn {
-            color: #65676B;
-            padding: 0.5rem;
-            border-radius: 8px;
-            transition: all 0.15s ease;
-        }
-
-        .action-btn:hover {
-            color: #99123D;
-            background-color: #FEC1A0;
-        }
-
-        /* Notification button */
-        .notification-btn {
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 9999px;
-            border: 1px solid #87A2FF;
-            background-color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #65676B;
-            position: relative;
-            transition: all 0.15s ease;
-        }
-
-        .notification-btn:hover {
-            background-color: #FEC1A0;
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.75rem;
-            width: 0.375rem;
-            height: 0.375rem;
-            background-color: #99123D;
-            border-radius: 50%;
-        }
-
-        /* Modal */
-        .modal-overlay {
+        .modal-overlay-bg {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 1000;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(2px);
+            z-index: 50;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
+        .modal-overlay-bg.active { display: flex; }
 
-        .modal-content {
-            background-color: white;
-            border-radius: 12px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 24px;
-            border: 1px solid #87A2FF;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-header h2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #2D2F31;
-        }
-
-        .modal-close {
+        .btn-icon-table {
+            padding: 6px;
+            border-radius: 6px;
+            background: transparent;
+            border: none;
+            color: var(--color-text-medium);
             cursor: pointer;
-            color: #65676B;
-            font-size: 1.5rem;
+            transition: all 0.15s;
         }
+        .btn-icon-table:hover { background: var(--color-primary-light); color: var(--color-primary); }
 
-        .modal-close:hover {
-            color: #99123D;
+        .filter-panel-popup {
+            position: absolute;
+            top: 44px; left: 0;
+            width: 240px;
+            background: var(--color-surface);
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+            display: none;
         }
+        .filter-panel-popup.open { display: block; }
 
-        .modal-body {
-            margin-bottom: 20px;
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
-        /* Toast */
-        .toast {
-            background-color: white;
-            border: 1px solid #87A2FF;
+        .vessel-icon {
+            width: 32px; height: 32px;
             border-radius: 8px;
-            padding: 0.75rem 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            min-width: 250px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background: var(--color-primary-light);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--color-primary);
         }
     </style>
 </head>
-<body class="h-screen flex overflow-hidden">
+<body>
+<div class="app-shell fade-in">
 
     <!-- Sidebar -->
-    <aside class="w-64 sidebar hidden lg:flex flex-col">
-        <!-- Brand -->
-        <div class="h-16 flex items-center px-6 border-b border-[#87A2FF]">
-            <div class="flex items-center gap-2">
-                <div class="w-6 h-6 rounded flex items-center justify-center" style="background-color: #87A2FF;">
-                    <iconify-icon icon="solar:wheel-angle-bold" width="14" style="color: white;"></iconify-icon>
-                </div>
-                <span class="font-semibold text-base" style="color: #99123D;">AquaRoute</span>
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <iconify-icon icon="solar:wheel-angle-bold" width="16" style="color:#fff"></iconify-icon>
             </div>
+            <span class="brand-name">AquaRoute</span>
         </div>
-
-        <!-- Nav -->
-        <nav class="flex-1 px-3 py-4 space-y-0.5">
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">Main</span>
             <a href="/admin/dashboard" class="nav-item <%= currentPage === 'dashboard' ? 'active' : '' %>">
-                <iconify-icon icon="solar:widget-5-bold-duotone" width="18"></iconify-icon>
-                Dashboard
+                <iconify-icon icon="solar:widget-5-bold-duotone" width="18"></iconify-icon> Dashboard
             </a>
             <a href="/admin/ferries" class="nav-item <%= currentPage === 'ferries' ? 'active' : '' %>">
-                <iconify-icon icon="solar:ship-bold-duotone" width="18"></iconify-icon>
-                Ferry Management
+                <iconify-icon icon="solar:ship-bold-duotone" width="18"></iconify-icon> Ferry Management
             </a>
             <a href="/admin/ports" class="nav-item <%= currentPage === 'ports' ? 'active' : '' %>">
-                <iconify-icon icon="solar:anchor-circle-bold-duotone" width="18"></iconify-icon>
-                Port Management
+                <iconify-icon icon="solar:anchor-circle-bold-duotone" width="18"></iconify-icon> Port Management
             </a>
             <a href="/admin/cargo" class="nav-item <%= currentPage === 'cargo' ? 'active' : '' %>">
-                <iconify-icon icon="solar:box-bold-duotone" width="18"></iconify-icon>
-                Cargo Tracking
+                <iconify-icon icon="solar:box-bold-duotone" width="18"></iconify-icon> Cargo Tracking
             </a>
+            <span class="nav-section-label" style="margin-top:8px;">System</span>
             <a href="/admin/logs" class="nav-item <%= currentPage === 'logs' ? 'active' : '' %>">
-                <iconify-icon icon="solar:clipboard-list-bold-duotone" width="18"></iconify-icon>
-                Audit Logs
+                <iconify-icon icon="solar:clipboard-list-bold-duotone" width="18"></iconify-icon> Audit Logs
             </a>
             <a href="/admin/users" class="nav-item <%= currentPage === 'users' ? 'active' : '' %>">
-                <iconify-icon icon="solar:users-group-rounded-bold" width="18"></iconify-icon>
-                Users
+                <iconify-icon icon="solar:users-group-rounded-bold" width="18"></iconify-icon> Users
             </a>
         </nav>
-
-        <!-- User -->
-        <div class="user-profile">
-            <img src="https://ui-avatars.com/api/?name=<%= user ? user.name.replace(' ', '+') : 'Admin' %>&background=99123D&color=fff" class="user-avatar">
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold truncate"><%= user ? user.name : 'Admin User' %></p>
-                    <p class="text-xs" style="color: #65676B;"><%= user ? (user.role || 'Admin') : 'Administrator' %></p>
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <img src="https://ui-avatars.com/api/?name=<%= user ? user.name.replace(' ', '+') : 'Admin' %>&background=0A4D8C&color=fff" alt="avatar">
+                <div class="flex-1 truncate">
+                    <div class="user-name truncate"><%= user ? user.name : 'Admin User' %></div>
+                    <div class="user-role"><%= user ? (user.role || 'Admin') : 'Administrator' %></div>
                 </div>
-            <a href="/logout" style="color: #99123D;">
-                <iconify-icon icon="solar:logout-2-bold" width="18"></iconify-icon>
-            </a>
+                <a href="/logout" class="logout-btn">
+                    <iconify-icon icon="solar:logout-2-bold" width="16"></iconify-icon>
+                </a>
+            </div>
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col min-w-0">
-        
-        <!-- Header -->
-        <header class="h-16 header flex items-center justify-between px-6">
-            <div class="flex items-center gap-4 lg:hidden">
-                <button style="color: #87A2FF;"><iconify-icon icon="solar:hamburger-menu-bold" width="20"></iconify-icon></button>
-                <span class="font-semibold" style="color: #99123D;">AquaRoute</span>
+    <div class="main-content">
+        <header class="top-header">
+            <div class="page-title">
+                <h1>Ferry Management</h1>
+                <p>Monitor and update vessel statuses</p>
             </div>
-            
-            <div>
-                <h1 class="text-lg font-semibold" style="color: #2D2F31;">Ferry Management</h1>
-                <p class="text-xs" style="color: #65676B;">Monitor and update vessel statuses</p>
-            </div>
-
-            <div class="flex items-center gap-3">
-                <button class="notification-btn">
-                    <iconify-icon icon="solar:bell-bold" width="18"></iconify-icon>
-                    <span class="notification-badge"></span>
+            <div class="header-actions">
+                <button onclick="openAddModal()" class="btn btn-primary">
+                    <iconify-icon icon="solar:add-circle-bold" width="16"></iconify-icon>
+                    Add New Ferry
+                </button>
+                <button class="icon-btn" title="Notifications">
+                    <iconify-icon icon="solar:bell-bold" width="17"></iconify-icon>
                 </button>
             </div>
         </header>
 
-        <!-- Content -->
-        <div class="flex-1 overflow-auto p-6">
+        <div class="page-content">
+
+            <!-- Flash Messages -->
             <% if (query && query.error) { %>
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                    <strong class="font-bold">Error: </strong>
-                    <span class="block sm:inline"><%= query.error %></span>
-                </div>
+            <div class="panel" style="border-left:4px solid var(--color-error);background:var(--color-error-bg);padding:12px 16px;margin-bottom:16px;">
+                <span style="color:var(--color-error);font-weight:500;">Error: <%= query.error %></span>
+            </div>
             <% } %>
             <% if (query && query.success) { %>
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-                    <span class="block sm:inline"><%= query.success %></span>
-                </div>
+            <div class="panel" style="border-left:4px solid var(--color-success);background:var(--color-success-bg);padding:12px 16px;margin-bottom:16px;">
+                <span style="color:var(--color-success);font-weight:500;"><%= query.success %></span>
+            </div>
             <% } %>
-            <div class="space-y-5 fade-in">
-                <!-- Action Bar -->
-                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
-                    <div class="flex gap-2">
-                        <div class="relative">
-                            <iconify-icon icon="solar:magnifer-linear" class="absolute left-3 top-1/2 -translate-y-1/2" style="color: #87A2FF; font-size: 0.875rem;"></iconify-icon>
-                            <input type="text" id="ferry-search" onkeyup="filterFerries()" placeholder="Search vessels..." class="search-input">
+
+            <!-- Table Panel -->
+            <div class="panel slide-up">
+                <div class="panel-header">
+                    <span class="panel-title">
+                        <iconify-icon icon="solar:ship-bold-duotone"></iconify-icon>
+                        Fleet Overview
+                    </span>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <!-- Search -->
+                        <div style="position:relative;">
+                            <iconify-icon icon="solar:magnifer-linear" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--color-text-light);pointer-events:none;"></iconify-icon>
+                            <input type="text" id="ferry-search" onkeyup="filterFerries()"
+                                   placeholder="Search vessels…"
+                                   style="
+                                     border:1.5px solid var(--color-border);
+                                     border-radius:var(--radius-pill);
+                                     padding:8px 12px 8px 32px;
+                                     font-size:13px;
+                                     font-family:var(--font-sans);
+                                     outline:none;
+                                     width:200px;
+                                     background:var(--color-surface);
+                                     color:var(--color-text-dark);
+                                   ">
                         </div>
-                        <div class="relative">
-                            <button class="btn-filter" id="filter-btn" onclick="toggleFilterPanel()">
-                                <iconify-icon icon="solar:filter-bold" width="16"></iconify-icon>
+                        <!-- Filter -->
+                        <div style="position:relative;">
+                            <button class="btn btn-secondary" id="filter-btn" onclick="toggleFilterPanel()" style="padding:8px 12px;">
+                                <iconify-icon icon="solar:filter-bold" width="14"></iconify-icon>
+                                Filter
                             </button>
-                            <!-- Filter Panel -->
-                            <div id="filter-panel" class="hidden absolute top-12 left-0 w-64 bg-white border border-[#87A2FF] rounded-xl shadow-xl z-50 p-4">
-                                <h3 class="text-sm font-semibold mb-3">Filter Vessels</h3>
+                            <div id="filter-panel" class="filter-panel-popup">
+                                <p style="font-weight:600;font-size:13px;margin-bottom:12px;color:var(--color-text-dark);">Filter Vessels</p>
                                 <form action="/admin/ferries" method="GET">
-                                    <div class="space-y-3">
-                                        <div>
-                                            <label class="text-xs font-medium text-gray-500 mb-1 block">Status</label>
-                                            <select name="status" class="w-full text-sm border border-[#87A2FF] rounded-lg px-3 py-2">
-                                                <option value="">All Statuses</option>
-                                                <option value="on_time" <%= query.status === 'on_time' ? 'selected' : '' %>>On Time</option>
-                                                <option value="delayed" <%= query.status === 'delayed' ? 'selected' : '' %>>Delayed</option>
-                                                <option value="suspended" <%= query.status === 'suspended' ? 'selected' : '' %>>Suspended</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="text-xs font-medium text-gray-500 mb-1 block">Route</label>
-                                            <input type="text" name="route" value="<%= query.route || '' %>" placeholder="Cebu - Manila" class="w-full text-sm border border-[#87A2FF] rounded-lg px-3 py-2">
-                                        </div>
-                                        <div class="flex gap-2 pt-2">
-                                            <a href="/admin/ferries" class="flex-1 text-center text-xs font-medium text-gray-500 hover:text-gray-700 py-2 border border-gray-200 rounded-lg">Clear</a>
-                                            <button type="submit" class="flex-1 bg-[#87A2FF] text-white text-xs font-medium py-2 rounded-lg hover:bg-[#BD77FF]">Apply</button>
-                                        </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Status</label>
+                                        <select name="status" class="form-control">
+                                            <option value="">All Statuses</option>
+                                            <option value="on_time" <%= query.status === 'on_time' ? 'selected' : '' %>>On Time</option>
+                                            <option value="delayed" <%= query.status === 'delayed' ? 'selected' : '' %>>Delayed</option>
+                                            <option value="suspended" <%= query.status === 'suspended' ? 'selected' : '' %>>Suspended</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Route</label>
+                                        <input type="text" name="route" value="<%= query.route || '' %>" placeholder="e.g., Manila - Cebu" class="form-control">
+                                    </div>
+                                    <div style="display:flex;gap:8px;margin-top:4px;">
+                                        <a href="/admin/ferries" class="btn btn-secondary" style="flex:1;text-align:center;">Clear</a>
+                                        <button type="submit" class="btn btn-primary" style="flex:1;">Apply</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
-                    <button onclick="openAddModal()" class="btn-primary">
-                        <iconify-icon icon="solar:add-circle-bold" width="16"></iconify-icon>
-                        Add New Ferry
-                    </button>
                 </div>
 
-                <!-- Table -->
-                <div class="table-container">
-                    <div class="table-header">
-                        Ferry Fleet Overview
-                    </div>
-                    <table class="w-full">
+                <div style="overflow-x:auto;">
+                    <table class="data-table">
                         <thead>
-                            <tr class="bg-[#C4D7FF20]">
-                                <th class="px-6 py-3 text-left text-xs font-semibold" style="color: #65676B;">Vessel Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold" style="color: #65676B;">Route</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold" style="color: #65676B;">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold" style="color: #65676B;">ETA (Mins)</th>
-                                <th class="px-6 py-3 text-right text-xs font-semibold" style="color: #65676B;">Actions</th>
+                            <tr>
+                                <th>Vessel Name</th>
+                                <th>Route</th>
+                                <th>Status</th>
+                                <th>ETA (Mins)</th>
+                                <th style="text-align:right;">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="ferries-table-body">
                             <% ferries.forEach(f => { %>
-                            <tr class="table-row" data-id="<%= f.id %>">
-                                <td class="px-6 py-3">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background-color: #C4D7FF; color: #99123D;">
+                            <tr>
+                                <td>
+                                    <div style="display:flex;align-items:center;gap:10px;">
+                                        <div class="vessel-icon">
                                             <iconify-icon icon="solar:ship-bold-duotone" width="16"></iconify-icon>
                                         </div>
-                                        <span class="font-medium"><%= f.name %></span>
+                                        <span style="font-weight:600;"><%= f.name %></span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-3" style="color: #65676B;"><%= f.route %></td>
-                                <td class="px-6 py-3 cursor-pointer" onclick="toggleStatus('<%= f.id %>')">
-                                    <% if (f.status === 'on_time') { %>
-                                    <span class="badge badge-on-time">
-                                        <span class="status-dot"></span> On Time
-                                    </span>
+                                <td class="secondary"><%= f.route %></td>
+                                <td style="cursor:pointer;" onclick="toggleStatus('<%= f.id %>')">
+                                    <% if (f.status === 'on_time' || f.status === 'active') { %>
+                                        <span class="badge badge-on-time">
+                                            <span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;opacity:.8;"></span>
+                                            On Time
+                                        </span>
                                     <% } else if (f.status === 'delayed') { %>
-                                    <span class="badge badge-delayed">
-                                        <span class="status-dot" style="background-color: #99123D;"></span> Delayed
-                                    </span>
+                                        <span class="badge badge-delayed">
+                                            <span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;opacity:.8;"></span>
+                                            Delayed
+                                        </span>
                                     <% } else { %>
-                                    <span class="badge badge-suspended">
-                                        <span class="status-dot"></span> Suspended
-                                    </span>
+                                        <span class="badge badge-suspended">
+                                            <span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;opacity:.8;"></span>
+                                            <%= f.status || 'Suspended' %>
+                                        </span>
                                     <% } %>
                                 </td>
-                                <td class="px-6 py-3" style="color: #65676B;"><%= f.eta %> min</td>
-                                <td class="px-6 py-3 text-right">
-                                    <button class="action-btn" data-ferry="<%= JSON.stringify(f) %>" onclick="openEditModal(JSON.parse(this.dataset.ferry))">
+                                <td class="secondary"><%= f.eta %> min</td>
+                                <td style="text-align:right;">
+                                    <button class="btn-icon-table"
+                                            data-ferry="<%= JSON.stringify(f).replace(/"/g,'&quot;') %>"
+                                            onclick="openEditModal(JSON.parse(this.dataset.ferry.replace(/&quot;/g,'\"')))"
+                                            title="Edit">
                                         <iconify-icon icon="solar:pen-bold" width="16"></iconify-icon>
                                     </button>
                                 </td>
@@ -522,269 +253,232 @@
                             <% }) %>
                         </tbody>
                     </table>
-                    
-                    <!-- Pagination -->
-                    <div class="px-6 py-3 border-t border-[#87A2FF] flex items-center justify-between">
-                        <span class="text-xs" style="color: #65676B;">Showing 1-5 of 12 vessels</span>
-                        <div class="flex gap-1">
-                            <button class="page-btn active">1</button>
-                            <button class="page-btn">2</button>
-                            <button class="page-btn">3</button>
-                        </div>
-                    </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </div><!-- /page-content -->
+    </div><!-- /main-content -->
+</div><!-- /app-shell -->
 
-    <!-- Add Ferry Modal -->
-    <div id="addFerryModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Add New Ferry</h2>
-                <span class="modal-close" onclick="closeAddModal()">&times;</span>
-            </div>
-            <form method="POST" action="/admin/ferries/add" id="addFerryForm">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Vessel Name *</label>
-                        <input type="text" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="name" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="route" class="form-label">Route * (e.g., Manila - Cebu)</label>
-                        <input type="text" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="route" name="route" required>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="mb-3">
-                            <label for="speed_knots" class="form-label">Speed (knots)</label>
-                            <input type="number" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="speed_knots" name="speed_knots" value="20" min="1" step="1">
-                        </div>
-                        <div class="mb-3">
-                            <label for="eta" class="form-label">ETA (minutes)</label>
-                            <input type="number" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="eta" name="eta" value="60" min="1" step="1">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="status" class="form-label">Status</label>
-                        <select class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="status" name="status">
-                            <option value="on_time">On Time</option>
-                            <option value="delayed">Delayed</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </div>
-                    <h5 class="mt-4 font-semibold">Origin Port (Point A) *</h5>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="mb-3">
-                            <label for="pointA_lat" class="form-label">Latitude</label>
-                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="pointA_lat" name="pointA_lat" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="pointA_lng" class="form-label">Longitude</label>
-                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="pointA_lng" name="pointA_lng" required>
-                        </div>
-                    </div>
-                    <h5 class="mt-4 font-semibold">Destination Port (Point B) *</h5>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="mb-3">
-                            <label for="pointB_lat" class="form-label">Latitude</label>
-                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="pointB_lat" name="pointB_lat" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="pointB_lng" class="form-label">Longitude</label>
-                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="pointB_lng" name="pointB_lng" required>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="source" class="form-label">Data Source</label>
-                        <input type="text" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="source" name="source" value="manual">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" onclick="closeAddModal()" class="btn-filter px-4 py-2">Cancel</button>
-                    <button type="submit" class="btn-primary">Add Ferry</button>
-                </div>
-            </form>
+<!-- Add Ferry Modal -->
+<div id="addFerryModal" class="modal-overlay-bg">
+    <div class="modal" style="max-width:620px;">
+        <div class="modal-header">
+            <span class="modal-title">
+                <iconify-icon icon="solar:ship-bold-duotone"></iconify-icon>
+                Add New Ferry
+            </span>
+            <button type="button" onclick="closeAddModal()" class="modal-close">
+                <iconify-icon icon="solar:close-circle-bold" width="18"></iconify-icon>
+            </button>
         </div>
+        <form method="POST" action="/admin/ferries/add" id="addFerryForm">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="name">Vessel Name *</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="route">Route * (e.g., Manila - Cebu)</label>
+                    <input type="text" class="form-control" id="route" name="route" required>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="speed_knots">Speed (knots)</label>
+                        <input type="number" class="form-control" id="speed_knots" name="speed_knots" value="20" min="1" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="eta">ETA (minutes)</label>
+                        <input type="number" class="form-control" id="eta" name="eta" value="60" min="1" step="1">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="status">Status</label>
+                    <select class="form-control" id="status" name="status">
+                        <option value="on_time">On Time</option>
+                        <option value="delayed">Delayed</option>
+                        <option value="suspended">Suspended</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <p style="font-weight:600;font-size:13px;margin:12px 0 4px;color:var(--color-text-dark);">Origin Port (Point A) *</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="pointA_lat">Latitude</label>
+                        <input type="number" step="any" class="form-control" id="pointA_lat" name="pointA_lat" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="pointA_lng">Longitude</label>
+                        <input type="number" step="any" class="form-control" id="pointA_lng" name="pointA_lng" required>
+                    </div>
+                </div>
+                <p style="font-weight:600;font-size:13px;margin:12px 0 4px;color:var(--color-text-dark);">Destination Port (Point B) *</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="pointB_lat">Latitude</label>
+                        <input type="number" step="any" class="form-control" id="pointB_lat" name="pointB_lat" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="pointB_lng">Longitude</label>
+                        <input type="number" step="any" class="form-control" id="pointB_lng" name="pointB_lng" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="source">Data Source</label>
+                    <input type="text" class="form-control" id="source" name="source" value="manual">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="closeAddModal()" class="btn btn-secondary">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add Ferry</button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <!-- Edit Ferry Modal -->
-    <div id="editFerryModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Edit Ferry</h2>
-                <span class="modal-close" onclick="closeEditModal()">&times;</span>
-            </div>
-            <form method="POST" id="editFerryForm">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="edit_name" class="form-label">Vessel Name *</label>
-                        <input type="text" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_name" name="name" required>
+<!-- Edit Ferry Modal -->
+<div id="editFerryModal" class="modal-overlay-bg">
+    <div class="modal" style="max-width:620px;">
+        <div class="modal-header">
+            <span class="modal-title">
+                <iconify-icon icon="solar:pen-bold"></iconify-icon>
+                Edit Ferry
+            </span>
+            <button type="button" onclick="closeEditModal()" class="modal-close">
+                <iconify-icon icon="solar:close-circle-bold" width="18"></iconify-icon>
+            </button>
+        </div>
+        <form method="POST" id="editFerryForm">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="edit_name">Vessel Name *</label>
+                    <input type="text" class="form-control" id="edit_name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="edit_route">Route *</label>
+                    <input type="text" class="form-control" id="edit_route" name="route" required>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="edit_speed">Speed (knots)</label>
+                        <input type="number" class="form-control" id="edit_speed" name="speed_knots" min="1" step="1">
                     </div>
-                    <div class="mb-3">
-                        <label for="edit_route" class="form-label">Route *</label>
-                        <input type="text" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_route" name="route" required>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="mb-3">
-                            <label for="edit_speed" class="form-label">Speed (knots)</label>
-                            <input type="number" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_speed" name="speed_knots" min="1" step="1">
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_eta" class="form-label">ETA (minutes)</label>
-                            <input type="number" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_eta" name="eta" min="0" step="1">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_status" class="form-label">Status</label>
-                        <select class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_status" name="status">
-                            <option value="on_time">On Time</option>
-                            <option value="delayed">Delayed</option>
-                            <option value="suspended">Suspended</option>
-                        </select>
-                    </div>
-                    <h5 class="mt-4 font-semibold text-sm">Origin Port (Point A)</h5>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="mb-3">
-                            <label for="edit_pointA_lat" class="text-xs">Latitude</label>
-                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_pointA_lat" name="pointA_lat">
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_pointA_lng" class="text-xs">Longitude</label>
-                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_pointA_lng" name="pointA_lng">
-                        </div>
-                    </div>
-                    <h5 class="mt-4 font-semibold text-sm">Destination Port (Point B)</h5>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="mb-3">
-                            <label for="edit_pointB_lat" class="text-xs">Latitude</label>
-                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_pointB_lat" name="pointB_lat">
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_pointB_lng" class="text-xs">Longitude</label>
-                            <input type="number" step="any" class="form-control w-full border border-[#87A2FF] rounded px-3 py-2" id="edit_pointB_lng" name="pointB_lng">
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit_eta">ETA (minutes)</label>
+                        <input type="number" class="form-control" id="edit_eta" name="eta" min="0" step="1">
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" onclick="closeEditModal()" class="btn-filter px-4 py-2">Cancel</button>
-                    <button type="submit" class="btn-primary">Save Changes</button>
+                <div class="form-group">
+                    <label class="form-label" for="edit_status">Status</label>
+                    <select class="form-control" id="edit_status" name="status">
+                        <option value="on_time">On Time</option>
+                        <option value="delayed">Delayed</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
                 </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-        <div class="toast">
-            <div id="toast-icon" style="color: #62AE7D;">
-                <iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>
+                <p style="font-weight:600;font-size:13px;margin:12px 0 4px;color:var(--color-text-dark);">Origin Port (Point A)</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="edit_pointA_lat">Latitude</label>
+                        <input type="number" step="any" class="form-control" id="edit_pointA_lat" name="pointA_lat">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit_pointA_lng">Longitude</label>
+                        <input type="number" step="any" class="form-control" id="edit_pointA_lng" name="pointA_lng">
+                    </div>
+                </div>
+                <p style="font-weight:600;font-size:13px;margin:12px 0 4px;color:var(--color-text-dark);">Destination Port (Point B)</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="edit_pointB_lat">Latitude</label>
+                        <input type="number" step="any" class="form-control" id="edit_pointB_lat" name="pointB_lat">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit_pointB_lng">Longitude</label>
+                        <input type="number" step="any" class="form-control" id="edit_pointB_lng" name="pointB_lng">
+                    </div>
+                </div>
             </div>
-            <p id="toast-message" class="text-sm" style="color: #2D2F31;">Success</p>
-        </div>
+            <div class="modal-footer">
+                <button type="button" onclick="closeEditModal()" class="btn btn-secondary">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <script>
-        // Modal functions
-        function openAddModal() {
-            document.getElementById('addFerryModal').style.display = 'flex';
+<!-- Toast -->
+<div id="toast" class="toast">
+    <iconify-icon id="toast-icon" width="18"></iconify-icon>
+    <span id="toast-message" class="toast-message">Success</span>
+</div>
+
+<script>
+    function openAddModal() {
+        document.getElementById('addFerryModal').classList.add('active');
+    }
+    function closeAddModal() {
+        document.getElementById('addFerryModal').classList.remove('active');
+        document.getElementById('addFerryForm').reset();
+    }
+    function openEditModal(ferry) {
+        const form = document.getElementById('editFerryForm');
+        form.action = `/admin/ferries/${ferry.id}/update`;
+        document.getElementById('edit_name').value = ferry.name;
+        document.getElementById('edit_route').value = ferry.route;
+        document.getElementById('edit_speed').value = ferry.speed_knots || 20;
+        document.getElementById('edit_eta').value = ferry.eta || 0;
+        document.getElementById('edit_status').value = ferry.status;
+        document.getElementById('edit_pointA_lat').value = ferry.pointA?.lat || ferry.current_lat || 0;
+        document.getElementById('edit_pointA_lng').value = ferry.pointA?.lng || ferry.current_lng || 0;
+        document.getElementById('edit_pointB_lat').value = ferry.pointB?.lat || 0;
+        document.getElementById('edit_pointB_lng').value = ferry.pointB?.lng || 0;
+        document.getElementById('editFerryModal').classList.add('active');
+    }
+    function closeEditModal() {
+        document.getElementById('editFerryModal').classList.remove('active');
+    }
+    function toggleFilterPanel() {
+        document.getElementById('filter-panel').classList.toggle('open');
+    }
+    window.onclick = function(event) {
+        const addM  = document.getElementById('addFerryModal');
+        const editM = document.getElementById('editFerryModal');
+        const fp    = document.getElementById('filter-panel');
+        const fb    = document.getElementById('filter-btn');
+        if (event.target === addM) closeAddModal();
+        if (event.target === editM) closeEditModal();
+        if (!fp.contains(event.target) && !fb.contains(event.target)) fp.classList.remove('open');
+    };
+    function showToast(msg, type) {
+        const toast = document.getElementById('toast');
+        const icon  = document.getElementById('toast-icon');
+        const text  = document.getElementById('toast-message');
+        text.innerText = msg;
+        toast.className = 'toast ' + (type || 'info');
+        icon.className  = 'toast-icon ' + (type || 'info');
+        if (type === 'success') icon.setAttribute('icon', 'solar:check-circle-bold');
+        else if (type === 'error') icon.setAttribute('icon', 'solar:danger-circle-bold');
+        else icon.setAttribute('icon', 'solar:info-circle-bold');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+    async function toggleStatus(id) {
+        try {
+            const r = await fetch(`/api/ferries/${id}/toggle-status`, { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+            if (r.ok) { location.reload(); }
+            else { showToast('Error updating status', 'error'); }
+        } catch(e) { showToast('Error updating status', 'error'); }
+    }
+    function filterFerries() {
+        const q    = document.getElementById('ferry-search').value.toLowerCase();
+        const rows = document.getElementById('ferries-table-body').getElementsByTagName('tr');
+        for (let row of rows) {
+            row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
         }
-
-        function closeAddModal() {
-            document.getElementById('addFerryModal').style.display = 'none';
-            // Optionally reset form
-            document.getElementById('addFerryForm').reset();
-        }
-
-        function openEditModal(ferry) {
-            const modal = document.getElementById('editFerryModal');
-            const form = document.getElementById('editFerryForm');
-            
-            form.action = `/admin/ferries/${ferry.id}/update`;
-            document.getElementById('edit_name').value = ferry.name;
-            document.getElementById('edit_route').value = ferry.route;
-            document.getElementById('edit_speed').value = ferry.speed_knots || 20;
-            document.getElementById('edit_eta').value = ferry.eta || 0;
-            document.getElementById('edit_status').value = ferry.status;
-            document.getElementById('edit_pointA_lat').value = ferry.pointA?.lat || ferry.current_lat || 0;
-            document.getElementById('edit_pointA_lng').value = ferry.pointA?.lng || ferry.current_lng || 0;
-            document.getElementById('edit_pointB_lat').value = ferry.pointB?.lat || 0;
-            document.getElementById('edit_pointB_lng').value = ferry.pointB?.lng || 0;
-            
-            modal.style.display = 'flex';
-        }
-
-        function closeEditModal() {
-            document.getElementById('editFerryModal').style.display = 'none';
-        }
-
-        function toggleFilterPanel() {
-            const panel = document.getElementById('filter-panel');
-            panel.classList.toggle('hidden');
-        }
-
-        // Close modal when clicking outside (optional)
-        window.onclick = function(event) {
-            const addModal = document.getElementById('addFerryModal');
-            const editModal = document.getElementById('editFerryModal');
-            const filterPanel = document.getElementById('filter-panel');
-            const filterBtn = document.getElementById('filter-btn');
-
-            if (event.target === addModal) closeAddModal();
-            if (event.target === editModal) closeEditModal();
-            
-            if (!filterPanel.contains(event.target) && !filterBtn.contains(event.target)) {
-                filterPanel.classList.add('hidden');
-            }
-        }
-
-        function showToast(msg, type) {
-            const toast = document.getElementById('toast');
-            const icon = document.getElementById('toast-icon');
-            const message = document.getElementById('toast-message');
-            
-            message.innerText = msg;
-            
-            if(type === 'success') {
-                icon.innerHTML = '<iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>';
-                icon.style.color = '#62AE7D';
-            } else if(type === 'error') {
-                icon.innerHTML = '<iconify-icon icon="solar:danger-circle-bold" width="18"></iconify-icon>';
-                icon.style.color = '#99123D';
-            } else {
-                icon.innerHTML = '<iconify-icon icon="solar:info-circle-bold" width="18"></iconify-icon>';
-                icon.style.color = '#BD77FF';
-            }
-
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        async function toggleStatus(id) {
-            try {
-                const response = await fetch(`/api/ferries/${id}/toggle-status`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                
-                if (response.ok) {
-                    location.reload();
-                    showToast('Ferry status updated', 'success');
-                }
-            } catch (error) {
-                showToast('Error updating status', 'error');
-            }
-        }
-
-        function filterFerries() {
-            const input = document.getElementById('ferry-search').value.toLowerCase();
-            const rows = document.getElementById('ferries-table-body').getElementsByTagName('tr');
-            for(let row of rows) {
-                const txt = row.textContent.toLowerCase();
-                row.style.display = txt.includes(input) ? '' : 'none';
-            }
-        }
-    </script>
+    }
+    <% if (typeof message !== 'undefined' && message) { %>
+    window.onload = () => showToast('<%= message %>', 'success');
+    <% } %>
+</script>
 </body>
 </html>

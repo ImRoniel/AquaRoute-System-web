@@ -1,48 +1,68 @@
-<!-- Toast Notification -->
-<div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-    <div class="bg-white border-l-4 border-primary rounded-lg shadow-2xl p-4 flex items-center gap-3 w-80">
-        <div id="toast-icon" class="text-primary text-xl">
-            <iconify-icon icon="solar:check-circle-bold"></iconify-icon>
-        </div>
-        <div>
-            <h4 id="toast-title" class="font-bold text-sm text-slate-800">Success</h4>
-            <p id="toast-message" class="text-xs text-slate-500">Operation completed successfully.</p>
-        </div>
+<!-- Toast Notification – AquaRoute Maritime Theme -->
+<div id="toast" style="
+    position: fixed;
+    bottom: 20px; right: 20px;
+    transform: translateY(80px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    min-width: 260px;
+    max-width: 370px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,51,102,0.14);
+    border: 1px solid #CFD8DC;
+    border-left: 4px solid #0A4D8C;
+">
+    <iconify-icon id="toast-icon" icon="solar:check-circle-bold" width="20" style="color:#4CAF50;flex-shrink:0;"></iconify-icon>
+    <div>
+        <p id="toast-title" style="font-size:13px;font-weight:700;color:#263238;margin:0 0 2px;">Success</p>
+        <p id="toast-message" style="font-size:12px;color:#546E7A;margin:0;">Operation completed successfully.</p>
     </div>
 </div>
 
 <script>
-    function showToast(msg, type = 'success') {
-        const toast = document.getElementById('toast');
-        document.getElementById('toast-message').innerText = msg;
-        
-        const title = document.getElementById('toast-title');
-        const icon = document.getElementById('toast-icon');
-        const container = toast.children[0];
-        
+    function showToast(msg, type) {
+        const toast   = document.getElementById('toast');
+        const icon    = document.getElementById('toast-icon');
+        const title   = document.getElementById('toast-title');
+        const message = document.getElementById('toast-message');
+
+        message.innerText = msg || '';
+
         if (type === 'success') {
             title.innerText = 'Success';
-            container.classList.remove('border-red-500', 'border-yellow-500');
-            container.classList.add('border-primary');
-            icon.innerHTML = '<iconify-icon icon="solar:check-circle-bold"></iconify-icon>';
-            icon.className = 'text-primary text-xl';
+            icon.setAttribute('icon','solar:check-circle-bold');
+            icon.style.color   = '#4CAF50';
+            toast.style.borderLeftColor = '#4CAF50';
         } else if (type === 'error') {
             title.innerText = 'Error';
-            container.classList.remove('border-primary', 'border-yellow-500');
-            container.classList.add('border-red-500');
-            icon.innerHTML = '<iconify-icon icon="solar:danger-circle-bold"></iconify-icon>';
-            icon.className = 'text-red-500 text-xl';
+            icon.setAttribute('icon','solar:danger-circle-bold');
+            icon.style.color   = '#D11717';
+            toast.style.borderLeftColor = '#D11717';
         } else {
             title.innerText = 'Info';
-            container.classList.remove('border-primary', 'border-red-500');
-            container.classList.add('border-yellow-500');
-            icon.innerHTML = '<iconify-icon icon="solar:info-circle-bold"></iconify-icon>';
-            icon.className = 'text-yellow-500 text-xl';
+            icon.setAttribute('icon','solar:info-circle-bold');
+            icon.style.color   = '#0A4D8C';
+            toast.style.borderLeftColor = '#0A4D8C';
         }
 
-        toast.classList.remove('translate-y-20', 'opacity-0');
-        setTimeout(() => {
-            toast.classList.add('translate-y-20', 'opacity-0');
-        }, 3000);
+        // Show
+        toast.style.transform = 'translateY(0)';
+        toast.style.opacity   = '1';
+        toast.style.pointerEvents = 'auto';
+
+        // Auto-hide after 3.5 s
+        clearTimeout(toast._hideTimer);
+        toast._hideTimer = setTimeout(() => {
+            toast.style.transform = 'translateY(80px)';
+            toast.style.opacity   = '0';
+            toast.style.pointerEvents = 'none';
+        }, 3500);
     }
 </script>

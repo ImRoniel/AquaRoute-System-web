@@ -1,16 +1,46 @@
-<footer class="bg-slate-900 text-slate-400 py-12 px-6 mt-auto">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-        <div class="flex items-center gap-2">
-            <iconify-icon icon="solar:wheel-angle-bold" class="text-blue-500"></iconify-icon>
-            <span class="font-bold text-white tracking-tight">AquaRoute</span>
+<footer style="
+    background: linear-gradient(180deg, #002B5C 0%, #001F42 100%);
+    color: #90A4AE;
+    padding: 40px 32px;
+    margin-top: auto;
+">
+    <div style="max-width:1200px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px;">
+
+        <!-- Brand -->
+        <div style="display:flex;align-items:center;gap:8px;">
+            <div style="
+                width:30px;height:30px;border-radius:8px;
+                background:rgba(255,255,255,0.12);
+                border:1px solid rgba(255,255,255,0.15);
+                display:flex;align-items:center;justify-content:center;
+            ">
+                <iconify-icon icon="solar:wheel-angle-bold" width="14" style="color:#00ACC1;"></iconify-icon>
+            </div>
+            <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;color:#fff;letter-spacing:-0.01em;">AquaRoute</span>
         </div>
-        <div class="text-sm font-medium">
-            © 2026 AquaRoute Inc. All rights reserved.
+
+        <!-- Divider -->
+        <div style="width:100%;max-width:400px;height:1px;background:rgba(255,255,255,0.08);"></div>
+
+        <!-- Bottom Row -->
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;width:100%;max-width:1200px;">
+            <span style="font-size:12px;color:#546E7A;">© 2026 AquaRoute Inc. All rights reserved.</span>
+
+            <div style="display:flex;gap:20px;">
+                <a href="#" style="color:#546E7A;transition:color 0.2s;"
+                   onmouseover="this.style.color='#fff';" onmouseout="this.style.color='#546E7A';">
+                    <iconify-icon icon="fa6-brands:facebook" width="18"></iconify-icon>
+                </a>
+                <a href="#" style="color:#546E7A;transition:color 0.2s;"
+                   onmouseover="this.style.color='#fff';" onmouseout="this.style.color='#546E7A';">
+                    <iconify-icon icon="fa6-brands:x-twitter" width="18"></iconify-icon>
+                </a>
+                <a href="#" style="color:#546E7A;transition:color 0.2s;"
+                   onmouseover="this.style.color='#fff';" onmouseout="this.style.color='#546E7A';">
+                    <iconify-icon icon="fa6-brands:linkedin" width="18"></iconify-icon>
+                </a>
+            </div>
         </div>
-        <div class="flex gap-6">
-            <a href="#" class="hover:text-white transition-colors"><iconify-icon icon="brands:facebook" width="20"></iconify-icon></a>
-            <a href="#" class="hover:text-white transition-colors"><iconify-icon icon="brands:twitter" width="20"></iconify-icon></a>
-            <a href="#" class="hover:text-white transition-colors"><iconify-icon icon="brands:linkedin" width="20"></iconify-icon></a>
-        </div>
+
     </div>
 </footer>

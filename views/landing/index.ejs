@@ -4,38 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %> - AquaRoute</title>
-    
-    <!-- Tailwind CSS -->
+    <meta name="description" content="AquaRoute Maritime — Real-time ferry tracking, port management, and cargo logistics for the Philippines.">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Iconify -->
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Custom Config & Styles -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Quicksand', 'sans-serif'],
-                        display: ['Rubik', 'sans-serif'],
-                    },
                     colors: {
-                        primary: '#87A2FF',
-                        secondary: '#C4D7FF',
-                        accent: '#62AE7D',
-                        surface: '#FFD7C4',
-                        card: '#FFF4B5',
-                        star: '#BD77FF',
-                        square: '#FEC1A0',
-                        circle: '#99123D',
-                        textfield: '#FFF4B5',
-                        label: '#65676B',
+                        primary:    '#0A4D8C',
+                        'primary-dark': '#073B6B',
+                        accent:     '#00ACC1',
+                        'bg-light': '#EEF2F7',
+                        success:    '#4CAF50',
+                        warning:    '#FF9800',
+                    },
+                    fontFamily: {
+                        sans:    ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
                     }
                 }
             }
@@ -43,319 +34,300 @@
     </script>
 
     <style>
-        /* Base & Reset */
-        body { 
-            font-family: 'Quicksand', sans-serif; 
-            background-color: #FFD7C4;
-            -webkit-font-smoothing: antialiased;
-            color: #2D2F31;
-        }
-        
-        h1, h2, h3, h4, h5, h6 { 
-            font-family: 'Rubik', sans-serif; 
-            letter-spacing: -0.02em; 
-            font-weight: 600;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #EEF2F7; color: #263238; -webkit-font-smoothing: antialiased; }
+        h1,h2,h3,h4 { font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: -0.02em; }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #FEC1A0; }
-        ::-webkit-scrollbar-thumb { background: #BD77FF; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #99123D; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #90A4AE; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0A4D8C; }
 
-        /* Animations */
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .fade-in  { animation: fadeIn  0.4s ease-out forwards; }
         .slide-up { animation: slideUp 0.5s ease-out forwards; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+        @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+        /* Glassmorphism nav */
+        .glass-nav {
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid #CFD8DC;
         }
 
-        /* Glassmorphism */
-        .glass {
-            background: rgba(255, 244, 181, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(135, 162, 255, 0.3);
+        /* Hero */
+        .hero-bg {
+            background: linear-gradient(160deg, #003366 0%, #0A4D8C 50%, #0077B6 100%);
         }
 
-        /* Wave Decoration */
-        .wave-bg {
-            background: linear-gradient(180deg, rgba(196,215,255,1) 0%, rgba(255,215,196,0.5) 100%);
-        }
-
-        /* Status Badge Animations */
-        .status-dot { animation: pulse 2s infinite; }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(189, 119, 255, 0.5); }
-            70% { box-shadow: 0 0 0 6px rgba(189, 119, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(189, 119, 255, 0); }
-        }
-
-        /* Mock Input Style */
-        .mock-input {
-            background-color: #FFF4B5;
-            border: 2px solid #87A2FF;
-            border-radius: 20px;
-            padding: 0.5rem 1rem;
-            font-weight: 500;
-            color: #2D2F31;
-        }
-
-        /* Custom hover effects */
+        /* Feature cards */
         .feature-card {
-            background-color: #FFF4B5;
-            border: 1px solid #87A2FF;
-            border-radius: 1.5rem;
-            padding: 2rem;
-            transition: all 0.3s ease;
+            background: #fff;
+            border: 1.5px solid #CFD8DC;
+            border-radius: 20px;
+            padding: 32px;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 8px rgba(0,51,102,0.06);
         }
-        
         .feature-card:hover {
-            background-color: #FEC1A0;
+            border-color: #0A4D8C;
             transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(135, 162, 255, 0.3);
+            box-shadow: 0 12px 28px rgba(0,51,102,0.12);
         }
+        .feature-card:hover .feat-icon { transform: scale(1.1); }
+        .feat-icon { width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;transition:transform 0.25s; }
 
-        .icon-wrapper {
-            width: 3rem;
-            height: 3rem;
-            border-radius: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            transition: transform 0.3s ease;
-        }
+        /* CTA section */
+        .cta-section { background: linear-gradient(135deg, #003366 0%, #0A4D8C 100%); }
 
-        .feature-card:hover .icon-wrapper {
-            transform: scale(1.1);
-        }
-
-        .cta-button {
-            background-color: #FFF4B5;
-            color: #99123D;
-            padding: 1rem 2rem;
-            border-radius: 1rem;
-            font-weight: 700;
-            transition: all 0.3s ease;
-            display: inline-block;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        .cta-button:hover {
-            background-color: #FEC1A0;
-        }
-
-        .admin-button {
-            background-color: #FFF4B5;
-            border: 1px solid #87A2FF;
-            color: #65676B;
-            padding: 0.625rem 1.25rem;
-            border-radius: 9999px;
-            font-weight: 500;
-            font-size: 0.875rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .admin-button:hover {
-            border-color: #87A2FF;
-            background-color: #FEC1A0;
-        }
-
-        .admin-button:hover iconify-icon {
-            color: #99123D;
-        }
-
-        .get-app-button {
-            background-color: #BD77FF;
-            color: white;
-            padding: 0.625rem 1.25rem;
-            border-radius: 9999px;
-            font-weight: 500;
-            font-size: 0.875rem;
-            box-shadow: 0 10px 15px -3px rgba(189, 119, 255, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .get-app-button:hover {
-            background-color: #99123D;
+        /* Pulse dot */
+        .live-dot { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%  { box-shadow: 0 0 0 0 rgba(76,175,80,0.5); }
+            70% { box-shadow: 0 0 0 8px rgba(76,175,80,0); }
+            100%{ box-shadow: 0 0 0 0 rgba(76,175,80,0); }
         }
     </style>
 </head>
 <body class="overflow-x-hidden">
 
-    <!-- Header -->
-    <header class="fixed top-0 w-full z-50 glass transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg" style="background-color: #87A2FF; box-shadow: 0 10px 15px -3px rgba(135,162,255,0.3);">
-                    <img src="/aquaRoute_logo.svg" alt="AquaRoute Logo" class="w-6 h-6 brightness-0 invert">
-                </div>
-                <span class="font-display font-bold text-xl tracking-tight" style="color: #99123D;">AquaRoute</span>
+    <!-- ═══ NAVBAR ═══════════════════════════════════════════ -->
+    <header class="glass-nav fixed top-0 left-0 right-0 z-50 h-[68px] flex items-center px-8 justify-between">
+        <a href="/" class="flex items-center gap-3 no-underline">
+            <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#0A4D8C,#00ACC1);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(10,77,140,0.25);">
+                <iconify-icon icon="solar:wheel-angle-bold" width="18" style="color:#fff;"></iconify-icon>
             </div>
-            <div class="flex items-center gap-4">
-                <a href="/login" class="hidden md:flex admin-button">
-                    <iconify-icon icon="solar:user-circle-bold" style="color: #99123D;"></iconify-icon>
-                    Admin Login
-                </a>
-                <button class="get-app-button">
-                    Get App
-                </button>
-            </div>
+            <span class="font-display font-bold text-[17px] text-primary tracking-tight">AquaRoute</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <a href="/features" class="hidden md:block text-sm font-medium text-slate-500 hover:text-primary transition-colors px-4 py-2 rounded-full hover:bg-blue-50">Features</a>
+            <a href="/login" class="hidden md:flex items-center gap-2 text-sm font-semibold text-slate-600 border border-slate-200 rounded-full px-4 py-2 hover:border-primary hover:text-primary transition-all">
+                <iconify-icon icon="solar:user-circle-bold" width="15"></iconify-icon>
+                Admin Login
+            </a>
+            <button class="text-sm font-semibold text-white rounded-full px-4 py-2 border-0 cursor-pointer transition-all" style="background:linear-gradient(135deg,#0A4D8C,#00ACC1);box-shadow:0 4px 12px rgba(10,77,140,0.28);">
+                Get App
+            </button>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="pt-32 pb-20 px-6 wave-bg relative overflow-hidden">
-        <!-- Decorative Elements -->
-        <div class="absolute top-20 right-[-100px] w-96 h-96 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" style="background-color: #BD77FF;"></div>
-        <div class="absolute bottom-20 left-[-100px] w-96 h-96 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" style="background-color: #FEC1A0; animation-delay: 2s;"></div>
+    <!-- ═══ HERO ══════════════════════════════════════════════ -->
+    <section class="hero-bg min-h-screen flex items-center pt-20 pb-16 px-6 relative overflow-hidden">
+        <!-- Decorative orbs -->
+        <div class="absolute top-[-80px] right-[-100px] w-[500px] h-[500px] rounded-full" style="background:rgba(0,172,193,0.12);filter:blur(80px);pointer-events:none;"></div>
+        <div class="absolute bottom-[-80px] left-[-100px] w-[400px] h-[400px] rounded-full" style="background:rgba(76,175,80,0.08);filter:blur(80px);pointer-events:none;"></div>
 
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-            <div class="space-y-8 slide-up">
-                <!-- badge -->
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider" style="background-color: #FFF4B5; border: 1px solid #87A2FF; color: #99123D;">
-                    <span class="relative flex h-2 w-2">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background-color: #BD77FF;"></span>
-                      <span class="relative inline-flex rounded-full h-2 w-2" style="background-color: #62AE7D;"></span>
+        <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-14 items-center relative z-10">
+
+            <!-- Text block -->
+            <div class="slide-up space-y-8">
+                <!-- Live badge -->
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider"
+                     style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.9);">
+                    <span class="relative flex w-2 h-2">
+                        <span class="live-dot absolute inline-flex w-full h-full rounded-full" style="background:#4CAF50;"></span>
+                        <span class="relative inline-flex w-2 h-2 rounded-full" style="background:#4CAF50;"></span>
                     </span>
                     Live System v2.0
                 </div>
-                <h1 class="text-5xl md:text-6xl font-display font-bold leading-[1.1] tracking-tight" style="color: #2D2F31;">
-                    Streamline Ferry <br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r" style="background-image: linear-gradient(to right, #99123D, #BD77FF);">Operations</span>
+
+                <h1 class="font-display font-bold text-white" style="font-size:clamp(2.5rem,5vw,3.75rem);line-height:1.1;">
+                    Streamline Ferry<br>
+                    <span style="background:linear-gradient(90deg,#00ACC1,#67E8F9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Operations</span>
                 </h1>
-                <p class="text-lg max-w-lg leading-relaxed" style="color: #4A4D52;">
+
+                <p class="text-lg max-w-lg leading-relaxed" style="color:rgba(255,255,255,0.72);">
                     Monitor vessel locations, update statuses, and manage port information from one centralized dashboard. Real-time visibility for safer seas.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4 pt-2">
-                    <a href="/login" class="px-8 py-4 rounded-2xl text-white font-semibold transition-all shadow-xl flex items-center justify-center gap-2" style="background-color: #87A2FF; box-shadow: 0 20px 25px -5px rgba(135,162,255,0.4);">
-                        <iconify-icon icon="solar:login-2-bold"></iconify-icon>
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="/login" class="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-white font-semibold no-underline"
+                       style="background:#fff;color:#0A4D8C;box-shadow:0 8px 24px rgba(255,255,255,0.20);transition:all 0.2s;"
+                       onmouseover="this.style.boxShadow='0 12px 30px rgba(255,255,255,0.30)';this.style.transform='translateY(-2px)';"
+                       onmouseout="this.style.boxShadow='0 8px 24px rgba(255,255,255,0.20)';this.style.transform='translateY(0)';">
+                        <iconify-icon icon="solar:login-2-bold" width="18"></iconify-icon>
                         Admin Access
                     </a>
-                    <button class="px-8 py-4 rounded-2xl font-semibold transition-all flex items-center justify-center gap-2" style="background-color: #FFF4B5; border: 2px solid #87A2FF; color: #65676B;">
-                        <iconify-icon icon="solar:play-circle-bold-duotone" style="color: #99123D;"></iconify-icon>
-                        View Demo
-                    </button>
+                    <a href="/features" class="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-semibold no-underline"
+                       style="background:rgba(255,255,255,0.10);color:#fff;border:1.5px solid rgba(255,255,255,0.22);transition:all 0.2s;"
+                       onmouseover="this.style.background='rgba(255,255,255,0.18)';" onmouseout="this.style.background='rgba(255,255,255,0.10)';">
+                        <iconify-icon icon="solar:star-shine-bold-duotone" width="18"></iconify-icon>
+                        See Features
+                    </a>
                 </div>
-            </div>
 
-            <!-- Abstract Map Graphic -->
-            <div class="relative h-[500px] rounded-[40px] shadow-2xl border p-4 slide-up" style="animation-delay: 0.2s; background-color: #FFF4B5; border-color: #87A2FF;">
-                <div class="absolute inset-4 rounded-[32px] overflow-hidden" style="background-color: #FEC1A0;">
-                    <!-- Mock Map Design -->
-                    <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(#BD77FF 1px, transparent 1px); background-size: 20px 20px;"></div>
-                    <!-- Land Mass -->
-                    <div class="absolute top-0 right-0 w-2/3 h-full rounded-l-[100px] border-l" style="background-color: #C4D7FF; border-color: #87A2FF;"></div>
-                    
-                    <!-- Route Lines -->
-                    <svg class="absolute inset-0 w-full h-full pointer-events-none">
-                        <path d="M 100 300 Q 250 250 400 150" fill="none" stroke="#62AE7D" stroke-width="3" stroke-dasharray="8 8" class="animate-pulse"></path>
-                        <path d="M 80 200 Q 200 350 380 280" fill="none" stroke="#99123D" stroke-width="2" stroke-dasharray="6 6" class="animate-pulse" style="animation-delay: 1s;"></path>
-                    </svg>
-
-                    <!-- Floating Cards -->
-                    <div class="absolute top-1/4 left-1/4 p-3 rounded-xl shadow-lg border flex items-center gap-3 animate-bounce" style="animation-duration: 3s; background-color: #FFF4B5; border-color: #87A2FF;">
-                        <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: #62AE7D; color: white;">
-                            <iconify-icon icon="solar:ship-bold" width="20"></iconify-icon>
-                        </div>
-                        <div>
-                            <div class="text-xs font-bold" style="color: #2D2F31;">FastCat 01</div>
-                            <div class="text-[10px] font-medium" style="color: #62AE7D;">On Time • 15kts</div>
-                        </div>
+                <!-- Stats ticker -->
+                <div class="flex gap-8 pt-2">
+                    <div>
+                        <div class="font-display font-bold text-2xl text-white">24/7</div>
+                        <div class="text-xs mt-0.5" style="color:rgba(255,255,255,0.5);">Monitoring</div>
                     </div>
-
-                    <div class="absolute bottom-1/3 right-1/4 p-3 rounded-xl shadow-lg border flex items-center gap-3 animate-bounce" style="animation-duration: 4s; background-color: #FFF4B5; border-color: #87A2FF;">
-                        <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: #BD77FF; color: white;">
-                            <iconify-icon icon="solar:ship-bold" width="20"></iconify-icon>
-                        </div>
-                        <div>
-                            <div class="text-xs font-bold" style="color: #2D2F31;">OceanJet 8</div>
-                            <div class="text-[10px] font-medium" style="color: #BD77FF;">Delayed (+15m)</div>
-                        </div>
+                    <div style="width:1px;background:rgba(255,255,255,0.12);"></div>
+                    <div>
+                        <div class="font-display font-bold text-2xl text-white">Real-time</div>
+                        <div class="text-xs mt-0.5" style="color:rgba(255,255,255,0.5);">Weather Data</div>
+                    </div>
+                    <div style="width:1px;background:rgba(255,255,255,0.12);"></div>
+                    <div>
+                        <div class="font-display font-bold text-2xl text-white">100%</div>
+                        <div class="text-xs mt-0.5" style="color:rgba(255,255,255,0.5);">Cloud-Backed</div>
                     </div>
                 </div>
             </div>
+
+            <!-- Dashboard preview card -->
+            <div class="slide-up" style="animation-delay:0.15s;">
+                <div style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);border-radius:28px;padding:20px;">
+                    <!-- Mini dashboard UI mockup -->
+                    <div style="background:rgba(255,255,255,0.06);border-radius:16px;padding:16px;margin-bottom:12px;">
+                        <div style="font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Live Fleet Status</div>
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+                            <div style="background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);border-radius:10px;padding:12px;text-align:center;">
+                                <div style="font-size:22px;font-weight:700;color:#4CAF50;">8</div>
+                                <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:2px;">Active</div>
+                            </div>
+                            <div style="background:rgba(255,152,0,0.15);border:1px solid rgba(255,152,0,0.3);border-radius:10px;padding:12px;text-align:center;">
+                                <div style="font-size:22px;font-weight:700;color:#FF9800;">2</div>
+                                <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:2px;">Delayed</div>
+                            </div>
+                            <div style="background:rgba(0,172,193,0.15);border:1px solid rgba(0,172,193,0.3);border-radius:10px;padding:12px;text-align:center;">
+                                <div style="font-size:22px;font-weight:700;color:#00ACC1;">3</div>
+                                <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:2px;">Docked</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ferry cards -->
+                    <div style="display:flex;flex-direction:column;gap:8px;">
+                        <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;">
+                            <div style="width:36px;height:36px;border-radius:10px;background:rgba(76,175,80,0.20);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                <iconify-icon icon="solar:ship-bold" width="18" style="color:#4CAF50;"></iconify-icon>
+                            </div>
+                            <div style="flex:1;">
+                                <div style="font-size:13px;font-weight:600;color:#fff;">FastCat 01</div>
+                                <div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:1px;">Manila → Batangas · 15 kts</div>
+                            </div>
+                            <span style="font-size:10px;font-weight:600;color:#4CAF50;background:rgba(76,175,80,0.15);padding:3px 8px;border-radius:9999px;">On Time</span>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;">
+                            <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,152,0,0.20);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                <iconify-icon icon="solar:ship-bold" width="18" style="color:#FF9800;"></iconify-icon>
+                            </div>
+                            <div style="flex:1;">
+                                <div style="font-size:13px;font-weight:600;color:#fff;">OceanJet 8</div>
+                                <div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:1px;">Cebu → Ormoc · 12 kts</div>
+                            </div>
+                            <span style="font-size:10px;font-weight:600;color:#FF9800;background:rgba(255,152,0,0.15);padding:3px 8px;border-radius:9999px;">Delayed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
-    <!-- Features Grid -->
-    <section class="py-24" style="background-color: #C4D7FF;">
-        <div class="max-w-7xl mx-auto px-6">
+    <!-- ═══ FEATURES GRID ═════════════════════════════════════ -->
+    <section class="py-24 px-6" style="background:#EEF2F7;">
+        <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-3xl font-display font-bold mb-4" style="color: #2D2F31;">Powerful Management Tools</h2>
-                <p class="max-w-2xl mx-auto" style="color: #65676B;">Everything you need to manage your maritime logistics efficiently.</p>
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-4"
+                     style="background:#E3F2FD;color:#0A4D8C;border:1px solid #BBDEFB;">
+                    <iconify-icon icon="solar:star-shine-bold-duotone" width="12"></iconify-icon>
+                    Platform Features
+                </div>
+                <h2 class="font-display font-bold text-3xl mb-4" style="color:#263238;">Powerful Maritime Management Tools</h2>
+                <p class="max-w-2xl mx-auto text-slate-500 text-base">Everything you need to manage your ferry operations and cargo logistics from one unified dashboard.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Feature 1 -->
                 <div class="feature-card">
-                    <div class="icon-wrapper" style="background-color: #BD77FF; color: white;">
-                        <iconify-icon icon="solar:map-point-wave-bold-duotone" width="28"></iconify-icon>
+                    <div class="feat-icon" style="background:#E3F2FD;">
+                        <iconify-icon icon="solar:map-point-wave-bold-duotone" width="26" style="color:#0A4D8C;"></iconify-icon>
                     </div>
-                    <h3 class="text-xl font-bold mb-2" style="color: #2D2F31;">Real-Time Tracking</h3>
-                    <p class="text-sm leading-relaxed" style="color: #65676B;">Track all vessels live on the map with update intervals of less than 30 seconds.</p>
+                    <h3 class="font-display font-bold text-lg mb-2" style="color:#263238;">Real-Time Tracking</h3>
+                    <p class="text-sm leading-relaxed text-slate-500">Track all vessels live on the map with update intervals under 30 seconds via Firebase Firestore.</p>
                 </div>
 
                 <!-- Feature 2 -->
                 <div class="feature-card">
-                    <div class="icon-wrapper" style="background-color: #62AE7D; color: white;">
-                        <iconify-icon icon="solar:clock-circle-bold-duotone" width="28"></iconify-icon>
+                    <div class="feat-icon" style="background:#E8F5E9;">
+                        <iconify-icon icon="solar:clock-circle-bold-duotone" width="26" style="color:#4CAF50;"></iconify-icon>
                     </div>
-                    <h3 class="text-xl font-bold mb-2" style="color: #2D2F31;">Dynamic ETA</h3>
-                    <p class="text-sm leading-relaxed" style="color: #65676B;">System automatically calculates arrival times based on current speed and weather.</p>
+                    <h3 class="font-display font-bold text-lg mb-2" style="color:#263238;">Dynamic ETA</h3>
+                    <p class="text-sm leading-relaxed text-slate-500">Arrival times calculated automatically based on current speed and live weather conditions.</p>
                 </div>
 
                 <!-- Feature 3 -->
                 <div class="feature-card">
-                    <div class="icon-wrapper" style="background-color: #99123D; color: white;">
-                        <iconify-icon icon="solar:bell-bing-bold-duotone" width="28"></iconify-icon>
+                    <div class="feat-icon" style="background:#FFF3E0;">
+                        <iconify-icon icon="solar:bell-bing-bold-duotone" width="26" style="color:#FF9800;"></iconify-icon>
                     </div>
-                    <h3 class="text-xl font-bold mb-2" style="color: #2D2F31;">Instant Advisories</h3>
-                    <p class="text-sm leading-relaxed" style="color: #65676B;">Push notifications to passengers regarding cancellations or port changes.</p>
+                    <h3 class="font-display font-bold text-lg mb-2" style="color:#263238;">Instant Advisories</h3>
+                    <p class="text-sm leading-relaxed text-slate-500">Push notifications to passengers for cancellations, delays, and port changes in real time.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="feature-card">
+                    <div class="feat-icon" style="background:#B2EBF2;">
+                        <iconify-icon icon="solar:cloud-sun-2-bold-duotone" width="26" style="color:#00ACC1;"></iconify-icon>
+                    </div>
+                    <h3 class="font-display font-bold text-lg mb-2" style="color:#263238;">Weather Integration</h3>
+                    <p class="text-sm leading-relaxed text-slate-500">Live weather data pulled per ferry coordinates and port locations with a 15-minute smart cache.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="feature-card">
+                    <div class="feat-icon" style="background:#E8F5E9;">
+                        <iconify-icon icon="solar:box-bold-duotone" width="26" style="color:#4CAF50;"></iconify-icon>
+                    </div>
+                    <h3 class="font-display font-bold text-lg mb-2" style="color:#263238;">Cargo Tracking</h3>
+                    <p class="text-sm leading-relaxed text-slate-500">End-to-end cargo visibility linked to ferry routes and real-time ferry positions.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="feature-card">
+                    <div class="feat-icon" style="background:#FFEBEE;">
+                        <iconify-icon icon="solar:anchor-circle-bold-duotone" width="26" style="color:#D11717;"></iconify-icon>
+                    </div>
+                    <h3 class="font-display font-bold text-lg mb-2" style="color:#263238;">Port Management</h3>
+                    <p class="text-sm leading-relaxed text-slate-500">Update port statuses (Open / Limited / Closed) and broadcast changes to the mobile app instantly.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA -->
-    <section class="py-20 px-6">
-        <div class="max-w-5xl mx-auto rounded-[40px] relative overflow-hidden text-center py-20 px-8" style="background-color: #99123D;">
-            <div class="absolute inset-0 opacity-20" style="background-image: linear-gradient(45deg, #BD77FF 25%, transparent 25%, transparent 50%, #FEC1A0 50%, #FEC1A0 75%, transparent 75%, transparent); background-size: 40px 40px;"></div>
-            
-            <div class="relative z-10">
-                <h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-6">Ready to transform your operations?</h2>
-                <p class="mb-10 max-w-xl mx-auto" style="color: #FFD7C4;">Join the leading ferry operators using AquaRoute to improve efficiency and passenger satisfaction.</p>
-                <a href="/login" class="cta-button">
-                    Access Admin Panel
-                </a>
-            </div>
+    <!-- ═══ CTA ═══════════════════════════════════════════════ -->
+    <section class="cta-section py-20 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 pointer-events-none" style="background-image:radial-gradient(rgba(255,255,255,0.04) 1px,transparent 1px);background-size:24px 24px;"></div>
+        <div class="max-w-3xl mx-auto text-center relative z-10">
+            <h2 class="font-display font-bold text-white mb-4" style="font-size:clamp(1.75rem,4vw,2.5rem);">Ready to transform your operations?</h2>
+            <p class="mb-10 text-base max-w-xl mx-auto" style="color:rgba(255,255,255,0.65);">
+                Join AquaRoute and bring real-time maritime intelligence to your fleet management.
+            </p>
+            <a href="/login" class="inline-flex items-center gap-2 px-10 py-4 rounded-2xl font-semibold no-underline transition-all"
+               style="background:#fff;color:#0A4D8C;box-shadow:0 8px 24px rgba(255,255,255,0.15);"
+               onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 30px rgba(255,255,255,0.22)';"
+               onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 24px rgba(255,255,255,0.15)';">
+                <iconify-icon icon="solar:login-2-bold" width="18"></iconify-icon>
+                Access Admin Panel
+            </a>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-12 px-6" style="background-color: #65676B; color: #FFD7C4;">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <!-- ═══ FOOTER ════════════════════════════════════════════ -->
+    <footer style="background:#001F42;padding:40px 32px;">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-5">
             <div class="flex items-center gap-2">
-                <iconify-icon icon="solar:wheel-angle-bold" style="color: #BD77FF;"></iconify-icon>
-                <span class="font-bold tracking-tight" style="color: #FFF4B5;">AquaRoute</span>
+                <div style="width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;">
+                    <iconify-icon icon="solar:wheel-angle-bold" width="14" style="color:#00ACC1;"></iconify-icon>
+                </div>
+                <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;color:#fff;font-size:15px;">AquaRoute</span>
             </div>
-            <div class="text-sm font-medium" style="color: #C4D7FF;">
-                © 2026 AquaRoute Inc. All rights reserved.
-            </div>
-            <div class="flex gap-6">
-                <a href="#" class="transition-colors hover:text-white" style="color: #FEC1A0;"><iconify-icon icon="brands:facebook" width="20"></iconify-icon></a>
-                <a href="#" class="transition-colors hover:text-white" style="color: #62AE7D;"><iconify-icon icon="brands:twitter" width="20"></iconify-icon></a>
-                <a href="#" class="transition-colors hover:text-white" style="color: #BD77FF;"><iconify-icon icon="brands:linkedin" width="20"></iconify-icon></a>
+            <span style="font-size:12px;color:#546E7A;">© 2026 AquaRoute Inc. All rights reserved.</span>
+            <div class="flex gap-5">
+                <a href="#" style="color:#546E7A;transition:color 0.2s;" onmouseover="this.style.color='#fff';" onmouseout="this.style.color='#546E7A';"><iconify-icon icon="fa6-brands:facebook" width="17"></iconify-icon></a>
+                <a href="#" style="color:#546E7A;transition:color 0.2s;" onmouseover="this.style.color='#fff';" onmouseout="this.style.color='#546E7A';"><iconify-icon icon="fa6-brands:x-twitter" width="17"></iconify-icon></a>
+                <a href="#" style="color:#546E7A;transition:color 0.2s;" onmouseover="this.style.color='#fff';" onmouseout="this.style.color='#546E7A';"><iconify-icon icon="fa6-brands:linkedin" width="17"></iconify-icon></a>
             </div>
         </div>
     </footer>

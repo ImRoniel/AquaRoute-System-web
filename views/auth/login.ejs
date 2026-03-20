@@ -3,431 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    
-    <!-- Tailwind CSS -->
+    <title><%= title %> - AquaRoute</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Iconify -->
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #FFD7C4;
+        /* ── Base ────────────────────────────────────── */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #003366 0%, #0A4D8C 45%, #0077B6 100%);
+            display: flex; align-items: center; justify-content: center;
+            padding: 24px;
+            position: relative; overflow: hidden;
+            -webkit-font-smoothing: antialiased;
         }
-        
-        h1, h2, h3, h4, h5, h6 { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-        }
-        
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        /* Spinner animation */
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .animate-spin {
-            animation: spin 1s linear infinite;
+        h1,h2,h3,h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        /* ── Animated background orbs ────────────────── */
+        .bg-orb {
+            position: absolute; border-radius: 50%;
+            pointer-events: none; filter: blur(80px);
         }
 
-        /* Form styles matching image.png */
-        .form-container {
-            background-color: #FFF4B5;
-            border: 2px solid #87A2FF;
-            border-radius: 32px;
-            box-shadow: 0 10px 0 #87A2FF;
+        /* ── Login card ──────────────────────────────── */
+        .login-card {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 24px 64px rgba(0, 20, 60, 0.30);
+            width: 100%; max-width: 420px;
+            padding: 44px 40px;
+            position: relative; z-index: 10;
+            animation: slideUp 0.4s ease-out;
+        }
+        @keyframes slideUp {
+            from { opacity:0; transform:translateY(24px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        /* ── Brand icon ──────────────────────────────── */
+        .brand-icon {
+            width: 60px; height: 60px; border-radius: 16px;
+            background: linear-gradient(135deg, #0A4D8C, #00ACC1);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 20px rgba(10,77,140,0.30);
         }
 
-        .input-field {
-            background-color: #C4D7FF;
-            border: 2px solid #87A2FF;
-            border-radius: 20px;
-            padding: 0.875rem 1rem 0.875rem 3rem;
-            width: 100%;
-            font-size: 0.95rem;
-            color: #2D2F31;
-            transition: all 0.2s ease;
-        }
-
-        .input-field:focus {
-            outline: none;
-            border-color: #BD77FF;
-            box-shadow: 0 0 0 3px rgba(189, 119, 255, 0.2);
-        }
-
-        .input-field::placeholder {
-            color: #65676B;
-            opacity: 0.7;
-        }
-
-        .input-label {
-            color: #65676B;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-left: 0.5rem;
-            margin-bottom: 0.25rem;
+        /* ── Form controls ───────────────────────────── */
+        .form-label {
             display: block;
+            font-size: 11px; font-weight: 700;
+            color: #546E7A;
+            text-transform: uppercase; letter-spacing: 0.06em;
+            margin-bottom: 6px;
         }
-
-        .login-button {
-            background-color: #87A2FF;
-            color: white;
-            font-weight: 700;
-            padding: 1rem;
-            border-radius: 20px;
+        .input-wrap { position: relative; }
+        .input-icon {
+            position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+            color: #90A4AE; pointer-events: none;
+            display: flex; align-items: center;
+        }
+        .form-input {
             width: 100%;
-            border: 2px solid #87A2FF;
-            transition: all 0.2s ease;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            box-shadow: 0 5px 0 #65676B;
+            background: #F4F7FA;
+            border: 1.5px solid #CFD8DC;
+            border-radius: 10px;
+            padding: 11px 14px 11px 40px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: #263238;
+            transition: all 0.2s;
+            outline: none;
         }
-
-        .login-button:hover:not(:disabled) {
-            background-color: #BD77FF;
-            border-color: #BD77FF;
-            transform: translateY(-2px);
-            box-shadow: 0 7px 0 #65676B;
+        .form-input:focus {
+            border-color: #0A4D8C;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(10,77,140,0.10);
         }
+        .form-input::placeholder { color: #B0BEC5; }
 
-        .login-button:active:not(:disabled) {
-            transform: translateY(5px);
-            box-shadow: 0 2px 0 #65676B;
+        /* ── Primary button ──────────────────────────── */
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #0A4D8C, #0077B6);
+            color: #fff;
+            border: none; cursor: pointer;
+            border-radius: 10px;
+            padding: 13px;
+            font-size: 14px; font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            box-shadow: 0 6px 18px rgba(10,77,140,0.30);
+            transition: all 0.2s;
         }
-
-        .login-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .login-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #073B6B, #0A4D8C);
+            box-shadow: 0 8px 22px rgba(10,77,140,0.40);
+            transform: translateY(-1px);
         }
+        .login-btn:active:not(:disabled) { transform: translateY(0); }
+        .login-btn:disabled { opacity: .55; cursor: not-allowed; }
 
-        .demo-credentials {
-            background-color: #FFF4B5;
-            border: 2px solid #87A2FF;
-            border-radius: 12px;
-            padding: 0.5rem 1rem;
-            font-size: 0.75rem;
-            color: #65676B;
-            display: inline-block;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 3px 0 #87A2FF;
-        }
-
-        .demo-credentials:hover {
-            background-color: #FEC1A0;
-            border-color: #BD77FF;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 0 #87A2FF;
-        }
-
-        .demo-credentials span {
-            color: #2D2F31;
-            font-weight: 700;
-        }
-
-        .back-button {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #65676B;
-            font-weight: 600;
-            font-size: 0.875rem;
-            padding: 0.5rem 1rem;
-            background-color: #FFF4B5;
-            border: 2px solid #87A2FF;
-            border-radius: 30px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 0 #87A2FF;
-        }
-
-        .back-button:hover {
-            background-color: #FEC1A0;
-            border-color: #BD77FF;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 0 #87A2FF;
-            color: #2D2F31;
-        }
-
-        .forgot-link {
-            color: #87A2FF;
-            font-weight: 600;
-            font-size: 0.875rem;
-            text-decoration: underline;
-            text-underline-offset: 2px;
-            transition: all 0.2s ease;
-        }
-
-        .forgot-link:hover {
-            color: #99123D;
-        }
-
-        .remember-checkbox {
-            width: 1.125rem;
-            height: 1.125rem;
-            border: 2px solid #87A2FF;
-            border-radius: 6px;
-            background-color: #C4D7FF;
-            cursor: pointer;
-            accent-color: #BD77FF;
-        }
-
+        /* ── Extras ──────────────────────────────────── */
         .remember-label {
-            color: #65676B;
-            font-weight: 600;
-            font-size: 0.875rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            display: flex; align-items: center; gap: 6px;
+            font-size: 13px; color: #546E7A; cursor: pointer;
+        }
+        .forgot-link {
+            font-size: 13px; font-weight: 600;
+            color: #0A4D8C; text-decoration: none;
+            transition: color 0.2s;
+        }
+        .forgot-link:hover { color: #073B6B; text-decoration: underline; }
+
+        .error-msg {
+            background: #FFEBEE;
+            border: 1.5px solid #FFCDD2;
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: #D11717;
+            font-size: 13px; font-weight: 600;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .demo-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 7px 16px;
+            border-radius: 9999px;
+            border: 1.5px solid #CFD8DC;
+            background: #F4F7FA;
+            font-size: 12px; color: #546E7A;
             cursor: pointer;
+            transition: all 0.2s;
         }
+        .demo-pill:hover { border-color: #0A4D8C; color: #0A4D8C; background: #E3F2FD; }
+        .demo-pill strong { color: #0A4D8C; }
 
-        .error-message {
-            background-color: #FEC1A0;
-            border: 2px solid #99123D;
-            border-radius: 16px;
-            padding: 0.75rem;
-            color: #99123D;
-            font-weight: 600;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .back-link {
+            position: absolute; top: 24px; left: 24px;
+            display: flex; align-items: center; gap: 6px;
+            padding: 8px 14px; border-radius: 9999px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: rgba(255,255,255,0.85);
+            font-size: 13px; font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            z-index: 10;
         }
+        .back-link:hover { background: rgba(255,255,255,0.25); color: #fff; }
 
-        .icon-container {
-            background-color: #C4D7FF;
-            border: 2px solid #87A2FF;
-            border-radius: 16px;
-            width: 3.5rem;
-            height: 3.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem auto;
-        }
-
-        .icon-container iconify-icon {
-            color: #99123D;
-            font-size: 2rem;
-        }
-
-        /* Decorative shapes */
-        .shape-circle {
-            background-color: #99123D;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            position: absolute;
-            opacity: 0.1;
-        }
-
-        .shape-square {
-            background-color: #FEC1A0;
-            width: 150px;
-            height: 150px;
-            border-radius: 30px;
-            position: absolute;
-            opacity: 0.15;
-            transform: rotate(15deg);
-        }
-
-        .shape-triangle {
-            width: 0;
-            height: 0;
-            border-left: 100px solid transparent;
-            border-right: 100px solid transparent;
-            border-bottom: 173px solid #62AE7D;
-            position: absolute;
-            opacity: 0.1;
-        }
-
-        .shape-star {
-            color: #BD77FF;
-            font-size: 150px;
-            position: absolute;
-            opacity: 0.1;
-        }
+        .spin { animation: spin 1s linear infinite; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
-    
-    <!-- Decorative shapes from image.png -->
-    <div class="shape-circle" style="top: 10%; right: 5%;"></div>
-    <div class="shape-square" style="bottom: 10%; left: 5%;"></div>
-    <div class="shape-triangle" style="top: 20%; left: 10%; transform: rotate(45deg);"></div>
-    <div class="shape-star" style="bottom: 20%; right: 10%;">★</div>
+<body>
+    <!-- Decorative blobs -->
+    <div class="bg-orb" style="width:500px;height:500px;background:rgba(0,172,193,0.15);top:-100px;right:-150px;"></div>
+    <div class="bg-orb" style="width:400px;height:400px;background:rgba(76,175,80,0.08);bottom:-100px;left:-100px;"></div>
 
-    <a href="/" class="absolute top-8 left-8 back-button">
-        <iconify-icon icon="solar:arrow-left-linear" width="18"></iconify-icon>
+    <!-- Back to home -->
+    <a href="/" class="back-link">
+        <iconify-icon icon="solar:arrow-left-linear" width="15"></iconify-icon>
         Back to Home
     </a>
 
-    <!-- Decorative Background - using palette colors -->
-    <div class="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full blur-3xl" style="background-color: #BD77FF; opacity: 0.1;"></div>
-    <div class="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full blur-3xl" style="background-color: #62AE7D; opacity: 0.1;"></div>
+    <!-- Login Card -->
+    <div class="login-card">
 
-    <div class="w-full max-w-md form-container p-8 md:p-10 relative z-10 fade-in">
-        <div class="text-center mb-8">
-            <div class="icon-container">
-                <iconify-icon icon="solar:lock-keyhole-minimalistic-bold-duotone"></iconify-icon>
+        <!-- Brand -->
+        <div style="text-align:center;">
+            <div class="brand-icon">
+                <iconify-icon icon="solar:lock-keyhole-minimalistic-bold-duotone" width="28" style="color:#fff;"></iconify-icon>
             </div>
-            <h2 class="text-2xl font-display font-bold" style="color: #2D2F31;">Admin Login</h2>
-            <p class="text-sm mt-1" style="color: #65676B;">Welcome back! Please enter your credentials.</p>
+            <h2 style="font-size:22px;font-weight:700;color:#0A4D8C;margin-bottom:4px;">Admin Login</h2>
+            <p style="font-size:13px;color:#90A4AE;margin-bottom:28px;">Welcome back! Enter your credentials to continue.</p>
         </div>
 
-        <!-- Login Form -->
-        <form action="/login" method="POST" class="space-y-5" id="loginForm">
+        <!-- Form – action/method/name attributes untouched -->
+        <form action="/login" method="POST" id="loginForm" style="display:flex;flex-direction:column;gap:16px;">
+
             <!-- Username -->
             <div>
-                <label class="input-label">Username</label>
-                <div class="relative">
-                    <iconify-icon icon="solar:user-bold" class="absolute left-4 top-1/2 -translate-y-1/2" style="color: #87A2FF; font-size: 1.25rem;"></iconify-icon>
-                    <input type="text" 
-                           name="username"  
-                           id="username"
-                           value="admin"
-                           class="input-field pl-12" 
-                           placeholder="Enter username"
-                           required>
+                <label class="form-label">Username</label>
+                <div class="input-wrap">
+                    <span class="input-icon"><iconify-icon icon="solar:user-bold" width="16"></iconify-icon></span>
+                    <input type="text" name="username" id="username"
+                           value="admin" class="form-input"
+                           placeholder="Enter username" required>
                 </div>
             </div>
 
             <!-- Password -->
             <div>
-                <label class="input-label">Password</label>
-                <div class="relative">
-                    <iconify-icon icon="solar:lock-password-bold" class="absolute left-4 top-1/2 -translate-y-1/2" style="color: #87A2FF; font-size: 1.25rem;"></iconify-icon>
-                    <input type="password" 
-                           name="password" 
-                           id="password"
-                           value="admin123"
-                           class="input-field pl-12" 
-                           placeholder="••••••••"
-                           required>
+                <label class="form-label">Password</label>
+                <div class="input-wrap">
+                    <span class="input-icon"><iconify-icon icon="solar:lock-password-bold" width="16"></iconify-icon></span>
+                    <input type="password" name="password" id="password"
+                           value="admin123" class="form-input"
+                           placeholder="••••••••" required>
                 </div>
             </div>
-            
-            <!-- Remember Me and Forgot Password -->
-            <div class="flex items-center justify-between">
+
+            <!-- Remember / Forgot -->
+            <div style="display:flex;align-items:center;justify-content:space-between;">
                 <label class="remember-label">
-                    <input type="checkbox" name="remember" class="remember-checkbox">
+                    <input type="checkbox" name="remember" style="width:15px;height:15px;border-radius:4px;accent-color:#0A4D8C;cursor:pointer;">
                     Remember me
                 </label>
                 <a href="#" class="forgot-link">Forgot password?</a>
             </div>
 
-            <!-- Error Message -->
+            <!-- Error -->
             <% if (error) { %>
-            <div class="error-message">
-                <iconify-icon icon="solar:danger-circle-bold"></iconify-icon>
+            <div class="error-msg">
+                <iconify-icon icon="solar:danger-circle-bold" width="16"></iconify-icon>
                 <%= error %>
             </div>
             <% } %>
-            
-            <!-- Submit Button -->
-            <button type="submit" 
-                    id="loginButton"
-                    class="login-button">
+
+            <!-- Submit -->
+            <button type="submit" id="loginButton" class="login-btn">
                 <span id="buttonText">Login to Dashboard</span>
-                <span id="buttonSpinner" class="hidden">
-                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <span id="buttonSpinner" class="hidden" style="display:none;">
+                    <svg class="spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" stroke-opacity=".3"/>
+                        <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
                     </svg>
                 </span>
-                <iconify-icon id="buttonIcon" icon="solar:arrow-right-linear" width="18"></iconify-icon>
+                <iconify-icon id="buttonIcon" icon="solar:arrow-right-linear" width="16"></iconify-icon>
             </button>
-
-            <!-- "I'm already a member" link - matching image.png -->
-            <div class="text-center mt-4">
-                <a href="#" class="text-sm font-semibold hover:underline" style="color: #000000;">I'm already a member</a>
-            </div>
         </form>
 
-        <!-- Demo Credentials -->
-        <div class="mt-6 text-center">
-            <p class="demo-credentials">
-                Demo credentials: <span>admin</span> / <span>admin123</span>
-            </p>
+        <!-- Demo pill -->
+        <div style="text-align:center;margin-top:20px;">
+            <button type="button" class="demo-pill" id="demoPill">
+                <iconify-icon icon="solar:key-bold" width="13"></iconify-icon>
+                Demo: <strong>admin</strong> / <strong>admin123</strong>
+            </button>
         </div>
     </div>
 
-    <!-- JavaScript (unchanged functionality) -->
     <script>
-        (function() {
+        (function () {
             'use strict';
-            
-            const loginForm = document.getElementById('loginForm');
-            const loginButton = document.getElementById('loginButton');
-            const buttonText = document.getElementById('buttonText');
-            const buttonSpinner = document.getElementById('buttonSpinner');
-            const buttonIcon = document.getElementById('buttonIcon');
-            
-            let isSubmitting = false;
-            
-            function setLoadingState(isLoading) {
-                if (isLoading) {
-                    loginButton.disabled = true;
-                    buttonText.classList.add('hidden');
-                    buttonSpinner.classList.remove('hidden');
-                    buttonIcon.classList.add('hidden');
+            const loginForm    = document.getElementById('loginForm');
+            const loginButton  = document.getElementById('loginButton');
+            const buttonText   = document.getElementById('buttonText');
+            const buttonSpinner= document.getElementById('buttonSpinner');
+            const buttonIcon   = document.getElementById('buttonIcon');
+            let isSubmitting   = false;
+
+            function setLoading(v) {
+                if (v) {
+                    loginButton.disabled       = true;
+                    buttonText.style.display   = 'none';
+                    buttonSpinner.style.display= 'block';
+                    buttonIcon.style.display   = 'none';
                 } else {
-                    loginButton.disabled = false;
-                    buttonText.classList.remove('hidden');
-                    buttonSpinner.classList.add('hidden');
-                    buttonIcon.classList.remove('hidden');
+                    loginButton.disabled       = false;
+                    buttonText.style.display   = 'inline';
+                    buttonSpinner.style.display= 'none';
+                    buttonIcon.style.display   = 'inline';
                 }
             }
-            
-            loginForm.addEventListener('submit', function(e) {
-                if (isSubmitting) {
-                    e.preventDefault();
-                    return false;
-                }
-                
-                const username = document.getElementById('username').value.trim();
-                const password = document.getElementById('password').value.trim();
-                
-                if (!username || !password) {
-                    alert('Please enter both username and password');
-                    e.preventDefault();
-                    return false;
-                }
-                
+
+            loginForm.addEventListener('submit', function (e) {
+                if (isSubmitting) { e.preventDefault(); return; }
+                const u = document.getElementById('username').value.trim();
+                const p = document.getElementById('password').value.trim();
+                if (!u || !p) { alert('Please enter both username and password'); e.preventDefault(); return; }
                 isSubmitting = true;
-                setLoadingState(true);
-                
-                return true;
+                setLoading(true);
             });
-            
-            loginButton.addEventListener('click', function(e) {
-                if (isSubmitting) {
-                    e.preventDefault();
-                    return false;
-                }
+
+            loginButton.addEventListener('click', function (e) {
+                if (isSubmitting) e.preventDefault();
             });
-            
-            window.addEventListener('pageshow', function(e) {
-                if (e.persisted) {
-                    isSubmitting = false;
-                    setLoadingState(false);
-                }
+
+            window.addEventListener('pageshow', function (e) {
+                if (e.persisted) { isSubmitting = false; setLoading(false); }
             });
-            
-            document.querySelector('.demo-credentials').addEventListener('click', function() {
+
+            document.getElementById('demoPill').addEventListener('click', function () {
                 document.getElementById('username').value = 'admin';
                 document.getElementById('password').value = 'admin123';
             });

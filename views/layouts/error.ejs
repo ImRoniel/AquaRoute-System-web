@@ -5,36 +5,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title || 'Error' %> - AquaRoute</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <!-- Font Awesome as backup -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #EEF2F7;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 24px;
+        }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        .error-card {
+            background: #FFFFFF;
+            border-radius: 20px;
+            border: 1.5px solid #CFD8DC;
+            box-shadow: 0 8px 32px rgba(0, 51, 102, 0.10);
+            padding: 48px 40px;
+            width: 100%; max-width: 460px;
+            text-align: center;
+        }
+
+        .error-icon-ring {
+            width: 72px; height: 72px;
+            border-radius: 50%;
+            background: #FFEBEE;
+            border: 2px solid #FFCDD2;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 24px;
+        }
+
+        .go-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 11px 28px;
+            background: #0A4D8C;
+            color: #fff;
+            border-radius: 9999px;
+            font-size: 14px; font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(10, 77, 140, 0.25);
+        }
+        .go-btn:hover {
+            background: #073B6B;
+            box-shadow: 0 6px 16px rgba(10, 77, 140, 0.35);
+        }
+    </style>
 </head>
-<body class="bg-[#FFD7C4]">
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg border-2 border-[#87A2FF] p-8 max-w-lg w-full">
-            <div class="flex justify-center mb-4">
-                <div class="w-16 h-16 bg-[#99123D] rounded-full flex items-center justify-center">
-                    <iconify-icon icon="solar:danger-circle-bold" width="32" style="color: white;"></iconify-icon>
-                </div>
-            </div>
-            <h1 class="text-2xl font-bold text-center mb-2" style="color: #99123D;">Oops!</h1>
-            <p class="text-gray-600 text-center mb-6"><%= error || 'Something went wrong' %></p>
-            
-            <% if (user) { %>
-            <div class="text-center">
-                <a href="/admin/dashboard" class="inline-block px-6 py-2 bg-[#87A2FF] text-white rounded-lg hover:bg-[#99123D] transition-colors">
-                    Go to Dashboard
-                </a>
-            </div>
-            <% } else { %>
-            <div class="text-center">
-                <a href="/" class="inline-block px-6 py-2 bg-[#87A2FF] text-white rounded-lg hover:bg-[#99123D] transition-colors">
-                    Go to Home
-                </a>
-            </div>
-            <% } %>
+<body>
+    <div class="error-card">
+        <div class="error-icon-ring">
+            <iconify-icon icon="solar:danger-circle-bold" width="36" style="color:#D11717;"></iconify-icon>
         </div>
+
+        <h1 style="font-size:22px;font-weight:700;color:#263238;margin-bottom:8px;">Oops! Something went wrong</h1>
+        <p style="font-size:14px;color:#546E7A;margin-bottom:32px;line-height:1.6;">
+            <%= error || 'An unexpected error occurred. Please try again.' %>
+        </p>
+
+        <% if (user) { %>
+        <a href="/admin/dashboard" class="go-btn">
+            <iconify-icon icon="solar:widget-5-bold-duotone" width="16"></iconify-icon>
+            Go to Dashboard
+        </a>
+        <% } else { %>
+        <a href="/" class="go-btn">
+            <iconify-icon icon="solar:home-bold" width="16"></iconify-icon>
+            Go to Home
+        </a>
+        <% } %>
+
+        <p style="margin-top:24px;font-size:12px;color:#90A4AE;">AquaRoute Maritime · Admin Panel</p>
     </div>
 </body>
 </html>

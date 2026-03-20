@@ -5,695 +5,201 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %> - AquaRoute Admin</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Iconify -->
+    <link rel="stylesheet" href="/css/admin-theme.css">
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #FFD7C4;
-            color: #2D2F31;
-        }
-
-        /* Minimal scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #BD77FF; border-radius: 2px; }
-
-        /* Sidebar */
-        .sidebar {
-            background-color: #FFF4B5;
-            border-right: 1px solid #87A2FF;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.625rem 1rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #65676B;
-            transition: all 0.15s ease;
-        }
-
-        .nav-item:hover {
-            background-color: #FEC1A0;
-            color: #2D2F31;
-        }
-
-        .nav-item.active {
-            background-color: #87A2FF;
-            color: white;
-        }
-
-        /* User profile */
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            border-top: 1px solid #87A2FF;
-        }
-
-        .user-avatar {
-            width: 2.25rem;
-            height: 2.25rem;
-            border-radius: 9999px;
-            border: 2px solid #99123D;
-        }
-
-        /* Header */
-        .header {
-            background-color: rgba(255, 244, 181, 0.8);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid #87A2FF;
-        }
-
-        /* Stats cards */
-        .stat-card {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 12px;
-            padding: 1.25rem;
-        }
-
-        .stat-label {
-            color: #65676B;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-        }
-
-        .stat-value {
-            color: #2D2F31;
-            font-size: 1.75rem;
-            font-weight: 600;
-            line-height: 1.2;
-        }
-
-        /* Table */
-        .table-container {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .table-header {
-            background-color: #C4D7FF;
-            padding: 0.75rem 1.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #65676B;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-        }
-
-        .table-row {
-            border-bottom: 1px solid #87A2FF;
-        }
-
-        .table-row td {
-            padding: 1rem 1.5rem;
-            font-size: 0.875rem;
-        }
-
-        .table-row th {
-            padding: 0.75rem 1.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #65676B;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-            background-color: #C4D7FF20;
-        }
-
-        /* Role badges */
-        .badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            display: inline-block;
-        }
-
-        .badge-super_admin {
-            background-color: #99123D;
-            color: white;
-        }
-
-        .badge-admin {
-            background-color: #BD77FF;
-            color: white;
-        }
-
-        .badge-user {
-            background-color: #87A2FF;
-            color: white;
-        }
-
-        /* Action buttons */
-        .action-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            border: 1px solid transparent;
-        }
-
-        .btn-primary {
-            background-color: #87A2FF;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #99123D;
-        }
-
-        .btn-outline {
-            background-color: white;
-            color: #65676B;
-            border: 1px solid #87A2FF;
-        }
-
-        .btn-outline:hover {
-            background-color: #FEC1A0;
-        }
-
-        .btn-icon {
-            padding: 0.375rem;
-            border-radius: 6px;
-            background: transparent;
-            color: #65676B;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-
-        .btn-icon:hover {
-            background-color: #FEC1A0;
-            color: #99123D;
-        }
-
-        /* Search input */
-        .search-input {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 30px;
-            padding: 0.5rem 1rem 0.5rem 2.5rem;
-            font-size: 0.875rem;
-            width: 16rem;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #BD77FF;
-        }
-
-        /* Notification button */
-        .notification-btn {
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 9999px;
-            border: 1px solid #87A2FF;
-            background-color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #65676B;
-            position: relative;
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.75rem;
-            width: 0.375rem;
-            height: 0.375rem;
-            background-color: #99123D;
-            border-radius: 50%;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background-color: white;
-            border: 2px solid #87A2FF;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .modal-header {
-            background-color: #C4D7FF;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid #87A2FF;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h3 {
-            font-weight: 600;
-            color: #2D2F31;
-        }
-
-        .modal-close {
-            cursor: pointer;
-            color: #65676B;
-        }
-
-        .modal-close:hover {
-            color: #99123D;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .modal-footer {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid #87A2FF;
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 0.25rem;
-            color: #2D2F31;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #87A2FF;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            outline: none;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: #99123D;
-        }
-
-        /* Toast */
-        .toast {
-            background-color: white;
-            border: 1px solid #87A2FF;
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            min-width: 250px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
+        .modal-overlay-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); backdrop-filter:blur(2px); z-index:50; align-items:center; justify-content:center; padding:20px; }
+        .modal-overlay-bg.active { display:flex; }
+        .btn-icon { padding:6px; border-radius:6px; background:transparent; border:none; color:var(--color-text-medium); cursor:pointer; transition:all 0.15s; }
+        .btn-icon:hover { background:var(--color-primary-light); color:var(--color-primary); }
+        .btn-icon.danger:hover { background:var(--color-error-bg); color:var(--color-error); }
+        .sbwrap { position:relative; max-width:340px; }
+        .sbwrap .si { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--color-text-light); pointer-events:none; }
+        .sbwrap input { width:100%; background:var(--color-surface); border:1.5px solid var(--color-border); border-radius:var(--radius-pill); padding:9px 14px 9px 36px; font-size:13px; outline:none; font-family:var(--font-sans); color:var(--color-text-dark); transition:all 0.2s; }
+        .sbwrap input:focus { border-color:var(--color-primary); box-shadow:0 0 0 3px rgba(10,77,140,0.08); }
     </style>
 </head>
-<body class="h-screen flex overflow-hidden">
-
-    <!-- Sidebar -->
-    <aside class="w-64 sidebar hidden lg:flex flex-col">
-        <!-- Brand -->
-        <div class="h-16 flex items-center px-6 border-b border-[#87A2FF]">
-            <div class="flex items-center gap-2">
-                <div class="w-6 h-6 rounded flex items-center justify-center" style="background-color: #87A2FF;">
-                    <iconify-icon icon="solar:users-group-rounded-bold" width="14" style="color: white;"></iconify-icon>
-                </div>
-                <span class="font-semibold text-base" style="color: #99123D;">AquaRoute</span>
-            </div>
+<body>
+<div class="app-shell fade-in">
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon"><iconify-icon icon="solar:wheel-angle-bold" width="16" style="color:#fff"></iconify-icon></div>
+            <span class="brand-name">AquaRoute</span>
         </div>
-
-        <!-- Nav -->
-        <nav class="flex-1 px-3 py-4 space-y-0.5">
-            <a href="/admin/dashboard" class="nav-item">
-                <iconify-icon icon="solar:widget-5-bold-duotone" width="18"></iconify-icon>
-                Dashboard
-            </a>
-            <a href="/admin/ferries" class="nav-item">
-                <iconify-icon icon="solar:ship-bold-duotone" width="18"></iconify-icon>
-                Ferry Management
-            </a>
-            <a href="/admin/ports" class="nav-item">
-                <iconify-icon icon="solar:anchor-circle-bold-duotone" width="18"></iconify-icon>
-                Port Management
-            </a>
-            <a href="/admin/cargo" class="nav-item">
-                <iconify-icon icon="solar:box-bold-duotone" width="18"></iconify-icon>
-                Cargo Tracking
-            </a>
-            <a href="/admin/logs" class="nav-item">
-                <iconify-icon icon="solar:clipboard-list-bold-duotone" width="18"></iconify-icon>
-                Audit Logs
-            </a>
-            <a href="/admin/users" class="nav-item active">
-                <iconify-icon icon="solar:users-group-rounded-bold" width="18"></iconify-icon>
-                Users
-            </a>
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">Main</span>
+            <a href="/admin/dashboard" class="nav-item <%= currentPage==='dashboard'?'active':'' %>"><iconify-icon icon="solar:widget-5-bold-duotone" width="18"></iconify-icon> Dashboard</a>
+            <a href="/admin/ferries"   class="nav-item <%= currentPage==='ferries'?'active':'' %>"><iconify-icon icon="solar:ship-bold-duotone" width="18"></iconify-icon> Ferry Management</a>
+            <a href="/admin/ports"     class="nav-item <%= currentPage==='ports'?'active':'' %>"><iconify-icon icon="solar:anchor-circle-bold-duotone" width="18"></iconify-icon> Port Management</a>
+            <a href="/admin/cargo"     class="nav-item <%= currentPage==='cargo'?'active':'' %>"><iconify-icon icon="solar:box-bold-duotone" width="18"></iconify-icon> Cargo Tracking</a>
+            <span class="nav-section-label" style="margin-top:8px;">System</span>
+            <a href="/admin/logs"      class="nav-item <%= currentPage==='logs'?'active':'' %>"><iconify-icon icon="solar:clipboard-list-bold-duotone" width="18"></iconify-icon> Audit Logs</a>
+            <a href="/admin/users"     class="nav-item <%= currentPage==='users'?'active':'' %>"><iconify-icon icon="solar:users-group-rounded-bold" width="18"></iconify-icon> Users</a>
         </nav>
-
-        <!-- User -->
-        <div class="user-profile">
-            <img src="https://ui-avatars.com/api/?name=<%= user ? user.name.replace(' ', '+') : 'Admin' %>&background=99123D&color=fff" class="user-avatar">
-            <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold truncate"><%= user ? user.name : 'Admin User' %></p>
-                <p class="text-xs" style="color: #65676B;"><%= user ? (user.role || 'Admin') : 'Administrator' %></p>
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <img src="https://ui-avatars.com/api/?name=<%= user ? user.name.replace(' ','+') : 'Admin' %>&background=0A4D8C&color=fff" alt="avatar">
+                <div class="flex-1 truncate">
+                    <div class="user-name truncate"><%= user ? user.name : 'Admin User' %></div>
+                    <div class="user-role"><%= user ? (user.role||'Admin') : 'Administrator' %></div>
+                </div>
+                <a href="/logout" class="logout-btn"><iconify-icon icon="solar:logout-2-bold" width="16"></iconify-icon></a>
             </div>
-            <a href="/logout" style="color: #99123D;">
-                <iconify-icon icon="solar:logout-2-bold" width="18"></iconify-icon>
-            </a>
         </div>
     </aside>
 
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col min-w-0">
-        
-        <!-- Header -->
-        <header class="h-16 header flex items-center justify-between px-6">
-            <div class="flex items-center gap-4 lg:hidden">
-                <button style="color: #87A2FF;"><iconify-icon icon="solar:hamburger-menu-bold" width="20"></iconify-icon></button>
-                <span class="font-semibold" style="color: #99123D;">AquaRoute</span>
-            </div>
-            
-            <div>
-                <h1 class="text-lg font-semibold" style="color: #2D2F31;">User Management</h1>
-                <p class="text-xs" style="color: #65676B;">Manage system users and permissions</p>
-            </div>
-
-            <div class="flex items-center gap-3">
-                <button onclick="openAddModal()" class="action-btn btn-primary">
-                    <iconify-icon icon="solar:add-circle-bold" width="16"></iconify-icon>
-                    Add User
-                </button>
-                <button class="notification-btn">
-                    <iconify-icon icon="solar:bell-bold" width="18"></iconify-icon>
-                    <span class="notification-badge"></span>
-                </button>
+    <div class="main-content">
+        <header class="top-header">
+            <div class="page-title"><h1>User Management</h1><p>Manage system users and permissions</p></div>
+            <div class="header-actions">
+                <button onclick="openAddModal()" class="btn btn-primary"><iconify-icon icon="solar:add-circle-bold" width="16"></iconify-icon> Add User</button>
+                <button class="icon-btn"><iconify-icon icon="solar:bell-bold" width="17"></iconify-icon></button>
             </div>
         </header>
 
-        <!-- Content -->
-        <div class="flex-1 overflow-auto p-6">
-            <div class="space-y-6">
-                
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="stat-card">
-                        <div class="stat-label">Total Users</div>
-                        <div class="stat-value"><%= users ? users.length : 0 %></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Admins</div>
-                        <div class="stat-value" style="color: #BD77FF;">
-                            <%= users ? users.filter(u => u.role === 'admin' || u.role === 'super_admin').length : 0 %>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Regular Users</div>
-                        <div class="stat-value" style="color: #87A2FF;">
-                            <%= users ? users.filter(u => u.role === 'user').length : 0 %>
-                        </div>
+        <div class="page-content">
+            <div class="stat-grid mb-6" style="grid-template-columns:repeat(3,1fr);">
+                <div class="stat-card primary slide-up">
+                    <div class="stat-icon"><iconify-icon icon="solar:users-group-rounded-bold" width="20"></iconify-icon></div>
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-value"><%= users ? users.length : 0 %></div>
+                </div>
+                <div class="stat-card info slide-up">
+                    <div class="stat-icon"><iconify-icon icon="solar:shield-user-bold-duotone" width="20"></iconify-icon></div>
+                    <div class="stat-label">Admins</div>
+                    <div class="stat-value" style="color:var(--color-accent)">
+                        <%= users ? users.filter(u => u.role==='admin'||u.role==='super_admin').length : 0 %>
                     </div>
                 </div>
-
-                <!-- Search Bar -->
-                <div class="relative max-w-md">
-                    <iconify-icon icon="solar:magnifer-linear" class="absolute left-3 top-1/2 -translate-y-1/2" style="color: #87A2FF;"></iconify-icon>
-                    <input type="text" id="userSearch" placeholder="Search users..." class="search-input pl-10" onkeyup="filterUsers()">
-                </div>
-
-                <!-- Users Table -->
-                <div class="table-container">
-                    <div class="table-header flex justify-between items-center">
-                        <span>System Users</span>
-                        <span class="text-xs" style="color: #65676B;"><%= users ? users.length : 0 %> records</span>
-                    </div>
-                    
-                    <% if (users && users.length > 0) { %>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead>
-                                <tr>
-                                    <th class="text-left">Username</th>
-                                    <th class="text-left">Name</th>
-                                    <th class="text-left">Role</th>
-                                    <th class="text-left">Created</th>
-                                    <th class="text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="usersTableBody">
-                                <% users.forEach(function(u) { %>
-                                <tr class="table-row" data-username="<%= u.username.toLowerCase() %>" data-name="<%= u.name.toLowerCase() %>">
-                                    <td class="px-6 py-3 font-medium"><%= u.username %></td>
-                                    <td class="px-6 py-3"><%= u.name %></td>
-                                    <td class="px-6 py-3">
-                                        <% if (u.role === 'super_admin') { %>
-                                        <span class="badge badge-super_admin">Super Admin</span>
-                                        <% } else if (u.role === 'admin') { %>
-                                        <span class="badge badge-admin">Admin</span>
-                                        <% } else { %>
-                                        <span class="badge badge-user">User</span>
-                                        <% } %>
-                                    </td>
-                                    <td class="px-6 py-3" style="color: #65676B;">
-                                        <%= new Date(u.created_at).toLocaleDateString() %>
-                                    </td>
-                                    <td class="px-6 py-3 text-right">
-                                        <% if (u.id !== user.id && u.id !== user.uid) { %>
-                                        <button onclick="editUser('<%= u.id %>', '<%= u.username %>', '<%= u.name %>', '<%= u.role %>')" class="btn-icon" title="Edit">
-                                            <iconify-icon icon="solar:pen-bold" width="16"></iconify-icon>
-                                        </button>
-                                        <button onclick="deleteUser('<%= u.id %>', '<%= u.username %>')" class="btn-icon" title="Delete">
-                                            <iconify-icon icon="solar:trash-bin-trash-bold" width="16"></iconify-icon>
-                                        </button>
-                                        <% } else { %>
-                                        <span class="text-xs" style="color: #65676B;">Current User</span>
-                                        <% } %>
-                                    </td>
-                                </tr>
-                                <% }); %>
-                            </tbody>
-                        </table>
-                    </div>
-                    <% } else { %>
-                    <div class="empty-state">
-                        <iconify-icon icon="solar:users-group-rounded-bold" width="48" style="color: #87A2FF;"></iconify-icon>
-                        <p class="font-medium">No users found</p>
-                    </div>
-                    <% } %>
+                <div class="stat-card success slide-up">
+                    <div class="stat-icon"><iconify-icon icon="solar:user-bold-duotone" width="20"></iconify-icon></div>
+                    <div class="stat-label">Regular Users</div>
+                    <div class="stat-value success"><%= users ? users.filter(u => u.role==='user').length : 0 %></div>
                 </div>
             </div>
-        </div>
-    </main>
 
-    <!-- Add/Edit User Modal -->
-    <div id="userModal" class="modal">
-        <div class="modal-content">
-            <form id="userForm" method="POST">
-                <div class="modal-header">
-                    <h3 id="modalTitle">Add New User</h3>
-                    <span onclick="closeModal()" class="modal-close">
-                        <iconify-icon icon="solar:close-circle-bold" width="20"></iconify-icon>
+            <div class="panel slide-up">
+                <div class="panel-header">
+                    <span class="panel-title">
+                        <iconify-icon icon="solar:users-group-rounded-bold"></iconify-icon>
+                        System Users
+                        <span style="color:var(--color-text-light);font-weight:400;font-size:12px;">(<%= users ? users.length : 0 %> records)</span>
                     </span>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="userId" name="id">
-                    
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" name="username" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password">
-                        <small style="color: #65676B; font-size: 0.75rem;">Leave blank to keep current password when editing</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="name">Full Name</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="role">Role</label>
-                        <select id="role" name="role" required>
-                            <option value="user">User</option>
-                            <option value="admin">Admin</option>
-                            <option value="super_admin">Super Admin</option>
-                        </select>
+                    <div class="sbwrap">
+                        <iconify-icon icon="solar:magnifer-linear" class="si"></iconify-icon>
+                        <input type="text" id="userSearch" placeholder="Search users…" onkeyup="filterUsers()">
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" onclick="closeModal()" class="action-btn btn-outline">Cancel</button>
-                    <button type="submit" class="action-btn btn-primary">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-        <div class="toast">
-            <div id="toast-icon" style="color: #62AE7D;">
-                <iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>
+                <% if (users && users.length > 0) { %>
+                <div style="overflow-x:auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th><th>Name</th><th>Role</th><th>Created</th>
+                                <th style="text-align:right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <% users.forEach(function(u) { %>
+                            <tr data-username="<%= u.username.toLowerCase() %>" data-name="<%= u.name.toLowerCase() %>">
+                                <td style="font-weight:600;font-family:monospace;font-size:12px;"><%= u.username %></td>
+                                <td><%= u.name %></td>
+                                <td>
+                                    <% if (u.role==='super_admin') { %>
+                                        <span class="badge badge-suspended">Super Admin</span>
+                                    <% } else if (u.role==='admin') { %>
+                                        <span class="badge badge-in-transit">Admin</span>
+                                    <% } else { %>
+                                        <span class="badge badge-docked">User</span>
+                                    <% } %>
+                                </td>
+                                <td class="secondary"><%= new Date(u.created_at).toLocaleDateString() %></td>
+                                <td style="text-align:right;">
+                                    <% if (u.id !== user.id && u.id !== user.uid) { %>
+                                    <button onclick="editUser('<%= u.id %>','<%= u.username %>','<%= u.name %>','<%= u.role %>')" class="btn-icon" title="Edit">
+                                        <iconify-icon icon="solar:pen-bold" width="16"></iconify-icon>
+                                    </button>
+                                    <button onclick="deleteUser('<%= u.id %>','<%= u.username %>')" class="btn-icon danger" title="Delete">
+                                        <iconify-icon icon="solar:trash-bin-trash-bold" width="16"></iconify-icon>
+                                    </button>
+                                    <% } else { %>
+                                    <span style="font-size:11px;color:var(--color-text-light);">Current User</span>
+                                    <% } %>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } else { %>
+                <div style="padding:48px;text-align:center;color:var(--color-text-light);">
+                    <iconify-icon icon="solar:users-group-rounded-bold" width="48"></iconify-icon>
+                    <p style="margin-top:8px;font-weight:600;">No users found</p>
+                </div>
+                <% } %>
             </div>
-            <p id="toast-message" class="text-sm" style="color: #2D2F31;">Success</p>
         </div>
     </div>
+</div>
 
-    <script>
-        // Modal functions
-        function openAddModal() {
-            document.getElementById('modalTitle').textContent = 'Add New User';
-            document.getElementById('userForm').action = '/admin/users/add';
-            document.getElementById('userId').value = '';
-            document.getElementById('username').value = '';
-            document.getElementById('username').type = 'email'; // Ensure email validation
-            document.getElementById('username').disabled = false;
-            document.getElementById('password').value = '';
-            document.getElementById('password').required = true;
-            document.getElementById('name').value = '';
-            document.getElementById('role').value = 'user';
-            // Enable role select for new users
-            document.getElementById('role').disabled = false;
-            document.getElementById('userModal').classList.add('active');
-        }
+<!-- Modal -->
+<div id="userModal" class="modal-overlay-bg">
+    <div class="modal">
+        <form id="userForm" method="POST">
+            <div class="modal-header">
+                <span class="modal-title"><iconify-icon icon="solar:user-plus-bold"></iconify-icon><span id="modalTitle">Add New User</span></span>
+                <button type="button" onclick="closeModal()" class="modal-close"><iconify-icon icon="solar:close-circle-bold" width="18"></iconify-icon></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="userId" name="id">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username / Email</label>
+                    <input type="email" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                    <p style="font-size:11px;color:var(--color-text-light);margin-top:4px;">Leave blank to keep current password when editing</p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="name">Full Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="role">Role</label>
+                    <select class="form-control" id="role" name="role" required>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="super_admin">Super Admin</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save User</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-        function editUser(id, username, name, role) {
-            document.getElementById('modalTitle').textContent = 'Edit User';
-            document.getElementById('userForm').action = '/admin/users/' + id + '/update';
-            document.getElementById('userId').value = id;
-            document.getElementById('username').value = username;
-            document.getElementById('username').type = 'email';
-            document.getElementById('username').disabled = true; // Email/Username usually immutable in both systems
-            document.getElementById('password').value = '';
-            document.getElementById('password').required = false;
-            document.getElementById('name').value = name;
-            document.getElementById('role').value = role;
-            
-            // For Firebase users (role === 'user'), role change via this modal is restricted
-            if (role === 'user') {
-                document.getElementById('role').disabled = true;
-            } else {
-                document.getElementById('role').disabled = false;
-            }
-            
-            document.getElementById('userModal').classList.add('active');
-        }
+<div id="toast" class="toast">
+    <iconify-icon id="toast-icon" width="18"></iconify-icon>
+    <span id="toast-message" class="toast-message">Success</span>
+</div>
 
-        function closeModal() {
-            document.getElementById('userModal').classList.remove('active');
-            document.getElementById('username').disabled = false;
-            document.getElementById('role').disabled = false;
-            document.getElementById('password').required = true;
-        }
-
-        function deleteUser(id, username) {
-            if (confirm('Are you sure you want to delete user ' + username + '?')) {
-                var form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/admin/users/' + id + '/delete';
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
-
-        // Search/filter users
-        function filterUsers() {
-            var input = document.getElementById('userSearch').value.toLowerCase();
-            var rows = document.getElementById('usersTableBody').getElementsByTagName('tr');
-            
-            for (var i = 0; i < rows.length; i++) {
-                var username = rows[i].getAttribute('data-username');
-                var name = rows[i].getAttribute('data-name');
-                if (username.includes(input) || name.includes(input)) {
-                    rows[i].style.display = '';
-                } else {
-                    rows[i].style.display = 'none';
-                }
-            }
-        }
-
-        // Toast function
-        function showToast(msg, type) {
-            var toast = document.getElementById('toast');
-            var icon = document.getElementById('toast-icon');
-            var message = document.getElementById('toast-message');
-            
-            message.innerText = msg;
-            
-            if(type === 'success') {
-                icon.innerHTML = '<iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>';
-                icon.style.color = '#62AE7D';
-            } else if(type === 'error') {
-                icon.innerHTML = '<iconify-icon icon="solar:danger-circle-bold" width="18"></iconify-icon>';
-                icon.style.color = '#99123D';
-            } else {
-                icon.innerHTML = '<iconify-icon icon="solar:info-circle-bold" width="18"></iconify-icon>';
-                icon.style.color = '#BD77FF';
-            }
-
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(function() {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        // Show toast if there's a message from server
-        <% if (typeof message !== 'undefined' && message) { %>
-            window.onload = function() {
-                showToast('<%= message %>', 'success');
-            };
-        <% } %>
-
-        // Close modal on escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
-    </script>
+<script>
+    function openAddModal(){document.getElementById('modalTitle').textContent='Add New User';document.getElementById('userForm').action='/admin/users/add';document.getElementById('userId').value='';document.getElementById('username').value='';document.getElementById('username').disabled=false;document.getElementById('password').value='';document.getElementById('password').required=true;document.getElementById('name').value='';document.getElementById('role').value='user';document.getElementById('role').disabled=false;document.getElementById('userModal').classList.add('active');}
+    function editUser(id,username,name,role){document.getElementById('modalTitle').textContent='Edit User';document.getElementById('userForm').action='/admin/users/'+id+'/update';document.getElementById('userId').value=id;document.getElementById('username').value=username;document.getElementById('username').disabled=true;document.getElementById('password').value='';document.getElementById('password').required=false;document.getElementById('name').value=name;document.getElementById('role').value=role;document.getElementById('role').disabled=(role==='user');document.getElementById('userModal').classList.add('active');}
+    function closeModal(){document.getElementById('userModal').classList.remove('active');document.getElementById('username').disabled=false;document.getElementById('role').disabled=false;document.getElementById('password').required=true;}
+    function deleteUser(id,username){if(confirm('Delete user '+username+'?')){var f=document.createElement('form');f.method='POST';f.action='/admin/users/'+id+'/delete';document.body.appendChild(f);f.submit();}}
+    function filterUsers(){var q=document.getElementById('userSearch').value.toLowerCase();var rows=document.getElementById('usersTableBody').getElementsByTagName('tr');for(var i=0;i<rows.length;i++){var un=rows[i].getAttribute('data-username');var nm=rows[i].getAttribute('data-name');rows[i].style.display=(un.includes(q)||nm.includes(q))?'':'none';}}
+    function showToast(msg,type){const t=document.getElementById('toast');const ic=document.getElementById('toast-icon');document.getElementById('toast-message').innerText=msg;t.className='toast '+(type||'info');ic.className='toast-icon '+(type||'info');if(type==='success')ic.setAttribute('icon','solar:check-circle-bold');else if(type==='error')ic.setAttribute('icon','solar:danger-circle-bold');else ic.setAttribute('icon','solar:info-circle-bold');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);}
+    <% if (typeof message !== 'undefined' && message) { %>
+    window.onload=()=>showToast('<%= message %>','success');
+    <% } %>
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+</script>
 </body>
 </html>
