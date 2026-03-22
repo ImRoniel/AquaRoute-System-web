@@ -62,7 +62,9 @@ const ferryController = {
                     f.status
                 );
                 const updatedETA = calculateETA(currentPos, f.pointB, f.speed_knots);
-                ferriesWithPositions.push({ ...f, current_lat: currentPos.lat, current_lng: currentPos.lng, eta: updatedETA || f.eta });
+                // Prefer stored Firestore ETA (admin-set) over the dynamically computed value
+                const displayETA = f.eta || updatedETA;
+                ferriesWithPositions.push({ ...f, current_lat: currentPos.lat, current_lng: currentPos.lng, eta: displayETA });
             }
 
             res.render('admin/ferries', {
@@ -108,10 +110,18 @@ const ferryController = {
             
             await logAudit(req.session.user.username, 'UPDATE_FERRY', `Updated ferry ID: ${ferryId}`);
             
-            res.redirect('/admin/ferries');
+            if (req.headers.accept && req.headers.accept.includes('application/json')) {
+                res.json({ success: true, message: 'Ferry updated successfully' });
+            } else {
+                res.redirect('/admin/ferries');
+            }
         } catch (error) {
             DEBUG.error('FERRIES', 'Error updating ferry', error);
-            res.status(500).send('Error updating ferry');
+            if (req.headers.accept && req.headers.accept.includes('application/json')) {
+                res.status(500).json({ success: false, error: 'Error updating ferry: ' + error.message });
+            } else {
+                res.status(500).send('Error updating ferry');
+            }
         }
     },
 

@@ -243,8 +243,8 @@
                                 <td class="secondary"><%= f.eta %> min</td>
                                 <td style="text-align:right;">
                                     <button class="btn-icon-table"
-                                            data-ferry="<%= JSON.stringify(f).replace(/"/g,'&quot;') %>"
-                                            onclick="openEditModal(JSON.parse(this.dataset.ferry.replace(/&quot;/g,'\"')))"
+                                            data-ferry="<%= encodeURIComponent(JSON.stringify(f)) %>"
+                                            onclick="openEditModal(this.dataset.ferry)"
                                             title="Edit">
                                         <iconify-icon icon="solar:pen-bold" width="16"></iconify-icon>
                                     </button>
@@ -420,18 +420,26 @@
         document.getElementById('addFerryModal').classList.remove('active');
         document.getElementById('addFerryForm').reset();
     }
-    function openEditModal(ferry) {
+    function openEditModal(encodedFerry) {
+        let ferry;
+        try {
+            ferry = JSON.parse(decodeURIComponent(encodedFerry));
+        } catch (e) {
+            showToast('Error loading ferry data', 'error');
+            console.error('Failed to parse ferry data:', e);
+            return;
+        }
         const form = document.getElementById('editFerryForm');
         form.action = `/admin/ferries/${ferry.id}/update`;
-        document.getElementById('edit_name').value = ferry.name;
-        document.getElementById('edit_route').value = ferry.route;
+        document.getElementById('edit_name').value = ferry.name || '';
+        document.getElementById('edit_route').value = ferry.route || '';
         document.getElementById('edit_speed').value = ferry.speed_knots || 20;
         document.getElementById('edit_eta').value = ferry.eta || 0;
-        document.getElementById('edit_status').value = ferry.status;
-        document.getElementById('edit_pointA_lat').value = ferry.pointA?.lat || ferry.current_lat || 0;
-        document.getElementById('edit_pointA_lng').value = ferry.pointA?.lng || ferry.current_lng || 0;
-        document.getElementById('edit_pointB_lat').value = ferry.pointB?.lat || 0;
-        document.getElementById('edit_pointB_lng').value = ferry.pointB?.lng || 0;
+        document.getElementById('edit_status').value = ferry.status || 'on_time';
+        document.getElementById('edit_pointA_lat').value = (ferry.pointA && ferry.pointA.lat) ? ferry.pointA.lat : (ferry.current_lat || '');
+        document.getElementById('edit_pointA_lng').value = (ferry.pointA && ferry.pointA.lng) ? ferry.pointA.lng : (ferry.current_lng || '');
+        document.getElementById('edit_pointB_lat').value = (ferry.pointB && ferry.pointB.lat) ? ferry.pointB.lat : '';
+        document.getElementById('edit_pointB_lng').value = (ferry.pointB && ferry.pointB.lng) ? ferry.pointB.lng : '';
         document.getElementById('editFerryModal').classList.add('active');
     }
     function closeEditModal() {
@@ -447,8 +455,51 @@
         const fb    = document.getElementById('filter-btn');
         if (event.target === addM) closeAddModal();
         if (event.target === editM) closeEditModal();
-        if (!fp.contains(event.target) && !fb.contains(event.target)) fp.classList.remove('open');
+        if (fp && fb && !fp.contains(event.target) && !fb.contains(event.target)) fp.classList.remove('open');
     };
+
+    // Handle AJAX Form Submission
+    document.getElementById('editFerryForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const form = this;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerText;
+        
+        submitBtn.innerText = 'Saving...';
+        submitBtn.disabled = true;
+
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                closeEditModal();
+                showToast('Ferry updated successfully', 'success');
+                // Reload page to briefly show changes (can be optimized to DOM update later if requested)
+                setTimeout(() => location.reload(), 800);
+            } else {
+                const errorData = await response.json();
+                showToast(errorData.error || 'Error updating ferry', 'error');
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+            }
+        } catch (error) {
+            console.error('Submit error:', error);
+            showToast('Network error updating ferry', 'error');
+            submitBtn.innerText = originalText;
+            submitBtn.disabled = false;
+        }
+    });
     function showToast(msg, type) {
         const toast = document.getElementById('toast');
         const icon  = document.getElementById('toast-icon');
