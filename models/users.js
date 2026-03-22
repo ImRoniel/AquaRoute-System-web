@@ -53,6 +53,16 @@ class Users {
         }
     }
 
+    async getCount() {
+        try {
+            const snapshot = await this.collection.count().get();
+            return snapshot.data().count;
+        } catch (error) {
+            console.error('Error fetching user count:', error);
+            return 0; // Return 0 rather than throwing to avoid breaking the dashboard if it fails
+        }
+    }
+
     async getById(uid) {
         try {
             const doc = await this.collection.doc(uid).get();

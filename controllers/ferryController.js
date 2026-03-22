@@ -1,6 +1,7 @@
 const DEBUG = require('../config/debug');
 const Ferry = require('../models/ferry');
 const Log = require('../models/log');
+const Users = require('../models/users');
 const { db } = require('../config/firebase'); // ✅ Firestore instance
 
 // Helper for audit logs – uses Log model
@@ -18,6 +19,11 @@ const ferryController = {
         const ferryModel = new Ferry(req.db);
         try {
             const stats = await ferryModel.getStats();
+            const totalUsers = await Users.getCount();
+            
+            stats.totalFleet = stats.total;
+            stats.totalUsers = totalUsers;
+
             const ferries = await ferryModel.getAllWithCurrentPositions();
             const logs = await ferryModel.getLogs(5);
             res.render('admin/dashboard', {
