@@ -39,6 +39,7 @@
             transition: all 0.15s;
         }
         .btn-icon-table:hover { background: var(--color-primary-light); color: var(--color-primary); }
+        .btn-icon-table.btn-delete-table:hover { background: #fee2e2; color: #ef4444; }
 
         .filter-panel-popup {
             position: absolute;
@@ -247,6 +248,11 @@
                                             onclick="openEditModal(this.dataset.ferry)"
                                             title="Edit">
                                         <iconify-icon icon="solar:pen-bold" width="16"></iconify-icon>
+                                    </button>
+                                    <button class="btn-icon-table btn-delete-table"
+                                            onclick="confirmDeleteFerry('<%= f.id %>', '<%= f.name %>', this)"
+                                            title="Delete">
+                                        <iconify-icon icon="solar:trash-bin-trash-bold" width="16"></iconify-icon>
                                     </button>
                                 </td>
                             </tr>
@@ -519,6 +525,43 @@
             if (r.ok) { location.reload(); }
             else { showToast('Error updating status', 'error'); }
         } catch(e) { showToast('Error updating status', 'error'); }
+    }
+    async function confirmDeleteFerry(id, name, btn) {
+        if (!confirm(`Are you sure you want to delete ferry "${name}"? This action cannot be undone.`)) {
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/admin/ferries/${id}/delete`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                showToast('Ferry deleted successfully', 'success');
+                // Dynamic removal with animation
+                const row = btn.closest('tr');
+                if (row) {
+                    row.style.transition = 'all 0.4s ease';
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateX(20px)';
+                    setTimeout(() => row.remove(), 400);
+                }
+            } else {
+                const error = await response.json();
+                showToast(error.error || 'Error deleting ferry', 'error');
+                if (response.status === 401) {
+                    setTimeout(() => window.location.href = '/login', 1500);
+                }
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            showToast('Network error while deleting ferry', 'error');
+        }
     }
     function filterFerries() {
         const q    = document.getElementById('ferry-search').value.toLowerCase();

@@ -106,15 +106,34 @@ const ferryController = {
             const { admin } = require('../config/firebase');
 
             if (pointA_lat !== undefined && pointA_lat !== '' && pointA_lng !== undefined && pointA_lng !== '') {
-                updateProps.pointA = new admin.firestore.GeoPoint(parseFloat(pointA_lat), parseFloat(pointA_lng));
+                const lat = parseFloat(pointA_lat);
+                const lng = parseFloat(pointA_lng);
+                updateProps.pointA = new admin.firestore.GeoPoint(lat, lng);
+                updateProps.current_lat = lat;
+                updateProps.current_lng = lng;
             }
             if (pointB_lat !== undefined && pointB_lat !== '' && pointB_lng !== undefined && pointB_lng !== '') {
                 updateProps.pointB = new admin.firestore.GeoPoint(parseFloat(pointB_lat), parseFloat(pointB_lng));
             }
 
+            // --- ANIMATION SYNC FIX ---
+            // If we have both points and an ETA, generate the timing fields for the Android Live Map animation.
+            // This ensures manual updates behave the same way as the automated Overpass refresh.
+            if (updateProps.pointA && updateProps.pointB && updateProps.eta) {
+                const now = Date.now();
+                updateProps.startTime = now;
+                updateProps.endTime = now + (updateProps.eta * 60 * 1000);
+                updateProps.routePoints = [
+                    { lat: updateProps.pointA.latitude, lng: updateProps.pointA.longitude },
+                    { lat: updateProps.pointB.latitude, lng: updateProps.pointB.longitude }
+                ];
+                updateProps.last_updated = new Date().toISOString();
+            }
+
             await ferryModel.update(ferryId, updateProps);
             
-            await logAudit(req.session.user.username, 'UPDATE_FERRY', `Updated ferry ID: ${ferryId}`);
+            const adminName = req.session?.user?.username || 'System';
+            await logAudit(adminName, 'UPDATE_FERRY', `Updated ferry ID: ${ferryId}`);
             
             if (req.headers.accept && req.headers.accept.includes('application/json')) {
                 res.json({ success: true, message: 'Ferry updated successfully' });
@@ -137,11 +156,18 @@ const ferryController = {
         try {
             await ferryModel.delete(ferryId);
             
-            await logAudit(req.session.user.username, 'DELETE_FERRY', `Deleted ferry ID: ${ferryId}`);
+            const adminName = req.session?.user?.username || 'System';
+            await logAudit(adminName, 'DELETE_FERRY', `Deleted ferry ID: ${ferryId}`);
             
+            if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+                return res.json({ success: true, message: 'Ferry deleted successfully' });
+            }
             res.redirect('/admin/ferries');
         } catch (error) {
             DEBUG.error('FERRIES', 'Error deleting ferry', error);
+            if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+                return res.status(500).json({ success: false, error: 'Error deleting ferry: ' + error.message });
+            }
             res.status(500).send('Error deleting ferry');
         }
     },
@@ -167,18 +193,34 @@ const ferryController = {
 
             const FerryModel = new (require('../models/ferry'))();
 
+            const now = Date.now();
+            const finalEta = parseInt(eta) || 60;
+            const latA = parseFloat(pointA_lat);
+            const lngA = parseFloat(pointA_lng);
+            const latB = parseFloat(pointB_lat);
+            const lngB = parseFloat(pointB_lng);
+
             const newFerry = await FerryModel.create({
                 name,
                 route,
                 speed_knots: parseInt(speed_knots) || 20,
                 status: status || 'on_time',
-                eta: parseInt(eta) || 60,
-                pointA: { lat: parseFloat(pointA_lat), lng: parseFloat(pointA_lng) },
-                pointB: { lat: parseFloat(pointB_lat), lng: parseFloat(pointB_lng) },
+                eta: finalEta,
+                pointA: { lat: latA, lng: lngA },
+                pointB: { lat: latB, lng: lngB },
+                current_lat: latA,
+                current_lng: lngA,
+                startTime: now,
+                endTime: now + (finalEta * 60 * 1000),
+                routePoints: [
+                    { lat: latA, lng: lngA },
+                    { lat: latB, lng: lngB }
+                ],
                 source: source || 'manual'
             });
 
-            await logAudit(req.session.user.username, 'ADD_FERRY', `Added ferry: ${name}`);
+            const adminName = req.session?.user?.username || 'System';
+            await logAudit(adminName, 'ADD_FERRY', `Added ferry: ${name}`);
 
             res.redirect('/admin/ferries?success=Ferry added successfully');
         } catch (error) {
@@ -200,7 +242,8 @@ const ferryController = {
 
             await ferryModel.updateStatus(id, nextStatus);
             
-            await logAudit(req.session.user.username, 'TOGGLE_FERRY_STATUS', `Toggled status for ferry ${id} to ${nextStatus}`);
+            const adminName = req.session?.user?.username || 'System';
+            await logAudit(adminName, 'TOGGLE_FERRY_STATUS', `Toggled status for ferry ${id} to ${nextStatus}`);
 
             res.json({ success: true, newStatus: nextStatus });
         } catch (error) {
