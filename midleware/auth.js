@@ -7,7 +7,7 @@ const isAuthenticated = (req, res, next) => {
     if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
         return res.status(401).json({ 
             success: false, 
-            error: 'Session expired or unauthorized. Please log in again.' 
+            error: 'Session expired o r unauthorized. Please log in again.' 
         });
     }
 
